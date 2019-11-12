@@ -1,10 +1,10 @@
 import {
   Decoder,
-  string,
-  number,
-  boolean,
+  vString,
+  vNumber,
+  vBoolean,
   constant,
-  array,
+  vArray,
   dict,
   union,
   lazy
@@ -23,10 +23,10 @@ describe('create tagged json objects', () => {
 
   const taggedJsonDecoder: Decoder<TaggedJson> = union(
     constant(null).map<TaggedJson>(value => ({tag: 'null', value: value})),
-    string().map<TaggedJson>(value => ({tag: 'string', value: value})),
-    number().map<TaggedJson>(value => ({tag: 'number', value: value})),
-    boolean().map<TaggedJson>(value => ({tag: 'boolean', value: value})),
-    lazy(() => array(taggedJsonDecoder).map<TaggedJson>(value => ({tag: 'array', value: value}))),
+    vString().map<TaggedJson>(value => ({tag: 'string', value: value})),
+    vNumber().map<TaggedJson>(value => ({tag: 'number', value: value})),
+    vBoolean().map<TaggedJson>(value => ({tag: 'boolean', value: value})),
+    lazy(() => vArray(taggedJsonDecoder).map<TaggedJson>(value => ({tag: 'array', value: value}))),
     lazy(() => dict(taggedJsonDecoder).map<TaggedJson>(value => ({tag: 'object', value: value})))
   );
 

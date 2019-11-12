@@ -7,22 +7,22 @@
 ### Variables
 
 * [anyJson](_combinators_.md#anyjson)
-* [array](_combinators_.md#array)
-* [boolean](_combinators_.md#boolean)
 * [constant](_combinators_.md#constant)
 * [dict](_combinators_.md#dict)
 * [fail](_combinators_.md#fail)
 * [intersection](_combinators_.md#intersection)
 * [lazy](_combinators_.md#lazy)
-* [number](_combinators_.md#number)
-* [object](_combinators_.md#object)
 * [oneOf](_combinators_.md#oneof)
 * [optional](_combinators_.md#optional)
-* [string](_combinators_.md#string)
 * [succeed](_combinators_.md#succeed)
 * [tuple](_combinators_.md#tuple)
 * [union](_combinators_.md#union)
 * [unknownJson](_combinators_.md#unknownjson)
+* [vArray](_combinators_.md#varray)
+* [vBoolean](_combinators_.md#vboolean)
+* [vNumber](_combinators_.md#vnumber)
+* [vObject](_combinators_.md#vobject)
+* [vString](_combinators_.md#vstring)
 * [valueAt](_combinators_.md#valueat)
 * [withDefault](_combinators_.md#withdefault)
 
@@ -37,24 +37,6 @@
 **● anyJson**: *[anyJson]()* =  Decoder.anyJson
 
 See `Decoder.anyJson`
-
-___
-<a id="array"></a>
-
-### `<Const>` array
-
-**● array**: *[array](../classes/_decoder_.decoder.md#array)* =  Decoder.array
-
-See `Decoder.array`
-
-___
-<a id="boolean"></a>
-
-### `<Const>` boolean
-
-**● boolean**: *[boolean](../classes/_decoder_.decoder.md#boolean)* =  Decoder.boolean
-
-See `Decoder.boolean`
 
 ___
 <a id="constant"></a>
@@ -102,24 +84,6 @@ ___
 See `Decoder.lazy`
 
 ___
-<a id="number"></a>
-
-### `<Const>` number
-
-**● number**: *[number](../classes/_decoder_.decoder.md#number)* =  Decoder.number
-
-See `Decoder.number`
-
-___
-<a id="object"></a>
-
-### `<Const>` object
-
-**● object**: *[object](../classes/_decoder_.decoder.md#object)* =  Decoder.object
-
-See `Decoder.object`
-
-___
 <a id="oneof"></a>
 
 ### `<Const>` oneOf
@@ -136,15 +100,6 @@ ___
 **● optional**: *[optional]()* =  Decoder.optional
 
 See `Decoder.optional`
-
-___
-<a id="string"></a>
-
-### `<Const>` string
-
-**● string**: *[string](../classes/_decoder_.decoder.md#string)* =  Decoder.string
-
-See `Decoder.string`
 
 ___
 <a id="succeed"></a>
@@ -186,6 +141,51 @@ See `Decoder.unknownJson`
 ▸(): [Decoder](../classes/_decoder_.decoder.md)<`unknown`>
 
 **Returns:** [Decoder](../classes/_decoder_.decoder.md)<`unknown`>
+
+___
+<a id="varray"></a>
+
+### `<Const>` vArray
+
+**● vArray**: *[vArray](../classes/_decoder_.decoder.md#varray)* =  Decoder.vArray
+
+See `Decoder.array`
+
+___
+<a id="vboolean"></a>
+
+### `<Const>` vBoolean
+
+**● vBoolean**: *[vBoolean](../classes/_decoder_.decoder.md#vboolean)* =  Decoder.vBoolean
+
+See `Decoder.boolean`
+
+___
+<a id="vnumber"></a>
+
+### `<Const>` vNumber
+
+**● vNumber**: *[vNumber](../classes/_decoder_.decoder.md#vnumber)* =  Decoder.vNumber
+
+See `Decoder.number`
+
+___
+<a id="vobject"></a>
+
+### `<Const>` vObject
+
+**● vObject**: *[vObject](../classes/_decoder_.decoder.md#vobject)* =  Decoder.vObject
+
+See `Decoder.object`
+
+___
+<a id="vstring"></a>
+
+### `<Const>` vString
+
+**● vString**: *[vString](../classes/_decoder_.decoder.md#vstring)* =  Decoder.vString
+
+See `Decoder.string`
 
 ___
 <a id="valueat"></a>

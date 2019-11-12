@@ -1,4 +1,4 @@
-import {Decoder, string, number, boolean, object} from '../src/index';
+import {Decoder, vString, vNumber, vBoolean, vObject} from '../src/index';
 
 describe('decode json as User interface', () => {
   interface User {
@@ -22,11 +22,11 @@ describe('decode json as User interface', () => {
     active: false
   };
 
-  const userDecoder: Decoder<User> = object({
-    firstname: string(),
-    lastname: string(),
-    age: number(),
-    active: boolean()
+  const userDecoder: Decoder<User> = vObject({
+    firstname: vString(),
+    lastname: vString(),
+    age: vNumber(),
+    active: vBoolean()
   });
 
   it('successfuly passes through the valid user object', () => {

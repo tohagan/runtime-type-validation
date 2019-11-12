@@ -2,14 +2,14 @@ import {
   Decoder,
   Result,
   isDecoderError,
-  string,
-  number,
-  boolean,
+  vString,
+  vNumber,
+  vBoolean,
   anyJson,
   unknownJson,
   constant,
-  object,
-  array,
+  vObject,
+  vArray,
   dict,
   optional,
   oneOf,
@@ -24,7 +24,7 @@ import {
 } from '../src/index';
 
 describe('string', () => {
-  const decoder = string();
+  const decoder = vString();
 
   it('succeeds when given a string', () => {
     expect(decoder.run('hey')).toEqual({ok: true, result: 'hey'});
@@ -53,7 +53,7 @@ describe('string', () => {
 });
 
 describe('number', () => {
-  const decoder = number();
+  const decoder = vNumber();
 
   it('succeeds when given a number', () => {
     expect(decoder.run(5)).toEqual({ok: true, result: 5});
@@ -75,7 +75,7 @@ describe('number', () => {
 });
 
 describe('boolean', () => {
-  const decoder = boolean();
+  const decoder = vBoolean();
 
   it('succeeds when given a boolean', () => {
     expect(decoder.run(true)).toEqual({ok: true, result: true});
@@ -106,8 +106,8 @@ describe('anyJson', () => {
       complexUserData: ComplexType;
     }
 
-    const userDecoder: Decoder<User> = object({
-      name: string(),
+    const userDecoder: Decoder<User> = vObject({
+      name: vString(),
       complexUserData: anyJson()
     });
 
@@ -156,7 +156,7 @@ describe('constant', () => {
     interface TrueValue {
       x: true;
     }
-    const decoder: Decoder<TrueValue> = object({x: constant(true)});
+    const decoder: Decoder<TrueValue> = vObject({x: constant(true)});
 
     expect(decoder.run({x: true})).toEqual({ok: true, result: {x: true}});
   });
@@ -165,7 +165,7 @@ describe('constant', () => {
     interface FalseValue {
       x: false;
     }
-    const decoder: Decoder<FalseValue> = object({x: constant(false)});
+    const decoder: Decoder<FalseValue> = vObject({x: constant(false)});
 
     expect(decoder.run({x: false})).toEqual({ok: true, result: {x: false}});
   });
@@ -174,7 +174,7 @@ describe('constant', () => {
     interface NullValue {
       x: null;
     }
-    const decoder: Decoder<NullValue> = object({x: constant(null)});
+    const decoder: Decoder<NullValue> = vObject({x: constant(null)});
 
     expect(decoder.run({x: null})).toEqual({ok: true, result: {x: null}});
   });
@@ -203,14 +203,14 @@ describe('constant', () => {
 describe('object', () => {
   describe('when given valid JSON', () => {
     it('can decode a simple object', () => {
-      const decoder = object({x: number()});
+      const decoder = vObject({x: vNumber()});
 
       expect(decoder.run({x: 5})).toMatchObject({ok: true, result: {x: 5}});
     });
 
     it('can decode a nested object', () => {
-      const decoder = object({
-        payload: object({x: number(), y: number()}),
+      const decoder = vObject({
+        payload: vObject({x: vNumber(), y: vNumber()}),
         error: constant(false)
       });
       const json = {payload: {x: 5, y: 2}, error: false};
@@ -221,7 +221,7 @@ describe('object', () => {
 
   describe('when given incorrect JSON', () => {
     it('fails when not given an object', () => {
-      const decoder = object({x: number()});
+      const decoder = vObject({x: vNumber()});
 
       expect(decoder.run('true')).toMatchObject({
         ok: false,
@@ -230,7 +230,7 @@ describe('object', () => {
     });
 
     it('fails when given an array', () => {
-      const decoder = object({x: number()});
+      const decoder = vObject({x: vNumber()});
 
       expect(decoder.run([])).toMatchObject({
         ok: false,
@@ -239,7 +239,7 @@ describe('object', () => {
     });
 
     it('reports a missing key', () => {
-      const decoder = object({x: number()});
+      const decoder = vObject({x: vNumber()});
 
       expect(decoder.run({})).toMatchObject({
         ok: false,
@@ -248,7 +248,7 @@ describe('object', () => {
     });
 
     it('reports invalid values', () => {
-      const decoder = object({name: string()});
+      const decoder = vObject({name: vString()});
 
       expect(decoder.run({name: 5})).toMatchObject({
         ok: false,
@@ -257,10 +257,10 @@ describe('object', () => {
     });
 
     it('properly displays nested errors', () => {
-      const decoder = object({
-        hello: object({
-          hey: object({
-            'Howdy!': string()
+      const decoder = vObject({
+        hello: vObject({
+          hey: vObject({
+            'Howdy!': vString()
           })
         })
       });
@@ -274,9 +274,9 @@ describe('object', () => {
   });
 
   it('ignores optional fields that decode to undefined', () => {
-    const decoder = object({
-      a: number(),
-      b: optional(string())
+    const decoder = vObject({
+      a: vNumber(),
+      b: optional(vString())
     });
 
     expect(decoder.run({a: 12, b: 'hats'})).toEqual({ok: true, result: {a: 12, b: 'hats'}});
@@ -284,7 +284,7 @@ describe('object', () => {
   });
 
   it('decodes any object when the object shape is not specified', () => {
-    const objectKeysDecoder: Decoder<string[]> = object().map(Object.keys);
+    const objectKeysDecoder: Decoder<string[]> = vObject().map(Object.keys);
 
     expect(objectKeysDecoder.run({n: 1, i: [], c: {}, e: 'e'})).toEqual({
       ok: true,
@@ -294,7 +294,7 @@ describe('object', () => {
 });
 
 describe('array', () => {
-  const decoder = array(number());
+  const decoder = vArray(vNumber());
 
   it('works when given an array', () => {
     expect(decoder.run([1, 2, 3])).toEqual({ok: true, result: [1, 2, 3]});
@@ -316,7 +316,7 @@ describe('array', () => {
     });
 
     it('properly displays nested errors', () => {
-      const nestedDecoder = array(array(array(number())));
+      const nestedDecoder = vArray(vArray(vArray(vNumber())));
 
       expect(nestedDecoder.run([[], [], [[1, 2, 3, false]]])).toMatchObject({
         ok: false,
@@ -326,8 +326,8 @@ describe('array', () => {
   });
 
   it('decodes any array when the array members decoder is not specified', () => {
-    const validNumbersDecoder = array()
-      .map((arr: unknown[]) => arr.map(number().run))
+    const validNumbersDecoder = vArray()
+      .map((arr: unknown[]) => arr.map(vNumber().run))
       .map(Result.successes);
 
     expect(validNumbersDecoder.run([1, true, 2, 3, 'five', 4, []])).toEqual({
@@ -347,20 +347,20 @@ describe('array', () => {
 describe('tuple', () => {
   describe('when given valid JSON', () => {
     it('can decode a simple tuple', () => {
-      const decoder: Decoder<[number, number]> = tuple([number(), number()]);
+      const decoder: Decoder<[number, number]> = tuple([vNumber(), vNumber()]);
 
       expect(decoder.run([5, 6])).toMatchObject({ok: true, result: [5, 6]});
     });
 
     it('can decode tuples of mixed types', () => {
-      const decoder: Decoder<[number, string]> = tuple([number(), string()]);
+      const decoder: Decoder<[number, string]> = tuple([vNumber(), vString()]);
 
       expect(decoder.run([1, 'a'])).toMatchObject({ok: true, result: [1, 'a']});
     });
 
     it('can decode a nested object', () => {
       const decoder: Decoder<[{x: number; y: number}, false]> = tuple([
-        object({x: number(), y: number()}),
+        vObject({x: vNumber(), y: vNumber()}),
         constant(false)
       ]);
       const json = [{x: 5, y: 2}, false];
@@ -371,7 +371,7 @@ describe('tuple', () => {
 
   describe('when given incorrect JSON', () => {
     it('fails when the array length does not match', () => {
-      const decoder: Decoder<[number]> = tuple([number()]);
+      const decoder: Decoder<[number]> = tuple([vNumber()]);
 
       expect(decoder.run([1, 2])).toMatchObject({
         ok: false,
@@ -380,7 +380,7 @@ describe('tuple', () => {
     });
 
     it('fails when given an object', () => {
-      const decoder: Decoder<[number]> = tuple([number()]);
+      const decoder: Decoder<[number]> = tuple([vNumber()]);
 
       expect(decoder.run({x: 1})).toMatchObject({
         ok: false,
@@ -389,7 +389,7 @@ describe('tuple', () => {
     });
 
     it('reports invalid values', () => {
-      const decoder: Decoder<[number, string]> = tuple([number(), string()]);
+      const decoder: Decoder<[number, string]> = tuple([vNumber(), vString()]);
 
       expect(decoder.run([4, 5])).toMatchObject({
         ok: false,
@@ -399,9 +399,9 @@ describe('tuple', () => {
 
     it('properly displays nested errors', () => {
       const decoder: Decoder<[{hey: {'Howdy!': string}}]> = tuple([
-        object({
-          hey: object({
-            'Howdy!': string()
+        vObject({
+          hey: vObject({
+            'Howdy!': vString()
           })
         })
       ]);
@@ -417,7 +417,7 @@ describe('tuple', () => {
 
 describe('dict', () => {
   describe('with a simple value decoder', () => {
-    const decoder = dict(number());
+    const decoder = dict(vNumber());
 
     it('can decode an empty object', () => {
       expect(decoder.run({})).toEqual({ok: true, result: {}});
@@ -450,7 +450,7 @@ describe('dict', () => {
   });
 
   describe('given a transformative value decoder', () => {
-    const decoder = dict(string().map(str => str + '!'));
+    const decoder = dict(vString().map(str => str + '!'));
 
     it('transforms the values', () => {
       expect(decoder.run({hey: 'there', yo: 'dude'})).toEqual({
@@ -463,7 +463,7 @@ describe('dict', () => {
 
 describe('optional', () => {
   describe('decoding a non-object type', () => {
-    const decoder = optional(number());
+    const decoder = optional(vNumber());
 
     it('can decode the given type', () => {
       expect(decoder.run(5)).toEqual({ok: true, result: 5});
@@ -487,9 +487,9 @@ describe('optional', () => {
       isDog?: boolean;
     }
 
-    const decoder: Decoder<User> = object({
-      id: number(),
-      isDog: optional(boolean())
+    const decoder: Decoder<User> = vObject({
+      id: vNumber(),
+      isDog: optional(vBoolean())
     });
 
     it('can decode the object when the optional field is present', () => {
@@ -513,20 +513,20 @@ describe('optional', () => {
 describe('oneOf', () => {
   describe('when given valid input', () => {
     it('can decode a value with a single alternative', () => {
-      const decoder = oneOf(string());
+      const decoder = oneOf(vString());
 
       expect(decoder.run('yo')).toEqual({ok: true, result: 'yo'});
     });
 
     it('can decode a value with multiple alternatives', () => {
-      const decoder = array(oneOf(string().map(s => s.length), number()));
+      const decoder = vArray(oneOf(vString().map(s => s.length), vNumber()));
 
       expect(decoder.run(['hey', 10])).toEqual({ok: true, result: [3, 10]});
     });
   });
 
   it('fails when a value does not match any decoder', () => {
-    const decoder = oneOf(string(), number().map(String));
+    const decoder = oneOf(vString(), vNumber().map(String));
 
     expect(decoder.run([])).toMatchObject({
       ok: false,
@@ -540,8 +540,8 @@ describe('oneOf', () => {
   });
 
   it('fails and reports errors for nested values', () => {
-    const decoder = array(
-      oneOf(valueAt([1, 'a', 'b'], number()), valueAt([1, 'a', 'x'], number()))
+    const decoder = vArray(
+      oneOf(valueAt([1, 'a', 'b'], vNumber()), valueAt([1, 'a', 'x'], vNumber()))
     );
 
     expect(decoder.run([[{}, {a: {b: true}}]])).toMatchObject({
@@ -559,7 +559,7 @@ describe('oneOf', () => {
   it('can act as the union function when given the correct annotation', () => {
     type C = {a: string} | {b: number};
 
-    const decoder: Decoder<C> = oneOf(object<C>({a: string()}), object<C>({b: number()}));
+    const decoder: Decoder<C> = oneOf(vObject<C>({a: vString()}), vObject<C>({b: vNumber()}));
 
     expect(decoder.run({a: 'xyz'})).toEqual({ok: true, result: {a: 'xyz'}});
   });
@@ -577,8 +577,8 @@ describe('union', () => {
   type C = A | B;
 
   const decoder: Decoder<C> = union(
-    object({kind: constant('a'), value: number()}),
-    object({kind: constant('b'), value: boolean()})
+    vObject({kind: constant('a'), value: vNumber()}),
+    vObject({kind: constant('b'), value: vBoolean()})
   );
 
   it('can decode a value that matches one of the union types', () => {
@@ -610,8 +610,8 @@ describe('intersection', () => {
       b: string;
     }
 
-    const aDecoder: Decoder<A> = object({a: number()});
-    const abDecoder: Decoder<AB> = intersection(aDecoder, object({b: string()}));
+    const aDecoder: Decoder<A> = vObject({a: vNumber()});
+    const abDecoder: Decoder<AB> = intersection(aDecoder, vObject({b: vString()}));
 
     expect(abDecoder.run({a: 12, b: '!!!'})).toEqual({ok: true, result: {a: 12, b: '!!!'}});
   });
@@ -627,11 +627,11 @@ describe('intersection', () => {
     }
 
     const uvwxyzDecoder: Decoder<UVWXYZ> = intersection(
-      object({u: constant(true)}),
-      object({v: array(string())}),
-      object({w: union(boolean(), constant(null))}),
-      object({x: number()}),
-      object({y: string(), z: boolean()})
+      vObject({u: constant(true)}),
+      vObject({v: vArray(vString())}),
+      vObject({w: union(vBoolean(), constant(null))}),
+      vObject({x: vNumber()}),
+      vObject({y: vString(), z: vBoolean()})
     );
 
     expect(uvwxyzDecoder.run({u: true, v: [], w: null, x: 4, y: 'y', z: false})).toEqual({
@@ -642,7 +642,7 @@ describe('intersection', () => {
 });
 
 describe('withDefault', () => {
-  const decoder = withDefault('puppies', string());
+  const decoder = withDefault('puppies', vString());
 
   it('uses the json value when decoding is successful', () => {
     expect(decoder.run('pancakes')).toEqual({ok: true, result: 'pancakes'});
@@ -656,18 +656,18 @@ describe('withDefault', () => {
 describe('valueAt', () => {
   describe('decode an value', () => {
     it('can decode a single object field', () => {
-      const decoder = valueAt(['a'], string());
+      const decoder = valueAt(['a'], vString());
       expect(decoder.run({a: 'boots', b: 'cats'})).toEqual({ok: true, result: 'boots'});
     });
 
     it('can decode a single array value', () => {
-      const decoder = valueAt([1], string());
+      const decoder = valueAt([1], vString());
       expect(decoder.run(['boots', 'cats'])).toEqual({ok: true, result: 'cats'});
     });
   });
 
   describe('decode a nested path', () => {
-    const decoder = valueAt(['a', 1, 'b'], string());
+    const decoder = valueAt(['a', 1, 'b'], vString());
 
     it('can decode a field in a nested structure', () => {
       expect(decoder.run({a: [{}, {b: 'surprise!'}]})).toEqual({ok: true, result: 'surprise!'});
@@ -696,7 +696,7 @@ describe('valueAt', () => {
   });
 
   describe('decode an optional field', () => {
-    const decoder = valueAt(['a', 'b', 'c'], optional(string()));
+    const decoder = valueAt(['a', 'b', 'c'], optional(vString()));
 
     it('fails when the path does not exist', () => {
       const error = decoder.run({a: {x: 'cats'}});
@@ -713,7 +713,7 @@ describe('valueAt', () => {
 
   describe('non-object json', () => {
     it('only accepts json objects and arrays', () => {
-      const decoder = valueAt(['a'], string());
+      const decoder = valueAt(['a'], vString());
 
       expect(decoder.run('abc')).toMatchObject({
         ok: false,
@@ -726,7 +726,7 @@ describe('valueAt', () => {
     });
 
     it('fails when a feild in the path does not correspond to a json object', () => {
-      const decoder = valueAt(['a', 'b', 'c'], string());
+      const decoder = valueAt(['a', 'b', 'c'], vString());
 
       const error = decoder.run({a: {b: 1}});
       expect(error).toMatchObject({
@@ -736,7 +736,7 @@ describe('valueAt', () => {
     });
 
     it('fails when an index in the path does not correspond to a json array', () => {
-      const decoder = valueAt([0, 0, 1], string());
+      const decoder = valueAt([0, 0, 1], vString());
 
       const error = decoder.run([[false]]);
       expect(error).toMatchObject({
@@ -747,7 +747,7 @@ describe('valueAt', () => {
   });
 
   it('decodes the input when given an empty path', () => {
-    const decoder = valueAt([], number());
+    const decoder = valueAt([], vNumber());
 
     expect(decoder.run(12)).toEqual({ok: true, result: 12});
   });
@@ -777,7 +777,7 @@ describe('fail', () => {
 
 describe('lazy', () => {
   describe('decoding a primitive data type', () => {
-    const decoder = lazy(() => string());
+    const decoder = lazy(() => vString());
 
     it('can decode type as normal', () => {
       expect(decoder.run('hello')).toEqual({ok: true, result: 'hello'});
@@ -797,9 +797,9 @@ describe('lazy', () => {
       replies: Comment[];
     }
 
-    const decoder: Decoder<Comment> = object({
-      msg: string(),
-      replies: lazy(() => array(decoder))
+    const decoder: Decoder<Comment> = vObject({
+      msg: vString(),
+      replies: lazy(() => vArray(decoder))
     });
 
     it('can decode the data structure', () => {
@@ -823,7 +823,7 @@ describe('lazy', () => {
 });
 
 describe('runPromise', () => {
-  const promise = (json: unknown): Promise<boolean> => boolean().runPromise(json);
+  const promise = (json: unknown): Promise<boolean> => vBoolean().runPromise(json);
 
   it('resolves the promise when the decoder succeeds', () => {
     return expect(promise(true)).resolves.toBe(true);
@@ -844,7 +844,7 @@ describe('runPromise', () => {
 });
 
 describe('runWithException', () => {
-  const decoder = boolean();
+  const decoder = vBoolean();
 
   it('can run a decoder and return the successful value', () => {
     expect(decoder.runWithException(false)).toBe(false);
@@ -870,19 +870,19 @@ describe('runWithException', () => {
 
 describe('map', () => {
   it('can apply the identity function to the decoder', () => {
-    const decoder = string().map(x => x);
+    const decoder = vString().map(x => x);
 
     expect(decoder.run('hey there')).toEqual({ok: true, result: 'hey there'});
   });
 
   it('can apply an endomorphic function to the decoder', () => {
-    const decoder = number().map(x => x * 5);
+    const decoder = vNumber().map(x => x * 5);
 
     expect(decoder.run(10)).toEqual({ok: true, result: 50});
   });
 
   it('can apply a function that transforms the type', () => {
-    const decoder = string().map(x => x.length);
+    const decoder = vString().map(x => x.length);
 
     expect(decoder.run('hey')).toEqual({ok: true, result: 3});
   });
@@ -890,8 +890,8 @@ describe('map', () => {
 
 describe('andThen', () => {
   describe('creates decoders based on previous results', () => {
-    const versionDecoder = valueAt(['version'], number());
-    const infoDecoder3 = object({a: boolean()});
+    const versionDecoder = valueAt(['version'], vNumber());
+    const infoDecoder3 = vObject({a: vBoolean()});
 
     const decoder = versionDecoder.andThen(version => {
       switch (version) {
@@ -932,19 +932,19 @@ describe('andThen', () => {
     const createNonEmptyArray = <T>(arr: T[]): NonEmptyArray<T> => arr as NonEmptyArray<T>;
 
     const nonEmptyArrayDecoder = <T>(values: Decoder<T>): Decoder<NonEmptyArray<T>> =>
-      array(values).andThen(
+      vArray(values).andThen(
         arr =>
           arr.length > 0
             ? succeed(createNonEmptyArray(arr))
             : fail(`expected a non-empty array, got an empty array`)
       );
 
-    expect(nonEmptyArrayDecoder(number()).run([1, 2, 3])).toEqual({
+    expect(nonEmptyArrayDecoder(vNumber()).run([1, 2, 3])).toEqual({
       ok: true,
       result: [1, 2, 3]
     });
 
-    expect(nonEmptyArrayDecoder(number()).run([])).toMatchObject({
+    expect(nonEmptyArrayDecoder(vNumber()).run([])).toMatchObject({
       ok: false,
       error: {message: 'expected a non-empty array, got an empty array'}
     });
@@ -953,10 +953,10 @@ describe('andThen', () => {
 
 describe('where', () => {
   const chars = (length: number): Decoder<string> =>
-    string().where((s: string) => s.length === length, `expected a string of length ${length}`);
+    vString().where((s: string) => s.length === length, `expected a string of length ${length}`);
 
   const range = (min: number, max: number): Decoder<number> =>
-    number().where(
+    vNumber().where(
       (n: number) => n >= min && n <= max,
       `expected a number between ${min} and ${max}`
     );
@@ -994,7 +994,7 @@ describe('where', () => {
 
 describe('Result', () => {
   describe('can run a decoder with default value', () => {
-    const decoder = number();
+    const decoder = vNumber();
 
     it('succeeds with the value', () => {
       expect(Result.withDefault(0, decoder.run(12))).toEqual(12);
@@ -1007,8 +1007,8 @@ describe('Result', () => {
 
   it('can return successes from an array of decoded values', () => {
     const json: unknown = [1, true, 2, 3, 'five', 4, []];
-    const jsonArray: unknown[] = Result.withDefault([], array().run(json));
-    const numbers: number[] = Result.successes(jsonArray.map(number().run));
+    const jsonArray: unknown[] = Result.withDefault([], vArray().run(json));
+    const numbers: number[] = Result.successes(jsonArray.map(vNumber().run));
 
     expect(numbers).toEqual([1, 2, 3, 4]);
   });

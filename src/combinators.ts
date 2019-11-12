@@ -3,13 +3,13 @@ import {Decoder} from './decoder';
 /* tslint:disable:variable-name */
 
 /** See `Decoder.string` */
-export const string = Decoder.string;
+export const vString = Decoder.vString;
 
 /** See `Decoder.number` */
-export const number = Decoder.number;
+export const vNumber = Decoder.vNumber;
 
 /** See `Decoder.boolean` */
-export const boolean = Decoder.boolean;
+export const vBoolean = Decoder.vBoolean;
 
 /** See `Decoder.anyJson` */
 export const anyJson = Decoder.anyJson;
@@ -21,10 +21,10 @@ export const unknownJson: () => Decoder<unknown> = Decoder.unknownJson;
 export const constant = Decoder.constant;
 
 /** See `Decoder.object` */
-export const object = Decoder.object;
+export const vObject = Decoder.vObject;
 
 /** See `Decoder.array` */
-export const array = Decoder.array;
+export const vArray = Decoder.vArray;
 
 /** See `Decoder.tuple` */
 export const tuple = Decoder.tuple;

@@ -41,7 +41,7 @@ interface X {
 }
 
 const decoderObject: DecoderObject<X> = {
-  a: boolean(),
+  a: vBoolean(),
   b: string()
 }
 ```

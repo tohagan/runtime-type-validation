@@ -1,10 +1,10 @@
 import {
   Decoder,
-  string,
-  number,
+  vString,
+  vNumber,
   constant,
-  object,
-  array,
+  vObject,
+  vArray,
   optional,
   oneOf,
   union
@@ -42,25 +42,25 @@ describe('decode phone number objects', () => {
     constant(PhoneUse.Work)
   );
 
-  const internationalPhoneDecoder: Decoder<InternationalPhone> = object({
-    id: number(),
+  const internationalPhoneDecoder: Decoder<InternationalPhone> = vObject({
+    id: vNumber(),
     use: optional(phoneUseDecoder),
     international: constant(true),
-    rawNumber: string()
+    rawNumber: vString()
   });
 
-  const domesticPhoneDecoder: Decoder<DomesticPhone> = object({
-    id: number(),
+  const domesticPhoneDecoder: Decoder<DomesticPhone> = vObject({
+    id: vNumber(),
     use: optional(phoneUseDecoder),
     international: constant(false),
-    areaCode: string(),
-    prefix: string(),
-    lineNumber: string()
+    areaCode: vString(),
+    prefix: vString(),
+    lineNumber: vString()
   });
 
   const phoneDecoder: Decoder<Phone> = union(domesticPhoneDecoder, internationalPhoneDecoder);
 
-  const phonesDecoder: Decoder<Phone[]> = array(phoneDecoder);
+  const phonesDecoder: Decoder<Phone[]> = vArray(phoneDecoder);
 
   it('can decode both international and domestic phones', () => {
     const json = [

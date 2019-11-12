@@ -41,7 +41,7 @@ type DecodeResult<A> = Result.Result<A, Partial<DecoderError>>;
  * }
  *
  * const decoderObject: DecoderObject<X> = {
- *   a: boolean(),
+ *   a: vBoolean(),
  *   b: string()
  * }
  * ```
@@ -102,8 +102,8 @@ const prependAt = (newAt: string, {at, ...rest}: Partial<DecoderError>): Partial
 /**
  * Decoders transform json objects with unknown structure into known and
  * verified forms. You can create objects of type `Decoder<A>` with either the
- * primitive decoder functions, such as `boolean()` and `string()`, or by
- * applying higher-order decoders to the primitives, such as `array(boolean())`
+ * primitive decoder functions, such as `vBoolean()` and `string()`, or by
+ * applying higher-order decoders to the primitives, such as `vArray(vBoolean())`
  * or `dict(string())`.
  *
  * Each of the decoder functions are available both as a static method on
@@ -140,7 +140,7 @@ export class Decoder<A> {
   /**
    * Decoder primitive that validates strings, and fails on all other input.
    */
-  static string(): Decoder<string> {
+  static vString(): Decoder<string> {
     return new Decoder<string>(
       (json: unknown) =>
         typeof json === 'string'
@@ -152,7 +152,7 @@ export class Decoder<A> {
   /**
    * Decoder primitive that validates numbers, and fails on all other input.
    */
-  static number(): Decoder<number> {
+  static vNumber(): Decoder<number> {
     return new Decoder<number>(
       (json: unknown) =>
         typeof json === 'number'
@@ -164,7 +164,7 @@ export class Decoder<A> {
   /**
    * Decoder primitive that validates booleans, and fails on all other input.
    */
-  static boolean(): Decoder<boolean> {
+  static vBoolean(): Decoder<boolean> {
     return new Decoder<boolean>(
       (json: unknown) =>
         typeof json === 'boolean'
@@ -185,8 +185,8 @@ export class Decoder<A> {
    *   complexUserData: ComplexType;
    * }
    *
-   * const userDecoder: Decoder<User> = object({
-   *   name: string(),
+   * const userDecoder: Decoder<User> = vObject({
+   *   name: vString(),
    *   complexUserData: anyJson()
    * });
    * ```
@@ -256,16 +256,16 @@ export class Decoder<A> {
    *
    * Example:
    * ```
-   * object({x: number(), y: number()}).run({x: 5, y: 10})
+   * vObject({x: vNumber(), y: vNumber()}).run({x: 5, y: 10})
    * // => {ok: true, result: {x: 5, y: 10}}
    *
-   * object().map(Object.keys).run({n: 1, i: [], c: {}, e: 'e'})
+   * vObject().map(Object.keys).run({n: 1, i: [], c: {}, e: 'e'})
    * // => {ok: true, result: ['n', 'i', 'c', 'e']}
    * ```
    */
-  static object(): Decoder<Record<string, unknown>>;
-  static object<A>(decoders: DecoderObject<A>): Decoder<A>;
-  static object<A>(decoders?: DecoderObject<A>) {
+  static vObject(): Decoder<Record<string, unknown>>;
+  static vObject<A>(decoders: DecoderObject<A>): Decoder<A>;
+  static vObject<A>(decoders?: DecoderObject<A>) {
     return new Decoder((json: unknown) => {
       if (isJsonObject(json) && decoders) {
         let obj: any = {};
@@ -303,15 +303,15 @@ export class Decoder<A> {
    *
    * Examples:
    * ```
-   * array(number()).run([1, 2, 3])
+   * vArray(vNumber()).run([1, 2, 3])
    * // => {ok: true, result: [1, 2, 3]}
    *
-   * array(array(boolean())).run([[true], [], [true, false, false]])
+   * vArray(vArray(vBoolean())).run([[true], [], [true, false, false]])
    * // => {ok: true, result: [[true], [], [true, false, false]]}
    *
    *
-   * const validNumbersDecoder = array()
-   *   .map((arr: unknown[]) => arr.map(number().run))
+   * const validNumbersDecoder = vArray()
+   *   .map((arr: unknown[]) => arr.map(vNumber().run))
    *   .map(Result.successes)
    *
    * validNumbersDecoder.run([1, true, 2, 3, 'five', 4, []])
@@ -324,9 +324,9 @@ export class Decoder<A> {
    * // {ok: false, error: {..., message: "expected an array, got a boolean"}}
    * ```
    */
-  static array(): Decoder<unknown[]>;
-  static array<A>(decoder: Decoder<A>): Decoder<A[]>;
-  static array<A>(decoder?: Decoder<A>) {
+  static vArray(): Decoder<unknown[]>;
+  static vArray<A>(decoder: Decoder<A>): Decoder<A[]>;
+  static vArray<A>(decoder?: Decoder<A>) {
     return new Decoder(json => {
       if (isJsonArray(json) && decoder) {
         const decodeValue = (v: unknown, i: number): DecodeResult<A> =>
@@ -352,7 +352,7 @@ export class Decoder<A> {
    *
    * Example:
    * ```
-   * tuple([number(), number(), string()]).run([5, 10, 'px'])
+   * tuple([vNumber(), vNumber(), string()]).run([5, 10, 'px'])
    * // => {ok: true, result: [5, 10, 'px']}
    * ```
    */
@@ -396,7 +396,7 @@ export class Decoder<A> {
    *
    * Example:
    * ```
-   * dict(number()).run({chocolate: 12, vanilla: 10, mint: 37});
+   * dict(vNumber()).run({chocolate: 12, vanilla: 10, mint: 37});
    * // => {ok: true, result: {chocolate: 12, vanilla: 10, mint: 37}}
    * ```
    */
@@ -431,9 +431,9 @@ export class Decoder<A> {
    *   isOwner?: boolean;
    * }
    *
-   * const decoder: Decoder<User> = object({
-   *   id: number(),
-   *   isOwner: optional(boolean())
+   * const decoder: Decoder<User> = vObject({
+   *   id: vNumber(),
+   *   isOwner: optional(vBoolean())
    * });
    * ```
    */
@@ -452,7 +452,7 @@ export class Decoder<A> {
    *
    * Examples:
    * ```
-   * oneOf(string(), number().map(String))
+   * oneOf(string(), vNumber().map(String))
    * oneOf(constant('start'), constant('stop'), succeed('unknown'))
    * ```
    */
@@ -487,8 +487,8 @@ export class Decoder<A> {
    * ```
    * type C = {a: string} | {b: number};
    *
-   * const unionDecoder: Decoder<C> = union(object({a: string()}), object({b: number()}));
-   * const oneOfDecoder: Decoder<C> = oneOf(object<C>({a: string()}), object<C>({b: number()}));
+   * const unionDecoder: Decoder<C> = union(vObject({a: string()}), vObject({b: vNumber()}));
+   * const oneOfDecoder: Decoder<C> = oneOf(vObject<C>({a: string()}), vObject<C>({b: vNumber()}));
    * ```
    */
   static union <A, B>(ad: Decoder<A>, bd: Decoder<B>): Decoder<A | B>; // prettier-ignore
@@ -516,8 +516,8 @@ export class Decoder<A> {
    *   evil: boolean;
    * }
    *
-   * const petDecoder: Decoder<Pet> = object({name: string(), maxLegs: number()});
-   * const catDecoder: Decoder<Cat> = intersection(petDecoder, object({evil: boolean()}));
+   * const petDecoder: Decoder<Pet> = vObject({name: string(), maxLegs: vNumber()});
+   * const catDecoder: Decoder<Cat> = intersection(petDecoder, vObject({evil: vBoolean()}));
    * ```
    */
   static intersection <A, B>(ad: Decoder<A>, bd: Decoder<B>): Decoder<A & B>; // prettier-ignore
@@ -636,9 +636,9 @@ export class Decoder<A> {
    *   replies: Comment[];
    * }
    *
-   * const decoder: Decoder<Comment> = object({
+   * const decoder: Decoder<Comment> = vObject({
    *   msg: string(),
-   *   replies: lazy(() => array(decoder))
+   *   replies: lazy(() => vArray(decoder))
    * });
    * ```
    */
@@ -652,7 +652,7 @@ export class Decoder<A> {
    *
    * Examples:
    * ```
-   * number().run(12)
+   * vNumber().run(12)
    * // => {ok: true, result: 12}
    *
    * string().run(9001)
@@ -697,7 +697,7 @@ export class Decoder<A> {
    *
    * Example:
    * ```
-   * number().map(x => x * 5).run(10)
+   * vNumber().map(x => x * 5).run(10)
    * // => {ok: true, result: 50}
    * ```
    */
@@ -716,8 +716,8 @@ export class Decoder<A> {
    *
    * Example of adding an error message:
    * ```
-   * const versionDecoder = valueAt(['version'], number());
-   * const infoDecoder3 = object({a: boolean()});
+   * const versionDecoder = valueAt(['version'], vNumber());
+   * const infoDecoder3 = vObject({a: vBoolean()});
    *
    * const decoder = versionDecoder.andThen(version => {
    *   switch (version) {
@@ -745,7 +745,7 @@ export class Decoder<A> {
    * type NonEmptyArray<T> = T[] & { __nonEmptyArrayBrand__: void };
    *
    * const nonEmptyArrayDecoder = <T>(values: Decoder<T>): Decoder<NonEmptyArray<T>> =>
-   *   array(values).andThen(arr =>
+   *   vArray(values).andThen(arr =>
    *     arr.length > 0
    *       ? succeed(createNonEmptyArray(arr))
    *       : fail(`expected a non-empty array, got an empty array`)

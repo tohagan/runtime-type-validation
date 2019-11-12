@@ -4,14 +4,14 @@ export {Result};
 export {Decoder, DecoderError, isDecoderError, DecoderObject} from './decoder';
 
 export {
-  string,
-  number,
-  boolean,
+  vString,
+  vNumber,
+  vBoolean,
   anyJson,
   unknownJson,
   constant,
-  object,
-  array,
+  vObject,
+  vArray,
   tuple,
   dict,
   optional,

@@ -37,6 +37,7 @@
     "typecheck:watch": "tsc -w --lib es2015 --noEmit --strict test/**.ts"
   },
   "jest": {
+    "testURL": "http://localhost/",
     "transform": {
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },

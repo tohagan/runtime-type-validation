@@ -2,7 +2,7 @@
 
 # Class: Decoder
 
-Decoders transform json objects with unknown structure into known and verified forms. You can create objects of type `Decoder<A>` with either the primitive decoder functions, such as `boolean()` and `string()`, or by applying higher-order decoders to the primitives, such as `array(boolean())` or `dict(string())`.
+Decoders transform json objects with unknown structure into known and verified forms. You can create objects of type `Decoder<A>` with either the primitive decoder functions, such as `vBoolean()` and `string()`, or by applying higher-order decoders to the primitives, such as `vArray(vBoolean())` or `dict(string())`.
 
 Each of the decoder functions are available both as a static method on `Decoder` and as a function alias -- for example the string decoder is defined at `Decoder.string()`, but is also aliased to `string()`. Using the function aliases exported with the library is recommended.
 
@@ -35,22 +35,22 @@ Alternatively, the main decoder `run()` method returns an object of type `Result
 * [runWithException](_decoder_.decoder.md#runwithexception)
 * [where](_decoder_.decoder.md#where)
 * [anyJson](_decoder_.decoder.md#anyjson)
-* [array](_decoder_.decoder.md#array)
-* [boolean](_decoder_.decoder.md#boolean)
 * [constant](_decoder_.decoder.md#constant)
 * [dict](_decoder_.decoder.md#dict)
 * [fail](_decoder_.decoder.md#fail)
 * [intersection](_decoder_.decoder.md#intersection)
 * [lazy](_decoder_.decoder.md#lazy)
-* [number](_decoder_.decoder.md#number)
-* [object](_decoder_.decoder.md#object)
 * [oneOf](_decoder_.decoder.md#oneof)
 * [optional](_decoder_.decoder.md#optional)
-* [string](_decoder_.decoder.md#string)
 * [succeed](_decoder_.decoder.md#succeed)
 * [tuple](_decoder_.decoder.md#tuple)
 * [union](_decoder_.decoder.md#union)
 * [unknownJson](_decoder_.decoder.md#unknownjson)
+* [vArray](_decoder_.decoder.md#varray)
+* [vBoolean](_decoder_.decoder.md#vboolean)
+* [vNumber](_decoder_.decoder.md#vnumber)
+* [vObject](_decoder_.decoder.md#vobject)
+* [vString](_decoder_.decoder.md#vstring)
 * [valueAt](_decoder_.decoder.md#valueat)
 * [withDefault](_decoder_.decoder.md#withdefault)
 
@@ -114,8 +114,8 @@ This is a very powerful method -- it can act as both the `map` and `where` metho
 Example of adding an error message:
 
 ```
-const versionDecoder = valueAt(['version'], number());
-const infoDecoder3 = object({a: boolean()});
+const versionDecoder = valueAt(['version'], vNumber());
+const infoDecoder3 = vObject({a: vBoolean()});
 
 const decoder = versionDecoder.andThen(version => {
   switch (version) {
@@ -144,7 +144,7 @@ Example of decoding a custom type:
 type NonEmptyArray<T> = T[] & { __nonEmptyArrayBrand__: void };
 
 const nonEmptyArrayDecoder = <T>(values: Decoder<T>): Decoder<NonEmptyArray<T>> =>
-  array(values).andThen(arr =>
+  vArray(values).andThen(arr =>
     arr.length > 0
       ? succeed(createNonEmptyArray(arr))
       : fail(`expected a non-empty array, got an empty array`)
@@ -174,7 +174,7 @@ Construct a new decoder that applies a transformation to the decoded result. If 
 Example:
 
 ```
-number().map(x => x * 5).run(10)
+vNumber().map(x => x * 5).run(10)
 // => {ok: true, result: 50}
 ```
 
@@ -201,7 +201,7 @@ Run the decoder and return a `Result` with either the decoded value or a `Decode
 Examples:
 
 ```
-number().run(12)
+vNumber().run(12)
 // => {ok: true, result: 12}
 
 string().run(9001)
@@ -311,8 +311,8 @@ interface User {
   complexUserData: ComplexType;
 }
 
-const userDecoder: Decoder<User> = object({
-  name: string(),
+const userDecoder: Decoder<User> = vObject({
+  name: vString(),
   complexUserData: anyJson()
 });
 ```
@@ -320,165 +320,94 @@ const userDecoder: Decoder<User> = object({
 **Returns:** [Decoder](_decoder_.decoder.md)<`any`>
 
 ___
-<a id="array"></a>
-
-### `<Static>` array
-
-▸ **array**(): [Decoder](_decoder_.decoder.md)<`unknown`[]>
-
-▸ **array**A(decoder: *[Decoder](_decoder_.decoder.md)<`A`>*): [Decoder](_decoder_.decoder.md)<`A`[]>
-
-Decoder for json arrays. Runs `decoder` on each array element, and succeeds if all elements are successfully decoded. If no `decoder` argument is provided then the outer array part of the json is validated but not the contents, typing the result as `unknown[]`.
-
-To decode a single value that is inside of an array see `valueAt`.
-
-Examples:
-
-```
-array(number()).run([1, 2, 3])
-// => {ok: true, result: [1, 2, 3]}
-
-array(array(boolean())).run([[true], [], [true, false, false]])
-// => {ok: true, result: [[true], [], [true, false, false]]}
-
-const validNumbersDecoder = array()
-  .map((arr: unknown[]) => arr.map(number().run))
-  .map(Result.successes)
-
-validNumbersDecoder.run([1, true, 2, 3, 'five', 4, []])
-// {ok: true, result: [1, 2, 3, 4]}
-
-validNumbersDecoder.run([false, 'hi', {}])
-// {ok: true, result: []}
-
-validNumbersDecoder.run(false)
-// {ok: false, error: {..., message: "expected an array, got a boolean"}}
-```
-
-**Returns:** [Decoder](_decoder_.decoder.md)<`unknown`[]>
-
-**Type parameters:**
-
-#### A 
-**Parameters:**
-
-| Param | Type |
-| ------ | ------ |
-| decoder | [Decoder](_decoder_.decoder.md)<`A`> |
-
-**Returns:** [Decoder](_decoder_.decoder.md)<`A`[]>
-
-___
-<a id="boolean"></a>
-
-### `<Static>` boolean
-
-▸ **boolean**(): [Decoder](_decoder_.decoder.md)<`boolean`>
-
-Decoder primitive that validates booleans, and fails on all other input.
-
-**Returns:** [Decoder](_decoder_.decoder.md)<`boolean`>
-
-___
 <a id="constant"></a>
 
 ### `<Static>` constant
 
-▸ **constant**(value: *`true`*): [Decoder](_decoder_.decoder.md)<`true`>
+▸ **constant**T(value: *`T`*): [Decoder](_decoder_.decoder.md)<`T`>
 
-▸ **constant**(value: *`false`*): [Decoder](_decoder_.decoder.md)<`false`>
+▸ **constant**T,U(value: *`U`*): [Decoder](_decoder_.decoder.md)<`U`>
 
-▸ **constant**A(value: *`A`*): [Decoder](_decoder_.decoder.md)<`A`>
+▸ **constant**T,U(value: *`U`*): [Decoder](_decoder_.decoder.md)<`U`>
+
+▸ **constant**T(value: *`T`*): [Decoder](_decoder_.decoder.md)<`T`>
 
 Decoder primitive that only matches on exact values.
 
-Note that `constant('string to match')` returns a `Decoder<string>` which fails if the input is not equal to `'string to match'`. In many cases this is sufficient, but in some situations typescript requires that the decoder type be a type-literal. In such a case you must provide the type parameter, which looks like `constant<'string to match'>('string to match')`.
-
-Providing the type parameter is only necessary for type-literal strings and numbers, as detailed by this table:
+For primitive values and shallow structures of primitive values `constant` will infer an exact literal type:
 
 ```
-| Decoder                      | Type                 |
- | ---------------------------- | ---------------------|
- | constant(true)               | Decoder<true>        |
- | constant(false)              | Decoder<false>       |
- | constant(null)               | Decoder<null>        |
- | constant('alaska')           | Decoder<string>      |
- | constant<'alaska'>('alaska') | Decoder<'alaska'>    |
- | constant(50)                 | Decoder<number>      |
- | constant<50>(50)             | Decoder<50>          |
- | constant([1,2,3])            | Decoder<number[]>    |
- | constant<[1,2,3]>([1,2,3])   | Decoder<[1,2,3]>     |
- | constant({x: 't'})           | Decoder<{x: string}> |
- | constant<{x: 't'}>({x: 't'}) | Decoder<{x: 't'}>    |
+| Decoder                      | Type                          |
+ | ---------------------------- | ------------------------------|
+ | constant(true)               | Decoder<true>                 |
+ | constant(false)              | Decoder<false>                |
+ | constant(null)               | Decoder<null>                 |
+ | constant(undefined)          | Decoder<undefined>            |
+ | constant('alaska')           | Decoder<'alaska'>             |
+ | constant(50)                 | Decoder<50>                   |
+ | constant([1,2,3])            | Decoder<[1,2,3]>              |
+ | constant({x: 't'})           | Decoder<{x: 't'}>             |
 ```
 
-One place where this happens is when a type-literal is in an interface:
+Inference breaks on nested structures, which require an annotation to get the literal type:
 
 ```
-interface Bear {
-  kind: 'bear';
-  isBig: boolean;
-}
-
-const bearDecoder1: Decoder<Bear> = object({
-  kind: constant('bear'),
-  isBig: boolean()
-});
-// Type 'Decoder<{ kind: string; isBig: boolean; }>' is not assignable to
-// type 'Decoder<Bear>'. Type 'string' is not assignable to type '"bear"'.
-
-const bearDecoder2: Decoder<Bear> = object({
-  kind: constant<'bear'>('bear'),
-  isBig: boolean()
-});
-// no compiler errors
+| Decoder                      | Type                          |
+ | -----------------------------|-------------------------------|
+ | constant([1,[2]])            | Decoder<(number|number[])[]>  |
+ | constant<[1,[2]]>([1,[2]])   | Decoder<[1,[2]]>              |
+ | constant({x: [1]})           | Decoder<{x: number[]}>        |
+ | constant<{x: [1]}>({x: [1]}) | Decoder<{x: [1]}>             |
 ```
-
-Another is in type-literal unions:
-
-```
-type animal = 'bird' | 'bear';
-
-const animalDecoder1: Decoder<animal> = union(
-  constant('bird'),
-  constant('bear')
-);
-// Type 'Decoder<string>' is not assignable to type 'Decoder<animal>'.
-// Type 'string' is not assignable to type 'animal'.
-
-const animalDecoder2: Decoder<animal> = union(
-  constant<'bird'>('bird'),
-  constant<'bear'>('bear')
-);
-// no compiler errors
-```
-
-**Parameters:**
-
-| Param | Type |
-| ------ | ------ |
-| value | `true` |
-
-**Returns:** [Decoder](_decoder_.decoder.md)<`true`>
-
-**Parameters:**
-
-| Param | Type |
-| ------ | ------ |
-| value | `false` |
-
-**Returns:** [Decoder](_decoder_.decoder.md)<`false`>
 
 **Type parameters:**
 
-#### A 
+#### T :   `string` &#124; `number` &#124; `boolean` &#124; `[]`
+
 **Parameters:**
 
 | Param | Type |
 | ------ | ------ |
-| value | `A` |
+| value | `T` |
 
-**Returns:** [Decoder](_decoder_.decoder.md)<`A`>
+**Returns:** [Decoder](_decoder_.decoder.md)<`T`>
+
+**Type parameters:**
+
+#### T :   `string` &#124; `number` &#124; `boolean`
+
+#### U :  [`T`, `Array`]
+**Parameters:**
+
+| Param | Type |
+| ------ | ------ |
+| value | `U` |
+
+**Returns:** [Decoder](_decoder_.decoder.md)<`U`>
+
+**Type parameters:**
+
+#### T :   `string` &#124; `number` &#124; `boolean`
+
+#### U :  `Record`<`string`, `T`>
+**Parameters:**
+
+| Param | Type |
+| ------ | ------ |
+| value | `U` |
+
+**Returns:** [Decoder](_decoder_.decoder.md)<`U`>
+
+**Type parameters:**
+
+#### T 
+**Parameters:**
+
+| Param | Type |
+| ------ | ------ |
+| value | `T` |
+
+**Returns:** [Decoder](_decoder_.decoder.md)<`T`>
 
 ___
 <a id="dict"></a>
@@ -492,7 +421,7 @@ Decoder for json objects where the keys are unknown strings, but the values shou
 Example:
 
 ```
-dict(number()).run({chocolate: 12, vanilla: 10, mint: 37});
+dict(vNumber()).run({chocolate: 12, vanilla: 10, mint: 37});
 // => {ok: true, result: {chocolate: 12, vanilla: 10, mint: 37}}
 ```
 
@@ -560,8 +489,8 @@ interface Cat extends Pet {
   evil: boolean;
 }
 
-const petDecoder: Decoder<Pet> = object({name: string(), maxLegs: number()});
-const catDecoder: Decoder<Cat> = intersection(petDecoder, object({evil: boolean()}));
+const petDecoder: Decoder<Pet> = vObject({name: string(), maxLegs: vNumber()});
+const catDecoder: Decoder<Cat> = intersection(petDecoder, vObject({evil: vBoolean()}));
 ```
 
 **Type parameters:**
@@ -714,9 +643,9 @@ interface Comment {
   replies: Comment[];
 }
 
-const decoder: Decoder<Comment> = object({
+const decoder: Decoder<Comment> = vObject({
   msg: string(),
-  replies: lazy(() => array(decoder))
+  replies: lazy(() => vArray(decoder))
 });
 ```
 
@@ -728,55 +657,6 @@ const decoder: Decoder<Comment> = object({
 | Param | Type |
 | ------ | ------ |
 | mkDecoder | `function` |
-
-**Returns:** [Decoder](_decoder_.decoder.md)<`A`>
-
-___
-<a id="number"></a>
-
-### `<Static>` number
-
-▸ **number**(): [Decoder](_decoder_.decoder.md)<`number`>
-
-Decoder primitive that validates numbers, and fails on all other input.
-
-**Returns:** [Decoder](_decoder_.decoder.md)<`number`>
-
-___
-<a id="object"></a>
-
-### `<Static>` object
-
-▸ **object**(): [Decoder](_decoder_.decoder.md)<`Record`<`string`, `unknown`>>
-
-▸ **object**A(decoders: *[DecoderObject](../modules/_decoder_.md#decoderobject)<`A`>*): [Decoder](_decoder_.decoder.md)<`A`>
-
-An higher-order decoder that runs decoders on specified fields of an object, and returns a new object with those fields. If `object` is called with no arguments, then the outer object part of the json is validated but not the contents, typing the result as a record where all keys have a value of type `unknown`.
-
-The `optional` and `constant` decoders are particularly useful for decoding objects that match typescript interfaces.
-
-To decode a single field that is inside of an object see `valueAt`.
-
-Example:
-
-```
-object({x: number(), y: number()}).run({x: 5, y: 10})
-// => {ok: true, result: {x: 5, y: 10}}
-
-object().map(Object.keys).run({n: 1, i: [], c: {}, e: 'e'})
-// => {ok: true, result: ['n', 'i', 'c', 'e']}
-```
-
-**Returns:** [Decoder](_decoder_.decoder.md)<`Record`<`string`, `unknown`>>
-
-**Type parameters:**
-
-#### A 
-**Parameters:**
-
-| Param | Type |
-| ------ | ------ |
-| decoders | [DecoderObject](../modules/_decoder_.md#decoderobject)<`A`> |
 
 **Returns:** [Decoder](_decoder_.decoder.md)<`A`>
 
@@ -794,7 +674,7 @@ Note that `oneOf` expects the decoders to all have the same return type, while `
 Examples:
 
 ```
-oneOf(string(), number().map(String))
+oneOf(string(), vNumber().map(String))
 oneOf(constant('start'), constant('stop'), succeed('unknown'))
 ```
 
@@ -826,9 +706,9 @@ interface User {
   isOwner?: boolean;
 }
 
-const decoder: Decoder<User> = object({
-  id: number(),
-  isOwner: optional(boolean())
+const decoder: Decoder<User> = vObject({
+  id: vNumber(),
+  isOwner: optional(vBoolean())
 });
 ```
 
@@ -842,17 +722,6 @@ const decoder: Decoder<User> = object({
 | decoder | [Decoder](_decoder_.decoder.md)<`A`> |
 
 **Returns:** [Decoder](_decoder_.decoder.md)< `undefined` &#124; `A`>
-
-___
-<a id="string"></a>
-
-### `<Static>` string
-
-▸ **string**(): [Decoder](_decoder_.decoder.md)<`string`>
-
-Decoder primitive that validates strings, and fails on all other input.
-
-**Returns:** [Decoder](_decoder_.decoder.md)<`string`>
 
 ___
 <a id="succeed"></a>
@@ -902,7 +771,7 @@ Supports up to 8-tuples.
 Example:
 
 ```
-tuple([number(), number(), string()]).run([5, 10, 'px'])
+tuple([vNumber(), vNumber(), string()]).run([5, 10, 'px'])
 // => {ok: true, result: [5, 10, 'px']}
 ```
 
@@ -1050,8 +919,8 @@ Example:
 ```
 type C = {a: string} | {b: number};
 
-const unionDecoder: Decoder<C> = union(object({a: string()}), object({b: number()}));
-const oneOfDecoder: Decoder<C> = oneOf(object<C>({a: string()}), object<C>({b: number()}));
+const unionDecoder: Decoder<C> = union(vObject({a: string()}), vObject({b: vNumber()}));
+const oneOfDecoder: Decoder<C> = oneOf(vObject<C>({a: string()}), vObject<C>({b: vNumber()}));
 ```
 
 **Type parameters:**
@@ -1197,6 +1066,126 @@ ___
 Decoder identity function which always succeeds and types the result as `unknown`.
 
 **Returns:** [Decoder](_decoder_.decoder.md)<`unknown`>
+
+___
+<a id="varray"></a>
+
+### `<Static>` vArray
+
+▸ **vArray**(): [Decoder](_decoder_.decoder.md)<`unknown`[]>
+
+▸ **vArray**A(decoder: *[Decoder](_decoder_.decoder.md)<`A`>*): [Decoder](_decoder_.decoder.md)<`A`[]>
+
+Decoder for json arrays. Runs `decoder` on each array element, and succeeds if all elements are successfully decoded. If no `decoder` argument is provided then the outer array part of the json is validated but not the contents, typing the result as `unknown[]`.
+
+To decode a single value that is inside of an array see `valueAt`.
+
+Examples:
+
+```
+vArray(vNumber()).run([1, 2, 3])
+// => {ok: true, result: [1, 2, 3]}
+
+vArray(vArray(vBoolean())).run([[true], [], [true, false, false]])
+// => {ok: true, result: [[true], [], [true, false, false]]}
+
+const validNumbersDecoder = vArray()
+  .map((arr: unknown[]) => arr.map(vNumber().run))
+  .map(Result.successes)
+
+validNumbersDecoder.run([1, true, 2, 3, 'five', 4, []])
+// {ok: true, result: [1, 2, 3, 4]}
+
+validNumbersDecoder.run([false, 'hi', {}])
+// {ok: true, result: []}
+
+validNumbersDecoder.run(false)
+// {ok: false, error: {..., message: "expected an array, got a boolean"}}
+```
+
+**Returns:** [Decoder](_decoder_.decoder.md)<`unknown`[]>
+
+**Type parameters:**
+
+#### A 
+**Parameters:**
+
+| Param | Type |
+| ------ | ------ |
+| decoder | [Decoder](_decoder_.decoder.md)<`A`> |
+
+**Returns:** [Decoder](_decoder_.decoder.md)<`A`[]>
+
+___
+<a id="vboolean"></a>
+
+### `<Static>` vBoolean
+
+▸ **vBoolean**(): [Decoder](_decoder_.decoder.md)<`boolean`>
+
+Decoder primitive that validates booleans, and fails on all other input.
+
+**Returns:** [Decoder](_decoder_.decoder.md)<`boolean`>
+
+___
+<a id="vnumber"></a>
+
+### `<Static>` vNumber
+
+▸ **vNumber**(): [Decoder](_decoder_.decoder.md)<`number`>
+
+Decoder primitive that validates numbers, and fails on all other input.
+
+**Returns:** [Decoder](_decoder_.decoder.md)<`number`>
+
+___
+<a id="vobject"></a>
+
+### `<Static>` vObject
+
+▸ **vObject**(): [Decoder](_decoder_.decoder.md)<`Record`<`string`, `unknown`>>
+
+▸ **vObject**A(decoders: *[DecoderObject](../modules/_decoder_.md#decoderobject)<`A`>*): [Decoder](_decoder_.decoder.md)<`A`>
+
+An higher-order decoder that runs decoders on specified fields of an object, and returns a new object with those fields. If `object` is called with no arguments, then the outer object part of the json is validated but not the contents, typing the result as a record where all keys have a value of type `unknown`.
+
+The `optional` and `constant` decoders are particularly useful for decoding objects that match typescript interfaces.
+
+To decode a single field that is inside of an object see `valueAt`.
+
+Example:
+
+```
+vObject({x: vNumber(), y: vNumber()}).run({x: 5, y: 10})
+// => {ok: true, result: {x: 5, y: 10}}
+
+vObject().map(Object.keys).run({n: 1, i: [], c: {}, e: 'e'})
+// => {ok: true, result: ['n', 'i', 'c', 'e']}
+```
+
+**Returns:** [Decoder](_decoder_.decoder.md)<`Record`<`string`, `unknown`>>
+
+**Type parameters:**
+
+#### A 
+**Parameters:**
+
+| Param | Type |
+| ------ | ------ |
+| decoders | [DecoderObject](../modules/_decoder_.md#decoderobject)<`A`> |
+
+**Returns:** [Decoder](_decoder_.decoder.md)<`A`>
+
+___
+<a id="vstring"></a>
+
+### `<Static>` vString
+
+▸ **vString**(): [Decoder](_decoder_.decoder.md)<`string`>
+
+Decoder primitive that validates strings, and fails on all other input.
+
+**Returns:** [Decoder](_decoder_.decoder.md)<`string`>
 
 ___
 <a id="valueat"></a>
