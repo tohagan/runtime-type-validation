@@ -11,27 +11,27 @@ import {
 } from '../src/index';
 
 describe('create tagged data objects', () => {
-  type TaggedJson =
+  type Tagged =
     | {tag: 'null'; value: null}
     | {tag: 'string'; value: string}
     | {tag: 'number'; value: number}
     | {tag: 'boolean'; value: boolean}
-    | {tag: 'array'; value: Array<TaggedJson>}
-    | {tag: 'object'; value: {[name: string]: TaggedJson}};
+    | {tag: 'array'; value: Array<Tagged>}
+    | {tag: 'object'; value: {[name: string]: Tagged}};
 
   const data: any = [{x: 1, y: 5}, {a: true, b: 'false'}, 1, true];
 
-  const taggedJsonValidator: Validator<TaggedJson> = union(
-    constant(null).map<TaggedJson>(value => ({tag: 'null', value: value})),
-    tString().map<TaggedJson>(value => ({tag: 'string', value: value})),
-    tNumber().map<TaggedJson>(value => ({tag: 'number', value: value})),
-    tBoolean().map<TaggedJson>(value => ({tag: 'boolean', value: value})),
-    lazy(() => tArray(taggedJsonValidator).map<TaggedJson>(value => ({tag: 'array', value: value}))),
-    lazy(() => tDict(taggedJsonValidator).map<TaggedJson>(value => ({tag: 'object', value: value})))
+  const taggedValidator: Validator<Tagged> = union(
+    constant(null).map<Tagged>(value => ({tag: 'null', value: value})),
+    tString().map<Tagged>(value => ({tag: 'string', value: value})),
+    tNumber().map<Tagged>(value => ({tag: 'number', value: value})),
+    tBoolean().map<Tagged>(value => ({tag: 'boolean', value: value})),
+    lazy(() => tArray(taggedValidator).map<Tagged>(value => ({tag: 'array', value: value}))),
+    lazy(() => tDict(taggedValidator).map<Tagged>(value => ({tag: 'object', value: value})))
   );
 
   it('maps data to tagged data', () => {
-    expect(taggedJsonValidator.check(data)).toEqual({
+    expect(taggedValidator.check(data)).toEqual({
       ok: true,
       result: {
         tag: 'array',

@@ -8,14 +8,14 @@ describe('validate data as User interface', () => {
     active: boolean;
   }
 
-  const userJson: any = {
+  const validUser: any = {
     firstname: 'John',
     lastname: 'Doe',
     age: 99,
     active: false
   };
 
-  const invalidUserJson: any = {
+  const invalidUser: any = {
     firstname: 'John',
     lastName: 'Doe', // invalid camelCase
     age: 99,
@@ -30,14 +30,14 @@ describe('validate data as User interface', () => {
   });
 
   it('successfuly passes through the valid user object', () => {
-    expect(userValidator.check(userJson)).toEqual({
+    expect(userValidator.check(validUser)).toEqual({
       ok: true,
-      result: userJson
+      result: validUser
     });
   });
 
   it('fails when a required key is missing', () => {
-    const error = userValidator.check(invalidUserJson);
+    const error = userValidator.check(invalidUser);
     expect(error).toMatchObject({
       ok: false,
       error: {at: 'input', message: "the key 'lastname' is required but was not present"}
