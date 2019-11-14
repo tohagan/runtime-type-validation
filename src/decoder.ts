@@ -66,13 +66,15 @@ const isObject = (json: any): json is Record<string, unknown> =>
   typeof json === 'object' && json !== null && !isArray(json);
 
 const typeString = (json: unknown): string => {
-  switch (typeof json) {
+  const sType = typeof json;
+  switch (sType) {
     case 'string':
-      return 'a string';
     case 'number':
-      return 'a number';
     case 'boolean':
-      return 'a boolean';
+    case 'function':
+    case 'symbol':
+    case 'bigint':
+      return `a ${sType}`;
     case 'undefined':
       return 'undefined';
     case 'object':
