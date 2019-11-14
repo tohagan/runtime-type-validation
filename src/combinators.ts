@@ -1,36 +1,39 @@
-import {Decoder} from './decoder';
+import { Decoder } from './decoder';
 
 /* tslint:disable:variable-name */
 
-/** See `Decoder.string` */
-export const vString = Decoder.vString;
+/** See `Decoder.tString` */
+export const tString = Decoder.tString;
 
-/** See `Decoder.number` */
-export const vNumber = Decoder.vNumber;
+/** See `Decoder.tNumber` */
+export const tNumber = Decoder.tNumber;
 
-/** See `Decoder.boolean` */
-export const vBoolean = Decoder.vBoolean;
+/** See `Decoder.tBoolean` */
+export const tBoolean = Decoder.tBoolean;
 
-/** See `Decoder.anyJson` */
-export const anyJson = Decoder.anyJson;
+/** See `Decoder.tAny` */
+export const tAny = Decoder.tAny;
 
-/** See `Decoder.unknownJson` */
-export const unknownJson: () => Decoder<unknown> = Decoder.unknownJson;
+/** See `Decoder.tUnknown` */
+export const tUnknown: () => Decoder<unknown> = Decoder.tUnknown;
 
 /** See `Decoder.constant` */
 export const constant = Decoder.constant;
 
-/** See `Decoder.object` */
-export const vObject = Decoder.vObject;
+/** See `Decoder.tObject` */
+export const tObject = Decoder.tObject;
 
-/** See `Decoder.array` */
-export const vArray = Decoder.vArray;
+/** See `Decoder.tObjectStrict` */
+export const tObjectStrict = Decoder.tObjectStrict;
+
+/** See `Decoder.tArray` */
+export const tArray = Decoder.tArray;
 
 /** See `Decoder.tuple` */
 export const tuple = Decoder.tuple;
 
-/** See `Decoder.dict` */
-export const dict = Decoder.dict;
+/** See `Decoder.tDict` */
+export const tDict = Decoder.tDict;
 
 /** See `Decoder.optional` */
 export const optional = Decoder.optional;

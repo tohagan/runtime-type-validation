@@ -33,9 +33,9 @@ const petDecoder = object<Pet>({
 
 This library uses the [combinator pattern](https://wiki.haskell.org/Combinator_pattern)
 to build decoders. The decoder primitives `string`, `number`, `boolean`,
-`anyJson`, `constant`, `succeed`, and `fail` act as decoder building blocks that
+`tAny`, `constant`, `succeed`, and `fail` act as decoder building blocks that
 each perform a simple decoding operation. The decoder combinators `object`,
-`array`, `dict`, `optional`, `oneOf`, `union`, `withDefault`, `valueAt`, and
+`array`, `tDict`, `optional`, `oneOf`, `union`, `withDefault`, `valueAt`, and
 `lazy` take decoders as arguments, and combined the decoders into more
 complicated structures. You can think of your own user-defined decoders as an
 extension of these composable units.

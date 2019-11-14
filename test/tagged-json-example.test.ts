@@ -1,11 +1,11 @@
 import {
   Decoder,
-  vString,
-  vNumber,
-  vBoolean,
+  tString,
+  tNumber,
+  tBoolean,
   constant,
-  vArray,
-  dict,
+  tArray,
+  tDict,
   union,
   lazy
 } from '../src/index';
@@ -23,11 +23,11 @@ describe('create tagged json objects', () => {
 
   const taggedJsonDecoder: Decoder<TaggedJson> = union(
     constant(null).map<TaggedJson>(value => ({tag: 'null', value: value})),
-    vString().map<TaggedJson>(value => ({tag: 'string', value: value})),
-    vNumber().map<TaggedJson>(value => ({tag: 'number', value: value})),
-    vBoolean().map<TaggedJson>(value => ({tag: 'boolean', value: value})),
-    lazy(() => vArray(taggedJsonDecoder).map<TaggedJson>(value => ({tag: 'array', value: value}))),
-    lazy(() => dict(taggedJsonDecoder).map<TaggedJson>(value => ({tag: 'object', value: value})))
+    tString().map<TaggedJson>(value => ({tag: 'string', value: value})),
+    tNumber().map<TaggedJson>(value => ({tag: 'number', value: value})),
+    tBoolean().map<TaggedJson>(value => ({tag: 'boolean', value: value})),
+    lazy(() => tArray(taggedJsonDecoder).map<TaggedJson>(value => ({tag: 'array', value: value}))),
+    lazy(() => tDict(taggedJsonDecoder).map<TaggedJson>(value => ({tag: 'object', value: value})))
   );
 
   it('maps json to tagged json', () => {

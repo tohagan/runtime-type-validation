@@ -1,12 +1,14 @@
-[@mojotech/json-type-validation](../README.md) > ["decoder"](../modules/_decoder_.md) > [DecoderError](../interfaces/_decoder_.decodererror.md)
+[runtime-type-validation](../README.md) › [Globals](../globals.md) › ["decoder"](../modules/_decoder_.md) › [DecoderError](_decoder_.decodererror.md)
 
 # Interface: DecoderError
 
-Information describing how json data failed to match a decoder. Includes the full input json, since in most cases it's useless to know how a decoder failed without also seeing the malformed data.
+Information describing how a type check failed.
+Includes the input path (.at) and value showing
+where and why and on what value it failed.
 
 ## Hierarchy
 
-**DecoderError**
+* **DecoderError**
 
 ## Index
 
@@ -17,36 +19,26 @@ Information describing how json data failed to match a decoder. Includes the ful
 * [kind](_decoder_.decodererror.md#kind)
 * [message](_decoder_.decodererror.md#message)
 
----
-
 ## Properties
-
-<a id="at"></a>
 
 ###  at
 
-**● at**: *`string`*
+• **at**: *string*
 
 ___
-<a id="input"></a>
 
 ###  input
 
-**● input**: *`unknown`*
+• **input**: *unknown*
 
 ___
-<a id="kind"></a>
 
 ###  kind
 
-**● kind**: *"DecoderError"*
+• **kind**: *"DecoderError"*
 
 ___
-<a id="message"></a>
 
 ###  message
 
-**● message**: *`string`*
-
-___
-
+• **message**: *string*

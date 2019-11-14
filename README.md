@@ -1,17 +1,38 @@
-# JSON Type Validation
+# Run-time Type Validation
 
-A [TypeScript](https://www.typescriptlang.org/) library to perform type checking and validation on untyped JSON data at runtime.
+A **light weight** library to perform run-time type checking and validation for
+[TypeScript](https://www.typescriptlang.org/) and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript).
+
+## Features:
+
+- Tiny foot print
+- Concise functional composition makes it easily extensible (often a "one liner")
+- Detailed validation error reporting.
+- Helper functions convert the validation result to:
+  - JSON result for your own custom mapping.
+  - An exception
+  - A success/fail boolean (with logging) - Useful for component property validation
+
+## Applications:
+
+- Validate and filter client or server side payloads.
+- Validate function arguments
+- Validate component properties
+- Assist in unit testing
 
 This library owes thanks to:
 
+- [TypeScript JSON type validation](https://github.com/mojotech/json-type-validation) by Elias Mulhall
 - [JsonDecoder](https://github.com/aische/JsonDecoder) by Daniel van den Eijkel
 - [Type-safe JSON Decoder](https://github.com/ooesili/type-safe-json-decoder) by Wesley Merkel
 - The Elm [Json.Decode](http://package.elm-lang.org/packages/elm-lang/core/latest/Json-Decode) API
 
 ## Installation
+
 ```
-npm i @mojotech/json-type-validation
+npm i runtime-type-validation
 ```
+
 Projects using `< typescript@3.0.1` will need a polyfill for the `unknown`
 type, such as [unknown-ts](https://www.npmjs.com/package/unknown-ts).
 
@@ -54,27 +75,28 @@ issue. Providing run-time type information is one of TypeScript's
 [non-goals](https://github.com/Microsoft/TypeScript/wiki/TypeScript-Design-Goals#non-goals),
 and our web app is too important to risk using a forked version of TypeScript
 with that added functionality.
+
 [Type guards](https://basarat.gitbooks.io/typescript/docs/types/typeGuard.html)
 work, but are limited in that they circumvent type inference instead of working
 with it, and can be cumbersome to write.
 
-With `json-type-validation` we can define decoders that validate untyped json
-input. Decoders are concise, composable, and typecheck against our defined types
-and interfaces.
+With `runtime-type-validation` we can define a function that validate untyped objects
+at run-time and returns the TypeScript type. Decoders are concise, composable,
+and type check against our defined types and interfaces.
 
 ```typescript
-import {Decoder, object, string, optional, number, boolean} from 'json-type-validation'
+import { Decoder, tObject, tString, optional, tNumber, tBoolean} from 'json-type-validation'
 
-const petDecoder: Decoder<Pet> = object({
-  name: string(),
-  species: string(),
-  age: optional(number()),
-  isCute: optional(boolean())
+const petDecoder: Decoder<Pet> = tObject({
+  name: tString(),
+  species: tString(),
+  age: optional(tNumber()),
+  isCute: optional(tBoolean())
 })
 ```
 
-Finally, we can choose from a number of decoding methods to validate json and
-report success or failure. When some json input fails validation the decoder
+Finally, we can choose from a number of methods to validate Javascript types and
+report success or failure. When an object fails validation the decoder
 clearly shows how the data was malformed.
 
 ```typescript
@@ -88,24 +110,5 @@ const bullwinkle: Pet = petDecoder.runWithException(moose)
 
 ## Documentation
 
-[Documentation](https://github.com/mojotech/json-type-validation/tree/master/docs).
+[Documentation](https://github.com/tohagan/runtime-type-validation/tree/master/docs).
 
-## Building
-
-### With Nix
-
-There exists some [Nix](https://nixos.org/nix) infrastructure that can be used
-to reproduce a build environment exactly. A helper shell script lives at
-`bin/jtv` that you can use to enter environments for multiple uses.
-You'll need to follow the directions on the Nix website to install and use the
-Nix package manager.
-
-* To enter a shell suitable for building the library run `./bin/jtv
-  build-shell`. This will leave you in the root of the project and automatically
-  install any project and npm dependencies. You can run further yarn commands
-  here.
-* To build the library for distribution and exit you can run `./bin/jtv distribute`.
-* To enter a build shell and run the build process, watching for changes, run
-  `./bin/jtv build-watch`.
-* To run an arbitrary command in a build environment use `./bin/jtv run
-  COMMAND`. For example, `./bin/jtv run yarn test` will run the tests and exit.

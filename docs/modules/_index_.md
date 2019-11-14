@@ -1,8 +1,5 @@
-[@mojotech/json-type-validation](../README.md) > ["index"](../modules/_index_.md)
+[runtime-type-validation](../README.md) › [Globals](../globals.md) › ["index"](_index_.md)
 
 # External module: "index"
 
-## Index
-
----
 

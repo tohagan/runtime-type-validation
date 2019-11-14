@@ -1,4 +1,4 @@
-[@mojotech/json-type-validation](../README.md) > ["combinators"](../modules/_combinators_.md)
+[runtime-type-validation](../README.md) › [Globals](../globals.md) › ["combinators"](_combinators_.md)
 
 # External module: "combinators"
 
@@ -6,204 +6,187 @@
 
 ### Variables
 
-* [anyJson](_combinators_.md#anyjson)
-* [constant](_combinators_.md#constant)
-* [dict](_combinators_.md#dict)
-* [fail](_combinators_.md#fail)
-* [intersection](_combinators_.md#intersection)
-* [lazy](_combinators_.md#lazy)
-* [oneOf](_combinators_.md#oneof)
-* [optional](_combinators_.md#optional)
-* [succeed](_combinators_.md#succeed)
-* [tuple](_combinators_.md#tuple)
-* [union](_combinators_.md#union)
-* [unknownJson](_combinators_.md#unknownjson)
-* [vArray](_combinators_.md#varray)
-* [vBoolean](_combinators_.md#vboolean)
-* [vNumber](_combinators_.md#vnumber)
-* [vObject](_combinators_.md#vobject)
-* [vString](_combinators_.md#vstring)
-* [valueAt](_combinators_.md#valueat)
-* [withDefault](_combinators_.md#withdefault)
-
----
+* [constant](_combinators_.md#const-constant)
+* [fail](_combinators_.md#const-fail)
+* [intersection](_combinators_.md#const-intersection)
+* [lazy](_combinators_.md#const-lazy)
+* [oneOf](_combinators_.md#const-oneof)
+* [optional](_combinators_.md#const-optional)
+* [succeed](_combinators_.md#const-succeed)
+* [tAny](_combinators_.md#const-tany)
+* [tArray](_combinators_.md#const-tarray)
+* [tBoolean](_combinators_.md#const-tboolean)
+* [tDict](_combinators_.md#const-tdict)
+* [tNumber](_combinators_.md#const-tnumber)
+* [tObject](_combinators_.md#const-tobject)
+* [tObjectStrict](_combinators_.md#const-tobjectstrict)
+* [tString](_combinators_.md#const-tstring)
+* [tUnknown](_combinators_.md#const-tunknown)
+* [tuple](_combinators_.md#const-tuple)
+* [union](_combinators_.md#const-union)
+* [valueAt](_combinators_.md#const-valueat)
+* [withDefault](_combinators_.md#const-withdefault)
 
 ## Variables
 
-<a id="anyjson"></a>
+### `Const` constant
 
-### `<Const>` anyJson
-
-**● anyJson**: *[anyJson]()* =  Decoder.anyJson
-
-See `Decoder.anyJson`
-
-___
-<a id="constant"></a>
-
-### `<Const>` constant
-
-**● constant**: *[constant](../classes/_decoder_.decoder.md#constant)* =  Decoder.constant
+• **constant**: *[constant](../classes/_decoder_.decoder.md#static-constant)* =  Decoder.constant
 
 See `Decoder.constant`
 
 ___
-<a id="dict"></a>
 
-### `<Const>` dict
+### `Const` fail
 
-**● dict**: *[dict]()* =  Decoder.dict
-
-See `Decoder.dict`
-
-___
-<a id="fail"></a>
-
-### `<Const>` fail
-
-**● fail**: *[fail]()* =  Decoder.fail
+• **fail**: *[fail](undefined)* =  Decoder.fail
 
 See `Decoder.fail`
 
 ___
-<a id="intersection"></a>
 
-### `<Const>` intersection
+### `Const` intersection
 
-**● intersection**: *[intersection](../classes/_decoder_.decoder.md#intersection)* =  Decoder.intersection
+• **intersection**: *[intersection](../classes/_decoder_.decoder.md#static-intersection)* =  Decoder.intersection
 
 See `Decoder.intersection`
 
 ___
-<a id="lazy"></a>
 
-### `<Const>` lazy
+### `Const` lazy
 
-**● lazy**: *[lazy]()* =  Decoder.lazy
+• **lazy**: *[lazy](undefined)* =  Decoder.lazy
 
 See `Decoder.lazy`
 
 ___
-<a id="oneof"></a>
 
-### `<Const>` oneOf
+### `Const` oneOf
 
-**● oneOf**: *[oneOf]()* =  Decoder.oneOf
+• **oneOf**: *[oneOf](undefined)* =  Decoder.oneOf
 
 See `Decoder.oneOf`
 
 ___
-<a id="optional"></a>
 
-### `<Const>` optional
+### `Const` optional
 
-**● optional**: *[optional]()* =  Decoder.optional
+• **optional**: *[optional](undefined)* =  Decoder.optional
 
 See `Decoder.optional`
 
 ___
-<a id="succeed"></a>
 
-### `<Const>` succeed
+### `Const` succeed
 
-**● succeed**: *[succeed]()* =  Decoder.succeed
+• **succeed**: *[succeed](undefined)* =  Decoder.succeed
 
 See `Decoder.succeed`
 
 ___
-<a id="tuple"></a>
 
-### `<Const>` tuple
+### `Const` tAny
 
-**● tuple**: *[tuple](../classes/_decoder_.decoder.md#tuple)* =  Decoder.tuple
+• **tAny**: *[tAny](undefined)* =  Decoder.tAny
+
+See `Decoder.tAny`
+
+___
+
+### `Const` tArray
+
+• **tArray**: *[tArray](../classes/_decoder_.decoder.md#static-tarray)* =  Decoder.tArray
+
+See `Decoder.tArray`
+
+___
+
+### `Const` tBoolean
+
+• **tBoolean**: *[tBoolean](../classes/_decoder_.decoder.md#static-tboolean)* =  Decoder.tBoolean
+
+See `Decoder.tBoolean`
+
+___
+
+### `Const` tDict
+
+• **tDict**: *[tDict](undefined)* =  Decoder.tDict
+
+See `Decoder.tDict`
+
+___
+
+### `Const` tNumber
+
+• **tNumber**: *[tNumber](../classes/_decoder_.decoder.md#static-tnumber)* =  Decoder.tNumber
+
+See `Decoder.tNumber`
+
+___
+
+### `Const` tObject
+
+• **tObject**: *[tObject](../classes/_decoder_.decoder.md#static-tobject)* =  Decoder.tObject
+
+See `Decoder.tObject`
+
+___
+
+### `Const` tObjectStrict
+
+• **tObjectStrict**: *[tObjectStrict](../classes/_decoder_.decoder.md#static-tobjectstrict)* =  Decoder.tObjectStrict
+
+See `Decoder.tObjectStrict`
+
+___
+
+### `Const` tString
+
+• **tString**: *[tString](../classes/_decoder_.decoder.md#static-tstring)* =  Decoder.tString
+
+See `Decoder.tString`
+
+___
+
+### `Const` tUnknown
+
+• **tUnknown**: *function* =  Decoder.tUnknown
+
+See `Decoder.tUnknown`
+
+#### Type declaration:
+
+▸ (): *[Decoder](../classes/_decoder_.decoder.md)‹unknown›*
+
+___
+
+### `Const` tuple
+
+• **tuple**: *[tuple](../classes/_decoder_.decoder.md#static-tuple)* =  Decoder.tuple
 
 See `Decoder.tuple`
 
 ___
-<a id="union"></a>
 
-### `<Const>` union
+### `Const` union
 
-**● union**: *[union](../classes/_decoder_.decoder.md#union)* =  Decoder.union
+• **union**: *[union](../classes/_decoder_.decoder.md#static-union)* =  Decoder.union
 
 See `Decoder.union`
 
 ___
-<a id="unknownjson"></a>
 
-### `<Const>` unknownJson
+### `Const` valueAt
 
-**● unknownJson**: *`function`* =  Decoder.unknownJson
-
-See `Decoder.unknownJson`
-
-#### Type declaration
-▸(): [Decoder](../classes/_decoder_.decoder.md)<`unknown`>
-
-**Returns:** [Decoder](../classes/_decoder_.decoder.md)<`unknown`>
-
-___
-<a id="varray"></a>
-
-### `<Const>` vArray
-
-**● vArray**: *[vArray](../classes/_decoder_.decoder.md#varray)* =  Decoder.vArray
-
-See `Decoder.array`
-
-___
-<a id="vboolean"></a>
-
-### `<Const>` vBoolean
-
-**● vBoolean**: *[vBoolean](../classes/_decoder_.decoder.md#vboolean)* =  Decoder.vBoolean
-
-See `Decoder.boolean`
-
-___
-<a id="vnumber"></a>
-
-### `<Const>` vNumber
-
-**● vNumber**: *[vNumber](../classes/_decoder_.decoder.md#vnumber)* =  Decoder.vNumber
-
-See `Decoder.number`
-
-___
-<a id="vobject"></a>
-
-### `<Const>` vObject
-
-**● vObject**: *[vObject](../classes/_decoder_.decoder.md#vobject)* =  Decoder.vObject
-
-See `Decoder.object`
-
-___
-<a id="vstring"></a>
-
-### `<Const>` vString
-
-**● vString**: *[vString](../classes/_decoder_.decoder.md#vstring)* =  Decoder.vString
-
-See `Decoder.string`
-
-___
-<a id="valueat"></a>
-
-### `<Const>` valueAt
-
-**● valueAt**: *[valueAt]()* =  Decoder.valueAt
+• **valueAt**: *[valueAt](undefined)* =  Decoder.valueAt
 
 See `Decoder.valueAt`
 
 ___
-<a id="withdefault"></a>
 
-### `<Const>` withDefault
+### `Const` withDefault
 
-**● withDefault**: *[withDefault]()* =  Decoder.withDefault
+• **withDefault**: *[withDefault](undefined)* =  Decoder.withDefault
 
 See `Decoder.withDefault`
-
-___
-

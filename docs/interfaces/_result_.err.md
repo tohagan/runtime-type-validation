@@ -1,14 +1,17 @@
-[@mojotech/json-type-validation](../README.md) > ["result"](../modules/_result_.md) > [Err](../interfaces/_result_.err.md)
+[runtime-type-validation](../README.md) › [Globals](../globals.md) › ["result"](../modules/_result_.md) › [Err](_result_.err.md)
 
-# Interface: Err
+# Interface: Err <**E**>
 
-The error type variant for `Result`. Denotes that some error occurred before the result was computed.
+The error type variant for `Result`. Denotes that some error occurred before
+the result was computed.
 
 ## Type parameters
-#### E 
+
+▪ **E**
+
 ## Hierarchy
 
-**Err**
+* **Err**
 
 ## Index
 
@@ -17,22 +20,14 @@ The error type variant for `Result`. Denotes that some error occurred before the
 * [error](_result_.err.md#error)
 * [ok](_result_.err.md#ok)
 
----
-
 ## Properties
-
-<a id="error"></a>
 
 ###  error
 
-**● error**: *`E`*
+• **error**: *E*
 
 ___
-<a id="ok"></a>
 
 ###  ok
 
-**● ok**: *`false`*
-
-___
-
+• **ok**: *false*

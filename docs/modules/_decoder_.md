@@ -1,4 +1,4 @@
-[@mojotech/json-type-validation](../README.md) > ["decoder"](../modules/_decoder_.md)
+[runtime-type-validation](../README.md) › [Globals](../globals.md) › ["decoder"](_decoder_.md)
 
 # External module: "decoder"
 
@@ -18,22 +18,20 @@
 
 ### Functions
 
-* [isDecoderError](_decoder_.md#isdecodererror)
-
----
+* [isDecoderError](_decoder_.md#const-isdecodererror)
 
 ## Type aliases
 
-<a id="decoderobject"></a>
-
 ###  DecoderObject
 
-**ΤDecoderObject**: *`object`*
+Ƭ **DecoderObject**: *object*
 
-Defines a mapped type over an interface `A`. `DecoderObject<A>` is an interface that has all the keys or `A`, but each key's property type is mapped to a decoder for that type. This type is used when creating decoders for objects.
+Defines a mapped type over an interface `A`. `DecoderObject<A>` is an
+interface that has all the keys or `A`, but each key's property type is
+mapped to a decoder for that type. This type is used when creating decoders
+for objects.
 
 Example:
-
 ```
 interface X {
   a: boolean;
@@ -41,32 +39,28 @@ interface X {
 }
 
 const decoderObject: DecoderObject<X> = {
-  a: vBoolean(),
+  a: tBoolean(),
   b: string()
 }
 ```
 
-#### Type declaration
-
-___
+#### Type declaration:
 
 ## Functions
 
-<a id="isdecodererror"></a>
+### `Const` isDecoderError
 
-### `<Const>` isDecoderError
+▸ **isDecoderError**(`a`: any): *a is DecoderError*
 
-▸ **isDecoderError**(a: *`any`*): `boolean`
-
-Type guard for `DecoderError`. One use case of the type guard is in the `catch` of a promise. Typescript types the error argument of `catch` as `any`, so when dealing with a decoder as a promise you may need to distinguish between a `DecoderError` and an error string.
+Type guard for `DecoderError`. One use case of the type guard is in the
+`catch` of a promise. Typescript types the error argument of `catch` as
+`any`, so when dealing with a decoder as a promise you may need to
+distinguish between a `DecoderError` and an error string.
 
 **Parameters:**
 
-| Param | Type |
-| ------ | ------ |
-| a | `any` |
+Name | Type |
+------ | ------ |
+`a` | any |
 
-**Returns:** `boolean`
-
-___
-
+**Returns:** *a is DecoderError*

@@ -1,14 +1,17 @@
-[@mojotech/json-type-validation](../README.md) > ["result"](../modules/_result_.md) > [Ok](../interfaces/_result_.ok.md)
+[runtime-type-validation](../README.md) › [Globals](../globals.md) › ["result"](../modules/_result_.md) › [Ok](_result_.ok.md)
 
-# Interface: Ok
+# Interface: Ok <**V**>
 
-The success type variant for `Result`. Denotes that a result value was computed with no errors.
+The success type variant for `Result`. Denotes that a result value was
+computed with no errors.
 
 ## Type parameters
-#### V 
+
+▪ **V**
+
 ## Hierarchy
 
-**Ok**
+* **Ok**
 
 ## Index
 
@@ -17,22 +20,14 @@ The success type variant for `Result`. Denotes that a result value was computed 
 * [ok](_result_.ok.md#ok)
 * [result](_result_.ok.md#result)
 
----
-
 ## Properties
-
-<a id="ok"></a>
 
 ###  ok
 
-**● ok**: *`true`*
+• **ok**: *true*
 
 ___
-<a id="result"></a>
 
 ###  result
 
-**● result**: *`V`*
-
-___
-
+• **result**: *V*

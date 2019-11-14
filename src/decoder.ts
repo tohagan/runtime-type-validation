@@ -2,9 +2,9 @@ import * as Result from './result';
 const isEqual = require('lodash.isequal'); // this syntax avoids TS1192
 
 /**
- * Information describing how json data failed to match a decoder.
- * Includes the full input json, since in most cases it's useless to know how a
- * decoder failed without also seeing the malformed data.
+ * Information describing how a type check failed.
+ * Includes the input path (.at) and value showing
+ * where and why and on what value it failed.
  */
 export interface DecoderError {
   kind: 'DecoderError';
@@ -41,7 +41,7 @@ type DecodeResult<A> = Result.Result<A, Partial<DecoderError>>;
  * }
  *
  * const decoderObject: DecoderObject<X> = {
- *   a: vBoolean(),
+ *   a: tBoolean(),
  *   b: string()
  * }
  * ```
@@ -60,10 +60,10 @@ export const isDecoderError = (a: any): a is DecoderError =>
 /*
  * Helpers
  */
-const isJsonArray = (json: any): json is unknown[] => Array.isArray(json);
+const isArray = (json: any): json is unknown[] => Array.isArray(json);
 
-const isJsonObject = (json: any): json is Record<string, unknown> =>
-  typeof json === 'object' && json !== null && !isJsonArray(json);
+const isObject = (json: any): json is Record<string, unknown> =>
+  typeof json === 'object' && json !== null && !isArray(json);
 
 const typeString = (json: unknown): string => {
   switch (typeof json) {
@@ -102,9 +102,9 @@ const prependAt = (newAt: string, {at, ...rest}: Partial<DecoderError>): Partial
 /**
  * Decoders transform json objects with unknown structure into known and
  * verified forms. You can create objects of type `Decoder<A>` with either the
- * primitive decoder functions, such as `vBoolean()` and `string()`, or by
- * applying higher-order decoders to the primitives, such as `vArray(vBoolean())`
- * or `dict(string())`.
+ * primitive decoder functions, such as `tBoolean()` and `string()`, or by
+ * applying higher-order decoders to the primitives, such as `tArray(tBoolean())`
+ * or `tDict(string())`.
  *
  * Each of the decoder functions are available both as a static method on
  * `Decoder` and as a function alias -- for example the string decoder is
@@ -140,7 +140,7 @@ export class Decoder<A> {
   /**
    * Decoder primitive that validates strings, and fails on all other input.
    */
-  static vString(): Decoder<string> {
+  static tString(): Decoder<string> {
     return new Decoder<string>(
       (json: unknown) =>
         typeof json === 'string'
@@ -152,7 +152,7 @@ export class Decoder<A> {
   /**
    * Decoder primitive that validates numbers, and fails on all other input.
    */
-  static vNumber(): Decoder<number> {
+  static tNumber(): Decoder<number> {
     return new Decoder<number>(
       (json: unknown) =>
         typeof json === 'number'
@@ -164,7 +164,7 @@ export class Decoder<A> {
   /**
    * Decoder primitive that validates booleans, and fails on all other input.
    */
-  static vBoolean(): Decoder<boolean> {
+  static tBoolean(): Decoder<boolean> {
     return new Decoder<boolean>(
       (json: unknown) =>
         typeof json === 'boolean'
@@ -185,19 +185,19 @@ export class Decoder<A> {
    *   complexUserData: ComplexType;
    * }
    *
-   * const userDecoder: Decoder<User> = vObject({
-   *   name: vString(),
-   *   complexUserData: anyJson()
+   * const userDecoder: Decoder<User> = tObject({
+   *   name: tString(),
+   *   complexUserData: tAny()
    * });
    * ```
    */
-  static anyJson = (): Decoder<any> => new Decoder<any>((json: any) => Result.ok(json));
+  static tAny = (): Decoder<any> => new Decoder<any>((json: any) => Result.ok(json));
 
   /**
    * Decoder identity function which always succeeds and types the result as
    * `unknown`.
    */
-  static unknownJson = (): Decoder<unknown> =>
+  static tUnknown = (): Decoder<unknown> =>
     new Decoder<unknown>((json: unknown) => Result.ok(json));
 
   /**
@@ -256,40 +256,80 @@ export class Decoder<A> {
    *
    * Example:
    * ```
-   * vObject({x: vNumber(), y: vNumber()}).run({x: 5, y: 10})
+   * tObject({x: tNumber(), y: tNumber()}).run({x: 5, y: 10})
    * // => {ok: true, result: {x: 5, y: 10}}
    *
-   * vObject().map(Object.keys).run({n: 1, i: [], c: {}, e: 'e'})
+   * tObject().map(Object.keys).run({n: 1, i: [], c: {}, e: 'e'})
    * // => {ok: true, result: ['n', 'i', 'c', 'e']}
    * ```
    */
-  static vObject(): Decoder<Record<string, unknown>>;
-  static vObject<A>(decoders: DecoderObject<A>): Decoder<A>;
-  static vObject<A>(decoders?: DecoderObject<A>) {
+  static tObject(): Decoder<Record<string, unknown>>;
+  static tObject<A>(decoders: DecoderObject<A>): Decoder<A>;
+  static tObject<A>(decoders?: DecoderObject<A>): Decoder<A> {
     return new Decoder((json: unknown) => {
-      if (isJsonObject(json) && decoders) {
-        let obj: any = {};
-        for (const key in decoders) {
-          if (decoders.hasOwnProperty(key)) {
-            const r = decoders[key].decode(json[key]);
-            if (r.ok === true) {
-              // tslint:disable-next-line:strict-type-predicates
-              if (r.result !== undefined) {
-                obj[key] = r.result;
-              }
-            } else if (json[key] === undefined) {
-              return Result.err({message: `the key '${key}' is required but was not present`});
-            } else {
-              return Result.err(prependAt(`.${key}`, r.error));
+      if (!isObject(json)) return Result.err({message: expectedGot('an object', json)});
+      if (!decoders) return Result.ok(json);
+      let result: any = {};
+      for (const key in decoders) {
+        if (decoders.hasOwnProperty(key)) {
+          const r = decoders[key].decode(json[key]);
+          if (r.ok === true) {
+            // tslint:disable-next-line:strict-type-predicates
+            if (r.result !== undefined) {
+              result[key] = r.result;
             }
+          } else if (json[key] === undefined) {
+            return Result.err({message: `the key '${key}' is required but was not present`});
+          } else {
+            return Result.err(prependAt(`.${key}`, r.error));
           }
         }
-        return Result.ok(obj);
-      } else if (isJsonObject(json)) {
-        return Result.ok(json);
-      } else {
-        return Result.err({message: expectedGot('an object', json)});
       }
+      return Result.ok(result);
+    });
+  }
+
+  /**
+   * Same as tObject but will return an error if input field names are added
+   * beyond those defined by the run-time type (interface).
+   *
+   * Example:
+   * ```
+   * tObject({x: tNumber(), y: tNumber()}).run({x: 5, y: 10})
+   * // => {ok: true, result: {x: 5, y: 10}}
+   *
+   * tObject().map(Object.keys).run({n: 1, i: [], c: {}, e: 'e'})
+   * // => {ok: true, result: ['n', 'i', 'c', 'e']}
+   * ```
+   */
+  static tObjectStrict(): Decoder<Record<string, unknown>>;
+  static tObjectStrict<A>(decoders: DecoderObject<A>): Decoder<A>;
+  static tObjectStrict<A>(decoders?: DecoderObject<A>): Decoder<A> {
+    return new Decoder((json: unknown) => {
+      if (!isObject(json)) return Result.err({message: expectedGot('an object', json)});
+      if (!decoders) return Result.ok(json);
+      let result: any = {};
+      for (const key in decoders) {
+        if (decoders.hasOwnProperty(key)) {
+          const r = decoders[key].decode(json[key]);
+          if (r.ok === true) {
+            // tslint:disable-next-line:strict-type-predicates
+            if (r.result !== undefined) {
+              result[key] = r.result;
+            }
+          } else if (json[key] === undefined) {
+            return Result.err({message: `the key '${key}' is required but was not present`});
+          } else {
+            return Result.err(prependAt(`.${key}`, r.error));
+          }
+        }
+      }
+      for (const key in json) {
+        if (!decoders.hasOwnProperty(key)) {
+          return Result.err({message: `an undefined key '${key}' is present in the object`});
+        }
+      }
+      return Result.ok(result);
     });
   }
 
@@ -303,15 +343,15 @@ export class Decoder<A> {
    *
    * Examples:
    * ```
-   * vArray(vNumber()).run([1, 2, 3])
+   * tArray(tNumber()).run([1, 2, 3])
    * // => {ok: true, result: [1, 2, 3]}
    *
-   * vArray(vArray(vBoolean())).run([[true], [], [true, false, false]])
+   * tArray(tArray(tBoolean())).run([[true], [], [true, false, false]])
    * // => {ok: true, result: [[true], [], [true, false, false]]}
    *
    *
-   * const validNumbersDecoder = vArray()
-   *   .map((arr: unknown[]) => arr.map(vNumber().run))
+   * const validNumbersDecoder = tArray()
+   *   .map((arr: unknown[]) => arr.map(tNumber().run))
    *   .map(Result.successes)
    *
    * validNumbersDecoder.run([1, true, 2, 3, 'five', 4, []])
@@ -324,11 +364,11 @@ export class Decoder<A> {
    * // {ok: false, error: {..., message: "expected an array, got a boolean"}}
    * ```
    */
-  static vArray(): Decoder<unknown[]>;
-  static vArray<A>(decoder: Decoder<A>): Decoder<A[]>;
-  static vArray<A>(decoder?: Decoder<A>) {
+  static tArray(): Decoder<unknown[]>;
+  static tArray<A>(decoder: Decoder<A>): Decoder<A[]>;
+  static tArray<A>(decoder?: Decoder<A>) {
     return new Decoder(json => {
-      if (isJsonArray(json) && decoder) {
+      if (isArray(json) && decoder) {
         const decodeValue = (v: unknown, i: number): DecodeResult<A> =>
           Result.mapError(err => prependAt(`[${i}]`, err), decoder.decode(v));
 
@@ -337,7 +377,7 @@ export class Decoder<A> {
             Result.map2((arr, result) => [...arr, result], acc, decodeValue(v, i)),
           Result.ok([])
         );
-      } else if (isJsonArray(json)) {
+      } else if (isArray(json)) {
         return Result.ok(json);
       } else {
         return Result.err({message: expectedGot('an array', json)});
@@ -352,7 +392,7 @@ export class Decoder<A> {
    *
    * Example:
    * ```
-   * tuple([vNumber(), vNumber(), string()]).run([5, 10, 'px'])
+   * tuple([tNumber(), tNumber(), string()]).run([5, 10, 'px'])
    * // => {ok: true, result: [5, 10, 'px']}
    * ```
    */
@@ -366,7 +406,7 @@ export class Decoder<A> {
   static tuple<A, B, C, D, E, F, G, H>(decoder: [Decoder<A>, Decoder<B>, Decoder<C>, Decoder<D>, Decoder<E>, Decoder<F>, Decoder<G>, Decoder<H>]): Decoder<[A, B, C, D, E, F, G, H]>; // prettier-ignore
   static tuple<A>(decoders: Decoder<A>[]) {
     return new Decoder((json: unknown) => {
-      if (isJsonArray(json)) {
+      if (isArray(json)) {
         if (json.length !== decoders.length) {
           return Result.err({
             message: `expected a tuple of length ${decoders.length}, got one of length ${
@@ -396,13 +436,13 @@ export class Decoder<A> {
    *
    * Example:
    * ```
-   * dict(vNumber()).run({chocolate: 12, vanilla: 10, mint: 37});
+   * tDict(tNumber()).run({chocolate: 12, vanilla: 10, mint: 37});
    * // => {ok: true, result: {chocolate: 12, vanilla: 10, mint: 37}}
    * ```
    */
-  static dict = <A>(decoder: Decoder<A>): Decoder<Record<string, A>> =>
+  static tDict = <A>(decoder: Decoder<A>): Decoder<Record<string, A>> =>
     new Decoder(json => {
-      if (isJsonObject(json)) {
+      if (isObject(json)) {
         let obj: Record<string, A> = {};
         for (const key in json) {
           if (json.hasOwnProperty(key)) {
@@ -431,9 +471,9 @@ export class Decoder<A> {
    *   isOwner?: boolean;
    * }
    *
-   * const decoder: Decoder<User> = vObject({
-   *   id: vNumber(),
-   *   isOwner: optional(vBoolean())
+   * const decoder: Decoder<User> = tObject({
+   *   id: tNumber(),
+   *   isOwner: optional(tBoolean())
    * });
    * ```
    */
@@ -452,7 +492,7 @@ export class Decoder<A> {
    *
    * Examples:
    * ```
-   * oneOf(string(), vNumber().map(String))
+   * oneOf(string(), tNumber().map(String))
    * oneOf(constant('start'), constant('stop'), succeed('unknown'))
    * ```
    */
@@ -487,8 +527,8 @@ export class Decoder<A> {
    * ```
    * type C = {a: string} | {b: number};
    *
-   * const unionDecoder: Decoder<C> = union(vObject({a: string()}), vObject({b: vNumber()}));
-   * const oneOfDecoder: Decoder<C> = oneOf(vObject<C>({a: string()}), vObject<C>({b: vNumber()}));
+   * const unionDecoder: Decoder<C> = union(tObject({a: string()}), tObject({b: tNumber()}));
+   * const oneOfDecoder: Decoder<C> = oneOf(tObject<C>({a: string()}), tObject<C>({b: tNumber()}));
    * ```
    */
   static union <A, B>(ad: Decoder<A>, bd: Decoder<B>): Decoder<A | B>; // prettier-ignore
@@ -516,8 +556,8 @@ export class Decoder<A> {
    *   evil: boolean;
    * }
    *
-   * const petDecoder: Decoder<Pet> = vObject({name: string(), maxLegs: vNumber()});
-   * const catDecoder: Decoder<Cat> = intersection(petDecoder, vObject({evil: vBoolean()}));
+   * const petDecoder: Decoder<Pet> = tObject({name: string(), maxLegs: tNumber()});
+   * const catDecoder: Decoder<Cat> = intersection(petDecoder, tObject({evil: tBoolean()}));
    * ```
    */
   static intersection <A, B>(ad: Decoder<A>, bd: Decoder<B>): Decoder<A & B>; // prettier-ignore
@@ -587,12 +627,12 @@ export class Decoder<A> {
             at: printPath(paths.slice(0, i + 1)),
             message: 'path does not exist'
           });
-        } else if (typeof paths[i] === 'string' && !isJsonObject(jsonAtPath)) {
+        } else if (typeof paths[i] === 'string' && !isObject(jsonAtPath)) {
           return Result.err({
             at: printPath(paths.slice(0, i + 1)),
             message: expectedGot('an object', jsonAtPath)
           });
-        } else if (typeof paths[i] === 'number' && !isJsonArray(jsonAtPath)) {
+        } else if (typeof paths[i] === 'number' && !isArray(jsonAtPath)) {
           return Result.err({
             at: printPath(paths.slice(0, i + 1)),
             message: expectedGot('an array', jsonAtPath)
@@ -636,9 +676,9 @@ export class Decoder<A> {
    *   replies: Comment[];
    * }
    *
-   * const decoder: Decoder<Comment> = vObject({
+   * const decoder: Decoder<Comment> = tObject({
    *   msg: string(),
-   *   replies: lazy(() => vArray(decoder))
+   *   replies: lazy(() => tArray(decoder))
    * });
    * ```
    */
@@ -652,7 +692,7 @@ export class Decoder<A> {
    *
    * Examples:
    * ```
-   * vNumber().run(12)
+   * tNumber().run(12)
    * // => {ok: true, result: 12}
    *
    * string().run(9001)
@@ -697,7 +737,7 @@ export class Decoder<A> {
    *
    * Example:
    * ```
-   * vNumber().map(x => x * 5).run(10)
+   * tNumber().map(x => x * 5).run(10)
    * // => {ok: true, result: 50}
    * ```
    */
@@ -716,8 +756,8 @@ export class Decoder<A> {
    *
    * Example of adding an error message:
    * ```
-   * const versionDecoder = valueAt(['version'], vNumber());
-   * const infoDecoder3 = vObject({a: vBoolean()});
+   * const versionDecoder = valueAt(['version'], tNumber());
+   * const infoDecoder3 = tObject({a: tBoolean()});
    *
    * const decoder = versionDecoder.andThen(version => {
    *   switch (version) {
@@ -745,7 +785,7 @@ export class Decoder<A> {
    * type NonEmptyArray<T> = T[] & { __nonEmptyArrayBrand__: void };
    *
    * const nonEmptyArrayDecoder = <T>(values: Decoder<T>): Decoder<NonEmptyArray<T>> =>
-   *   vArray(values).andThen(arr =>
+   *   tArray(values).andThen(arr =>
    *     arr.length > 0
    *       ? succeed(createNonEmptyArray(arr))
    *       : fail(`expected a non-empty array, got an empty array`)
