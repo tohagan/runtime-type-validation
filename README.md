@@ -6,7 +6,8 @@ A **light weight** library to perform run-time type checking and validation for
 ## Features
 
 - Small foot print
-- Concise functional composition makes it easily extensible (often a "one liner")
+- Concise functional composition makes it easily extensible.
+  - Often a "one liner" to add new a validation rule.
 - Detailed error reporting.
 - Helper functions convert a validation result to:
   - Error or cleaned data result for your own custom mapping.
@@ -18,7 +19,7 @@ A **light weight** library to perform run-time type checking and validation for
 
 - Validate and client or server side payloads (can remove unexpected fields)
 - Validate function arguments
-- Validate component properties
+- Validate component properties (Vue)
 - Unit testing
 
 Not currently designed for Form Validation as error messages are not very end user friendly nor indexed by form field.
@@ -42,10 +43,6 @@ Projects using `< typescript@3.0.1` will need a polyfill for the `unknown`
 type, such as [unknown-ts](https://www.npmjs.com/package/unknown-ts).
 
 ## Motivation
-
-For JavaScript projects:
-
-TypeScript provides excellent compile
 
 Let's say we're creating a web app for our pet sitting business, and we've
 picked TypeScript or as one of our core technologies. This is a great choice
