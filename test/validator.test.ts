@@ -981,8 +981,8 @@ describe('lazy', () => {
   });
 });
 
-describe('runPromise', () => {
-  const promise = (data: unknown): Promise<boolean> => tBoolean().runPromise(data);
+describe('asPromise', () => {
+  const promise = (data: unknown): Promise<boolean> => tBoolean().asPromise(data);
 
   it('resolves the promise when the validator succeeds', () => {
     return expect(promise(true)).resolves.toBe(true);
@@ -1039,10 +1039,10 @@ describe('asSuccess', () => {
   });
 
   it('logs an error when the validator fails', () => {
-    let theError: string;
-
-    validator.asSuccess('xy', (err: string) => { theError = err; });
-    expect(theError).toBe('sdfsjdf');
+    let err: any;
+    const logger = (at: string, input: string, message: string) => { err = { at, input, message }; }
+    validator.asSuccess('xy', logger);
+    expect(err).toEqual({ at: 'input', input: 'xy', message: 'expected a number, got a string'});
   });
 
 });

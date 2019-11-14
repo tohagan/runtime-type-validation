@@ -1,6 +1,7 @@
 import * as Result from './result';
 const isEqual = require('lodash.isequal'); // this syntax avoids TS1192
 
+type Logger = typeof console.error;
 
 /**
  * Information describing how a validation failed.
@@ -19,7 +20,7 @@ export interface ValidatorError {
  * with the validated value of type `A`, on failure returns `Err` containing a
  * `ValidatorError`.
  */
-type RunResult<A> = Result.Result<A, ValidatorError>;
+type CheckResult<A> = Result.Result<A, ValidatorError>;
 
 /**
  * Alias for the result of the internal `Validator.validate` method. Since `validate`
@@ -85,17 +86,15 @@ const typeString = (data: unknown): string => {
       } else {
         return 'an object';
       }
-    default:
-      // defensive coding only - ignore from test coverage
-      /* istanbul ignore next */
-      return JSON.stringify(data);
   }
+  /* istanbul ignore next */
+  return JSON.stringify(data);
 };
 
 const expectedGot = (expected: string, got: unknown) =>
   `expected ${expected}, got ${typeString(got)}`;
 
-const printPath = (paths: (string | number)[]): string =>
+const atPath = (paths: (string | number)[]): string =>
   paths.map(path => (typeof path === 'string' ? `.${path}` : `[${path}]`)).join('');
 
 const prependAt = (newAt: string, {at, ...rest}: Partial<ValidatorError>): Partial<ValidatorError> => ({
@@ -640,17 +639,17 @@ export class Validator<A> {
       for (let i: number = 0; i < paths.length; i++) {
         if (dataAtPath === undefined) {
           return Result.err({
-            at: printPath(paths.slice(0, i + 1)),
+            at: atPath(paths.slice(0, i + 1)),
             message: 'path does not exist'
           });
         } else if (typeof paths[i] === 'string' && !isObject(dataAtPath)) {
           return Result.err({
-            at: printPath(paths.slice(0, i + 1)),
+            at: atPath(paths.slice(0, i + 1)),
             message: expectedGot('an object', dataAtPath)
           });
         } else if (typeof paths[i] === 'number' && !isArray(dataAtPath)) {
           return Result.err({
-            at: printPath(paths.slice(0, i + 1)),
+            at: atPath(paths.slice(0, i + 1)),
             message: expectedGot('an array', dataAtPath)
           });
         } else {
@@ -660,8 +659,8 @@ export class Validator<A> {
       return Result.mapError(
         error =>
           dataAtPath === undefined
-            ? {at: printPath(paths), message: 'path does not exist'}
-            : prependAt(printPath(paths), error),
+            ? {at: atPath(paths), message: 'path does not exist'}
+            : prependAt(atPath(paths), error),
         validator.validate(dataAtPath)
       );
     });
@@ -724,7 +723,7 @@ export class Validator<A> {
    * // }
    * ```
    */
-  check = (data: unknown): RunResult<A> =>
+  check = (data: unknown): CheckResult<A> =>
     Result.mapError(
       error => ({
         kind: 'ValidatorError' as 'ValidatorError',
@@ -738,13 +737,19 @@ export class Validator<A> {
   /**
    * Run the validator as a `Promise`.
    */
-  runPromise = (data: unknown): Promise<A> => Result.asPromise(this.run(data));
+  asPromise = (data: unknown): Promise<A> => Result.asPromise(this.check(data));
 
   /**
    * Run the validator and return the value on success, or throw an exception
    * with a formatted error string.
    */
-  runWithException = (data: unknown): A => Result.withException(this.run(data));
+  asException = (data: unknown): A => Result.asException(this.check(data));
+
+  /**
+   * Run the validator and return true on success, or false on failure.
+   * Log errors (default to console.error).
+   */
+  asSuccess = (data: unknown, log?: Logger): boolean => Result.asSuccess(this.check(data), log);
 
   /**
    * Construct a new validator that applies a transformation to the validated

@@ -106,9 +106,9 @@ report success or failure. When an object fails validation the validator
 clearly shows how the data was malformed.
 
 ```typescript
-const lyle: Pet = petValidator.runWithException(croc)
+const lyle: Pet = petValidator.asException(croc)
 
-const bullwinkle: Pet = petValidator.runWithException(moose)
+const bullwinkle: Pet = petValidator.asException(moose)
 // Throws the exception:
 // `Input: {"name":"Bullwinkle","age":59}
 //  Failed at input: the key 'species' is required but was not present`

@@ -49,6 +49,34 @@ export const err = <E>(error: E): Err<E> => ({ok: false, error: error});
 export const isErr = <E>(r: Result<any, E>): r is Err<E> => r.ok === false;
 
 /**
+ * Return the successful result, or throw an error.
+ */
+export const asException = <V>(r: Result<V, any>): V => {
+  if (r.ok === true) {
+    return r.result;
+  } else {
+    throw r.error;
+  }
+};
+
+type Logger = typeof console.error;
+
+/**
+ * If successful return `true`,
+ * If error return `false` and log error to console.
+ * Useful in Vue component property validation.
+ *
+ * @param r Validation result
+ * @param log optional error logger. Defaults to `console.error`
+ */
+export const asSuccess = <V>(r: Result<V, any>, log?: Logger): boolean => {
+  if (r.ok !== true) {
+    (log || console.error)(r.error.at, r.error.input, r.error.message);
+  }
+  return r.ok;
+};
+
+/**
  * Create a `Promise` that either resolves with the result of `Ok` or rejects
  * with the error of `Err`.
  */
@@ -68,11 +96,11 @@ export const asPromise = <V>(r: Result<V, any>): Promise<V> =>
  * function. Such a method would look something like this:
  * ```
  * class Validator<A> {
- *   runWithDefault = (defaultValue: A, data: any): A =>
+ *   asDefault = (defaultValue: A, data: any): A =>
  *     Result.withDefault(defaultValue, this.check(data));
  * }
  *
- * number().runWithDefault(5, data)
+ * number().asDefault(5, data)
  * ```
  * Unfortunately, the type of `defaultValue: A` on the method causes issues
  * with type inference on  the `object` validator in some situations. While these
@@ -81,17 +109,6 @@ export const asPromise = <V>(r: Result<V, any>): Promise<V> =>
  */
 export const withDefault = <V>(defaultValue: V, r: Result<V, any>): V =>
   r.ok === true ? r.result : defaultValue;
-
-/**
- * Return the successful result, or throw an error.
- */
-export const withException = <V>(r: Result<V, any>): V => {
-  if (r.ok === true) {
-    return r.result;
-  } else {
-    throw r.error;
-  }
-};
 
 /**
  * Given an array of `Result`s, return the successful values.
