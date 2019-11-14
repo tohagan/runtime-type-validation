@@ -1,6 +1,6 @@
 import {Validator, tString, tNumber, tBoolean, tObject} from '../src/index';
 
-describe('validate json as User interface', () => {
+describe('validate data as User interface', () => {
   interface User {
     firstname: string;
     lastname: string;

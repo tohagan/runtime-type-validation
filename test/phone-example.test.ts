@@ -63,7 +63,7 @@ describe('validate phone number objects', () => {
   const phonesValidator: Validator<Phone[]> = tArray(phoneValidator);
 
   it('can validate both international and domestic phones', () => {
-    const json = [
+    const data = [
       {
         id: 1,
         use: 'Work',
@@ -87,11 +87,11 @@ describe('validate phone number objects', () => {
       }
     ];
 
-    expect(phonesValidator.run(json)).toEqual({ok: true, result: json});
+    expect(phonesValidator.run(data)).toEqual({ok: true, result: data});
   });
 
   it('fails when an object is neither an international or domestic phone', () => {
-    const json = [
+    const data = [
       {
         id: 1,
         use: 'Work',
@@ -105,7 +105,7 @@ describe('validate phone number objects', () => {
       }
     ];
 
-    const error = phonesValidator.run(json);
+    const error = phonesValidator.run(data);
     expect(error).toMatchObject({
       ok: false,
       error: {

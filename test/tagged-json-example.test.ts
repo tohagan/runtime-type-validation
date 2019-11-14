@@ -10,7 +10,7 @@ import {
   lazy
 } from '../src/index';
 
-describe('create tagged json objects', () => {
+describe('create tagged data objects', () => {
   type TaggedJson =
     | {tag: 'null'; value: null}
     | {tag: 'string'; value: string}
@@ -19,7 +19,7 @@ describe('create tagged json objects', () => {
     | {tag: 'array'; value: Array<TaggedJson>}
     | {tag: 'object'; value: {[name: string]: TaggedJson}};
 
-  const json: any = [{x: 1, y: 5}, {a: true, b: 'false'}, 1, true];
+  const data: any = [{x: 1, y: 5}, {a: true, b: 'false'}, 1, true];
 
   const taggedJsonValidator: Validator<TaggedJson> = union(
     constant(null).map<TaggedJson>(value => ({tag: 'null', value: value})),
@@ -30,8 +30,8 @@ describe('create tagged json objects', () => {
     lazy(() => tDict(taggedJsonValidator).map<TaggedJson>(value => ({tag: 'object', value: value})))
   );
 
-  it('maps json to tagged json', () => {
-    expect(taggedJsonValidator.run(json)).toEqual({
+  it('maps data to tagged data', () => {
+    expect(taggedJsonValidator.run(data)).toEqual({
       ok: true,
       result: {
         tag: 'array',

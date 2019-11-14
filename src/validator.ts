@@ -60,13 +60,13 @@ export const isValidatorError = (a: any): a is ValidatorError =>
 /*
  * Helpers
  */
-const isArray = (json: any): json is unknown[] => Array.isArray(json);
+const isArray = (data: any): data is unknown[] => Array.isArray(data);
 
-const isObject = (json: any): json is Record<string, unknown> =>
-  typeof json === 'object' && json !== null && !isArray(json);
+const isObject = (data: any): data is Record<string, unknown> =>
+  typeof data === 'object' && data !== null && !isArray(data);
 
-const typeString = (json: unknown): string => {
-  const sType = typeof json;
+const typeString = (data: unknown): string => {
+  const sType = typeof data;
   switch (sType) {
     case 'string':
     case 'number':
@@ -77,15 +77,15 @@ const typeString = (json: unknown): string => {
     case 'undefined':
       return 'undefined';
     case 'object':
-      if (json instanceof Array) {
+      if (data instanceof Array) {
         return 'an array';
-      } else if (json === null) {
+      } else if (data === null) {
         return 'null';
       } else {
         return 'an object';
       }
     default:
-      return JSON.stringify(json);
+      return JSON.stringify(data);
   }
 };
 
@@ -101,7 +101,7 @@ const prependAt = (newAt: string, {at, ...rest}: Partial<ValidatorError>): Parti
 });
 
 /**
- * Validators transform json objects with unknown structure into known and
+ * Validators transform data objects with unknown structure into known and
  * verified forms. You can create objects of type `Validator<A>` with either the
  * primitive validator functions, such as `tBoolean()` and `string()`, or by
  * applying higher-order validators to the primitives, such as `tArray(tBoolean())`
@@ -112,7 +112,7 @@ const prependAt = (newAt: string, {at, ...rest}: Partial<ValidatorError>): Parti
  * defined at `Validator.string()`, but is also aliased to `string()`. Using the
  * function aliases exported with the library is recommended.
  *
- * `Validator` exposes a number of 'run' methods, which all validate json in the
+ * `Validator` exposes a number of 'run' methods, which all validate data in the
  * same way, but communicate success and failure in different ways. The `map`
  * and `andThen` methods modify validators without having to call a 'run' method.
  *
@@ -136,17 +136,17 @@ export class Validator<A> {
    * `andThen` and `map` should be enough to build specialized validators as
    * needed.
    */
-  private constructor(private validate: (json: unknown) => ValidateResult<A>) {}
+  private constructor(private validate: (data: unknown) => ValidateResult<A>) {}
 
   /**
    * Validator primitive that validates strings, and fails on all other input.
    */
   static tString(): Validator<string> {
     return new Validator<string>(
-      (json: unknown) =>
-        typeof json === 'string'
-          ? Result.ok(json)
-          : Result.err({message: expectedGot('a string', json)})
+      (data: unknown) =>
+        typeof data === 'string'
+          ? Result.ok(data)
+          : Result.err({message: expectedGot('a string', data)})
     );
   }
 
@@ -155,10 +155,10 @@ export class Validator<A> {
    */
   static tNumber(): Validator<number> {
     return new Validator<number>(
-      (json: unknown) =>
-        typeof json === 'number'
-          ? Result.ok(json)
-          : Result.err({message: expectedGot('a number', json)})
+      (data: unknown) =>
+        typeof data === 'number'
+          ? Result.ok(data)
+          : Result.err({message: expectedGot('a number', data)})
     );
   }
 
@@ -167,10 +167,10 @@ export class Validator<A> {
    */
   static tBoolean(): Validator<boolean> {
     return new Validator<boolean>(
-      (json: unknown) =>
-        typeof json === 'boolean'
-          ? Result.ok(json)
-          : Result.err({message: expectedGot('a boolean', json)})
+      (data: unknown) =>
+        typeof data === 'boolean'
+          ? Result.ok(data)
+          : Result.err({message: expectedGot('a boolean', data)})
     );
   }
 
@@ -192,14 +192,14 @@ export class Validator<A> {
    * });
    * ```
    */
-  static tAny = (): Validator<any> => new Validator<any>((json: any) => Result.ok(json));
+  static tAny = (): Validator<any> => new Validator<any>((data: any) => Result.ok(data));
 
   /**
    * Validator identity function which always succeeds and types the result as
    * `unknown`.
    */
   static tUnknown = (): Validator<unknown> =>
-    new Validator<unknown>((json: unknown) => Result.ok(json));
+    new Validator<unknown>((data: unknown) => Result.ok(data));
 
   /**
    * Validator primitive that only matches on exact values.
@@ -236,17 +236,17 @@ export class Validator<A> {
   static constant<T>(value: T): Validator<T>;
   static constant(value: any) {
     return new Validator(
-      (json: unknown) =>
-        isEqual(json, value)
+      (data: unknown) =>
+        isEqual(data, value)
           ? Result.ok(value)
-          : Result.err({message: `expected ${JSON.stringify(value)}, got ${JSON.stringify(json)}`})
+          : Result.err({message: `expected ${JSON.stringify(value)}, got ${JSON.stringify(data)}`})
     );
   }
 
   /**
    * An higher-order validator that runs validators on specified fields of an object,
    * and returns a new object with those fields. If `object` is called with no
-   * arguments, then the outer object part of the json is validated but not the
+   * arguments, then the outer object part of the data is validated but not the
    * contents, typing the result as a record where all keys have a value of
    * type `unknown`.
    *
@@ -267,19 +267,19 @@ export class Validator<A> {
   static tObject(): Validator<Record<string, unknown>>;
   static tObject<A>(validators: ValidatorObject<A>): Validator<A>;
   static tObject<A>(validators?: ValidatorObject<A>): Validator<A> {
-    return new Validator((json: unknown) => {
-      if (!isObject(json)) return Result.err({message: expectedGot('an object', json)});
-      if (!validators) return Result.ok(json);
+    return new Validator((data: unknown) => {
+      if (!isObject(data)) return Result.err({message: expectedGot('an object', data)});
+      if (!validators) return Result.ok(data);
       let result: any = {};
       for (const key in validators) {
         if (validators.hasOwnProperty(key)) {
-          const r = validators[key].validate(json[key]);
+          const r = validators[key].validate(data[key]);
           if (r.ok === true) {
             // tslint:disable-next-line:strict-type-predicates
             if (r.result !== undefined) {
               result[key] = r.result;
             }
-          } else if (json[key] === undefined) {
+          } else if (data[key] === undefined) {
             return Result.err({message: `the key '${key}' is required but was not present`});
           } else {
             return Result.err(prependAt(`.${key}`, r.error));
@@ -306,26 +306,26 @@ export class Validator<A> {
   static tObjectStrict(): Validator<Record<string, unknown>>;
   static tObjectStrict<A>(validators: ValidatorObject<A>): Validator<A>;
   static tObjectStrict<A>(validators?: ValidatorObject<A>): Validator<A> {
-    return new Validator((json: unknown) => {
-      if (!isObject(json)) return Result.err({message: expectedGot('an object', json)});
-      if (!validators) return Result.ok(json);
+    return new Validator((data: unknown) => {
+      if (!isObject(data)) return Result.err({message: expectedGot('an object', data)});
+      if (!validators) return Result.ok(data);
       let result: any = {};
       for (const key in validators) {
         if (validators.hasOwnProperty(key)) {
-          const r = validators[key].validate(json[key]);
+          const r = validators[key].validate(data[key]);
           if (r.ok === true) {
             // tslint:disable-next-line:strict-type-predicates
             if (r.result !== undefined) {
               result[key] = r.result;
             }
-          } else if (json[key] === undefined) {
+          } else if (data[key] === undefined) {
             return Result.err({message: `the key '${key}' is required but was not present`});
           } else {
             return Result.err(prependAt(`.${key}`, r.error));
           }
         }
       }
-      for (const key in json) {
+      for (const key in data) {
         if (!validators.hasOwnProperty(key)) {
           return Result.err({message: `an undefined key '${key}' is present in the object`});
         }
@@ -335,9 +335,9 @@ export class Validator<A> {
   }
 
   /**
-   * Validator for json arrays. Runs `validator` on each array element, and succeeds
+   * Validator for data arrays. Runs `validator` on each array element, and succeeds
    * if all elements are successfully validated. If no `validator` argument is
-   * provided then the outer array part of the json is validated but not the
+   * provided then the outer array part of the data is validated but not the
    * contents, typing the result as `unknown[]`.
    *
    * To validate a single value that is inside of an array see `valueAt`.
@@ -368,20 +368,20 @@ export class Validator<A> {
   static tArray(): Validator<unknown[]>;
   static tArray<A>(validator: Validator<A>): Validator<A[]>;
   static tArray<A>(validator?: Validator<A>) {
-    return new Validator(json => {
-      if (isArray(json) && validator) {
+    return new Validator(data => {
+      if (isArray(data) && validator) {
         const validateValue = (v: unknown, i: number): ValidateResult<A> =>
           Result.mapError(err => prependAt(`[${i}]`, err), validator.validate(v));
 
-        return json.reduce(
+        return data.reduce(
           (acc: ValidateResult<A[]>, v: unknown, i: number) =>
             Result.map2((arr, result) => [...arr, result], acc, validateValue(v, i)),
           Result.ok([])
         );
-      } else if (isArray(json)) {
-        return Result.ok(json);
+      } else if (isArray(data)) {
+        return Result.ok(data);
       } else {
-        return Result.err({message: expectedGot('an array', json)});
+        return Result.err({message: expectedGot('an array', data)});
       }
     });
   }
@@ -406,18 +406,18 @@ export class Validator<A> {
   static tuple<A, B, C, D, E, F, G>(validator: [Validator<A>, Validator<B>, Validator<C>, Validator<D>, Validator<E>, Validator<F>, Validator<G>]): Validator<[A, B, C, D, E, F, G]>; // prettier-ignore
   static tuple<A, B, C, D, E, F, G, H>(validator: [Validator<A>, Validator<B>, Validator<C>, Validator<D>, Validator<E>, Validator<F>, Validator<G>, Validator<H>]): Validator<[A, B, C, D, E, F, G, H]>; // prettier-ignore
   static tuple<A>(validators: Validator<A>[]) {
-    return new Validator((json: unknown) => {
-      if (isArray(json)) {
-        if (json.length !== validators.length) {
+    return new Validator((data: unknown) => {
+      if (isArray(data)) {
+        if (data.length !== validators.length) {
           return Result.err({
             message: `expected a tuple of length ${validators.length}, got one of length ${
-              json.length
+              data.length
             }`
           });
         }
         const result = [];
         for (let i: number = 0; i < validators.length; i++) {
-          const nth = validators[i].validate(json[i]);
+          const nth = validators[i].validate(data[i]);
           if (nth.ok) {
             result[i] = nth.result;
           } else {
@@ -426,13 +426,13 @@ export class Validator<A> {
         }
         return Result.ok(result);
       } else {
-        return Result.err({message: expectedGot(`a tuple of length ${validators.length}`, json)});
+        return Result.err({message: expectedGot(`a tuple of length ${validators.length}`, data)});
       }
     });
   }
 
   /**
-   * Validator for json objects where the keys are unknown strings, but the values
+   * Validator for data objects where the keys are unknown strings, but the values
    * should all be of the same type.
    *
    * Example:
@@ -442,12 +442,12 @@ export class Validator<A> {
    * ```
    */
   static tDict = <A>(validator: Validator<A>): Validator<Record<string, A>> =>
-    new Validator(json => {
-      if (isObject(json)) {
+    new Validator(data => {
+      if (isObject(data)) {
         let obj: Record<string, A> = {};
-        for (const key in json) {
-          if (json.hasOwnProperty(key)) {
-            const r = validator.validate(json[key]);
+        for (const key in data) {
+          if (data.hasOwnProperty(key)) {
+            const r = validator.validate(data[key]);
             if (r.ok === true) {
               obj[key] = r.result;
             } else {
@@ -457,7 +457,7 @@ export class Validator<A> {
         }
         return Result.ok(obj);
       } else {
-        return Result.err({message: expectedGot('an object', json)});
+        return Result.err({message: expectedGot('an object', data)});
       }
     });
 
@@ -480,7 +480,7 @@ export class Validator<A> {
    */
   static optional = <A>(validator: Validator<A>): Validator<undefined | A> =>
     new Validator<undefined | A>(
-      (json: unknown) => (json === undefined ? Result.ok(undefined) : validator.validate(json))
+      (data: unknown) => (data === undefined ? Result.ok(undefined) : validator.validate(data))
     );
 
   /**
@@ -498,10 +498,10 @@ export class Validator<A> {
    * ```
    */
   static oneOf = <A>(...validators: Validator<A>[]): Validator<A> =>
-    new Validator<A>((json: unknown) => {
+    new Validator<A>((data: unknown) => {
       const errors: Partial<ValidatorError>[] = [];
       for (let i: number = 0; i < validators.length; i++) {
-        const r = validators[i].validate(json);
+        const r = validators[i].validate(data);
         if (r.ok === true) {
           return r;
         } else {
@@ -569,9 +569,9 @@ export class Validator<A> {
   static intersection <A, B, C, D, E, F, G>(ad: Validator<A>, bd: Validator<B>, cd: Validator<C>, dd: Validator<D>, ed: Validator<E>, fd: Validator<F>, gd: Validator<G>): Validator<A & B & C & D & E & F & G>; // prettier-ignore
   static intersection <A, B, C, D, E, F, G, H>(ad: Validator<A>, bd: Validator<B>, cd: Validator<C>, dd: Validator<D>, ed: Validator<E>, fd: Validator<F>, gd: Validator<G>, hd: Validator<H>): Validator<A & B & C & D & E & F & G & H>; // prettier-ignore
   static intersection(ad: Validator<any>, bd: Validator<any>, ...ds: Validator<any>[]): Validator<any> {
-    return new Validator((json: unknown) =>
+    return new Validator((data: unknown) =>
       [ad, bd, ...ds].reduce(
-        (acc: ValidateResult<any>, validator) => Result.map2(Object.assign, acc, validator.validate(json)),
+        (acc: ValidateResult<any>, validator) => Result.map2(Object.assign, acc, validator.validate(data)),
         Result.ok({})
       )
     );
@@ -582,12 +582,12 @@ export class Validator<A> {
    * default value.
    */
   static withDefault = <A>(defaultValue: A, validator: Validator<A>): Validator<A> =>
-    new Validator<A>((json: unknown) =>
-      Result.ok(Result.withDefault(defaultValue, validator.validate(json)))
+    new Validator<A>((data: unknown) =>
+      Result.ok(Result.withDefault(defaultValue, validator.validate(data)))
     );
 
   /**
-   * Validator that pulls a specific field out of a json structure, instead of
+   * Validator that pulls a specific field out of a data structure, instead of
    * decoding and returning the full structure. The `paths` array describes the
    * object keys and array indices to traverse, so that values can be pulled out
    * of a nested structure.
@@ -620,48 +620,48 @@ export class Validator<A> {
    * ```
    */
   static valueAt = <A>(paths: (string | number)[], validator: Validator<A>): Validator<A> =>
-    new Validator<A>((json: unknown) => {
-      let jsonAtPath: any = json;
+    new Validator<A>((data: unknown) => {
+      let dataAtPath: any = data;
       for (let i: number = 0; i < paths.length; i++) {
-        if (jsonAtPath === undefined) {
+        if (dataAtPath === undefined) {
           return Result.err({
             at: printPath(paths.slice(0, i + 1)),
             message: 'path does not exist'
           });
-        } else if (typeof paths[i] === 'string' && !isObject(jsonAtPath)) {
+        } else if (typeof paths[i] === 'string' && !isObject(dataAtPath)) {
           return Result.err({
             at: printPath(paths.slice(0, i + 1)),
-            message: expectedGot('an object', jsonAtPath)
+            message: expectedGot('an object', dataAtPath)
           });
-        } else if (typeof paths[i] === 'number' && !isArray(jsonAtPath)) {
+        } else if (typeof paths[i] === 'number' && !isArray(dataAtPath)) {
           return Result.err({
             at: printPath(paths.slice(0, i + 1)),
-            message: expectedGot('an array', jsonAtPath)
+            message: expectedGot('an array', dataAtPath)
           });
         } else {
-          jsonAtPath = jsonAtPath[paths[i]];
+          dataAtPath = dataAtPath[paths[i]];
         }
       }
       return Result.mapError(
         error =>
-          jsonAtPath === undefined
+          dataAtPath === undefined
             ? {at: printPath(paths), message: 'path does not exist'}
             : prependAt(printPath(paths), error),
-        validator.validate(jsonAtPath)
+        validator.validate(dataAtPath)
       );
     });
 
   /**
-   * Validator that ignores the input json and always succeeds with `fixedValue`.
+   * Validator that ignores the input data and always succeeds with `fixedValue`.
    */
   static succeed = <A>(fixedValue: A): Validator<A> =>
-    new Validator<A>((json: unknown) => Result.ok(fixedValue));
+    new Validator<A>((data: unknown) => Result.ok(fixedValue));
 
   /**
-   * Validator that ignores the input json and always fails with `errorMessage`.
+   * Validator that ignores the input data and always fails with `errorMessage`.
    */
   static fail = <A>(errorMessage: string): Validator<A> =>
-    new Validator<A>((json: unknown) => Result.err({message: errorMessage}));
+    new Validator<A>((data: unknown) => Result.err({message: errorMessage}));
 
   /**
    * Validator that allows for validating recursive data structures. Unlike with
@@ -684,11 +684,11 @@ export class Validator<A> {
    * ```
    */
   static lazy = <A>(mkValidator: () => Validator<A>): Validator<A> =>
-    new Validator((json: unknown) => mkValidator().validate(json));
+    new Validator((data: unknown) => mkValidator().validate(data));
 
   /**
    * Run the validator and return a `Result` with either the validated value or a
-   * `ValidatorError` containing the json input, the location of the error, and
+   * `ValidatorError` containing the data input, the location of the error, and
    * the error message.
    *
    * Examples:
@@ -709,27 +709,27 @@ export class Validator<A> {
    * // }
    * ```
    */
-  run = (json: unknown): RunResult<A> =>
+  run = (data: unknown): RunResult<A> =>
     Result.mapError(
       error => ({
         kind: 'ValidatorError' as 'ValidatorError',
-        input: json,
+        input: data,
         at: 'input' + (error.at || ''),
         message: error.message || ''
       }),
-      this.validate(json)
+      this.validate(data)
     );
 
   /**
    * Run the validator as a `Promise`.
    */
-  runPromise = (json: unknown): Promise<A> => Result.asPromise(this.run(json));
+  runPromise = (data: unknown): Promise<A> => Result.asPromise(this.run(data));
 
   /**
    * Run the validator and return the value on success, or throw an exception
    * with a formatted error string.
    */
-  runWithException = (json: unknown): A => Result.withException(this.run(json));
+  runWithException = (data: unknown): A => Result.withException(this.run(data));
 
   /**
    * Construct a new validator that applies a transformation to the validated
@@ -743,7 +743,7 @@ export class Validator<A> {
    * ```
    */
   map = <B>(f: (value: A) => B): Validator<B> =>
-    new Validator<B>((json: unknown) => Result.map(f, this.validate(json)));
+    new Validator<B>((data: unknown) => Result.map(f, this.validate(data)));
 
   /**
    * Chain together a sequence of validators. The first validator will run, and
@@ -794,8 +794,8 @@ export class Validator<A> {
    * ```
    */
   andThen = <B>(f: (value: A) => Validator<B>): Validator<B> =>
-    new Validator<B>((json: unknown) =>
-      Result.andThen(value => f(value).validate(json), this.validate(json))
+    new Validator<B>((data: unknown) =>
+      Result.andThen(value => f(value).validate(data), this.validate(data))
     );
 
   /**

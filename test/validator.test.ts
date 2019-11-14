@@ -221,9 +221,9 @@ describe('tObject', () => {
         payload: tObject({x: tNumber(), y: tNumber()}),
         error: constant(false)
       });
-      const json = {payload: {x: 5, y: 2}, error: false};
+      const data = {payload: {x: 5, y: 2}, error: false};
 
-      expect(validator.run(json)).toEqual({ok: true, result: json});
+      expect(validator.run(data)).toEqual({ok: true, result: data});
     });
   });
 
@@ -315,9 +315,9 @@ describe('tObjectStrict', () => {
         payload: tObjectStrict({x: tNumber(), y: tNumber()}),
         error: constant(false)
       });
-      const json = {payload: {x: 5, y: 2}, error: false};
+      const data = {payload: {x: 5, y: 2}, error: false};
 
-      expect(validator.run(json)).toEqual({ok: true, result: json});
+      expect(validator.run(data)).toEqual({ok: true, result: data});
     });
   });
 
@@ -474,9 +474,9 @@ describe('tuple', () => {
         tObject({x: tNumber(), y: tNumber()}),
         constant(false)
       ]);
-      const json = [{x: 5, y: 2}, false];
+      const data = [{x: 5, y: 2}, false];
 
-      expect(validator.run(json)).toEqual({ok: true, result: json});
+      expect(validator.run(data)).toEqual({ok: true, result: data});
     });
   });
 
@@ -693,8 +693,8 @@ describe('union', () => {
   );
 
   it('can validate a value that matches one of the union types', () => {
-    const json = {kind: 'a', value: 12};
-    expect(validator.run(json)).toEqual({ok: true, result: json});
+    const data = {kind: 'a', value: 12};
+    expect(validator.run(data)).toEqual({ok: true, result: data});
   });
 
   it('fails when a value does not match any validators', () => {
@@ -755,7 +755,7 @@ describe('intersection', () => {
 describe('withDefault', () => {
   const validator = withDefault('puppies', tString());
 
-  it('uses the json value when decoding is successful', () => {
+  it('uses the data value when decoding is successful', () => {
     expect(validator.run('pancakes')).toEqual({ok: true, result: 'pancakes'});
   });
 
@@ -822,8 +822,8 @@ describe('valueAt', () => {
     });
   });
 
-  describe('non-object json', () => {
-    it('only accepts json objects and arrays', () => {
+  describe('non-object data', () => {
+    it('only accepts data objects and arrays', () => {
       const validator = valueAt(['a'], tString());
 
       expect(validator.run('abc')).toMatchObject({
@@ -836,7 +836,7 @@ describe('valueAt', () => {
       });
     });
 
-    it('fails when a feild in the path does not correspond to a json object', () => {
+    it('fails when a feild in the path does not correspond to a data object', () => {
       const validator = valueAt(['a', 'b', 'c'], tString());
 
       const error = validator.run({a: {b: 1}});
@@ -846,7 +846,7 @@ describe('valueAt', () => {
       });
     });
 
-    it('fails when an index in the path does not correspond to a json array', () => {
+    it('fails when an index in the path does not correspond to a data array', () => {
       const validator = valueAt([0, 0, 1], tString());
 
       const error = validator.run([[false]]);
@@ -934,7 +934,7 @@ describe('lazy', () => {
 });
 
 describe('runPromise', () => {
-  const promise = (json: unknown): Promise<boolean> => tBoolean().runPromise(json);
+  const promise = (data: unknown): Promise<boolean> => tBoolean().runPromise(data);
 
   it('resolves the promise when the validator succeeds', () => {
     return expect(promise(true)).resolves.toBe(true);
@@ -1030,8 +1030,8 @@ describe('andThen', () => {
     });
 
     it('fails when the second validator fails', () => {
-      const json = {version: 3, a: 1};
-      expect(validator.run(json)).toMatchObject({
+      const data = {version: 3, a: 1};
+      expect(validator.run(data)).toMatchObject({
         ok: false,
         error: {at: 'input.a', message: 'expected a boolean, got a number'}
       });
@@ -1117,9 +1117,9 @@ describe('Result', () => {
   });
 
   it('can return successes from an array of validated values', () => {
-    const json: unknown = [1, true, 2, 3, 'five', 4, []];
-    const jsonArray: unknown[] = Result.withDefault([], tArray().run(json));
-    const numbers: number[] = Result.successes(jsonArray.map(tNumber().run));
+    const data: unknown = [1, true, 2, 3, 'five', 4, []];
+    const dataArray: unknown[] = Result.withDefault([], tArray().run(data));
+    const numbers: number[] = Result.successes(dataArray.map(tNumber().run));
 
     expect(numbers).toEqual([1, 2, 3, 4]);
   });

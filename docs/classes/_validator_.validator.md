@@ -2,7 +2,7 @@
 
 # Class: Validator <**A**>
 
-Validators transform json objects with unknown structure into known and
+Validators transform data objects with unknown structure into known and
 verified forms. You can create objects of type `Validator<A>` with either the
 primitive validator functions, such as `tBoolean()` and `string()`, or by
 applying higher-order validators to the primitives, such as `tArray(tBoolean())`
@@ -13,7 +13,7 @@ Each of the validator functions are available both as a static method on
 defined at `Validator.string()`, but is also aliased to `string()`. Using the
 function aliases exported with the library is recommended.
 
-`Validator` exposes a number of 'run' methods, which all validate json in the
+`Validator` exposes a number of 'run' methods, which all validate data in the
 same way, but communicate success and failure in different ways. The `map`
 and `andThen` methods modify validators without having to call a 'run' method.
 
@@ -92,13 +92,13 @@ needed.
 
 ▪ **validate**: *function*
 
-▸ (`json`: unknown): *ValidateResult‹A›*
+▸ (`data`: unknown): *ValidateResult‹A›*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`json` | unknown |
+`data` | unknown |
 
 **Returns:** *[Validator](_validator_.validator.md)*
 
@@ -110,13 +110,13 @@ Name | Type |
 
 #### Type declaration:
 
-▸ (`json`: unknown): *ValidateResult‹A›*
+▸ (`data`: unknown): *ValidateResult‹A›*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
-`json` | unknown |
+`data` | unknown |
 
 ## Methods
 
@@ -227,10 +227,10 @@ ___
 
 ###  run
 
-▸ **run**(`json`: unknown): *RunResult‹A›*
+▸ **run**(`data`: unknown): *RunResult‹A›*
 
 Run the validator and return a `Result` with either the validated value or a
-`ValidatorError` containing the json input, the location of the error, and
+`ValidatorError` containing the data input, the location of the error, and
 the error message.
 
 Examples:
@@ -255,7 +255,7 @@ string().run(9001)
 
 Name | Type |
 ------ | ------ |
-`json` | unknown |
+`data` | unknown |
 
 **Returns:** *RunResult‹A›*
 
@@ -263,7 +263,7 @@ ___
 
 ###  runPromise
 
-▸ **runPromise**(`json`: unknown): *Promise‹A›*
+▸ **runPromise**(`data`: unknown): *Promise‹A›*
 
 Run the validator as a `Promise`.
 
@@ -271,7 +271,7 @@ Run the validator as a `Promise`.
 
 Name | Type |
 ------ | ------ |
-`json` | unknown |
+`data` | unknown |
 
 **Returns:** *Promise‹A›*
 
@@ -279,7 +279,7 @@ ___
 
 ###  runWithException
 
-▸ **runWithException**(`json`: unknown): *A*
+▸ **runWithException**(`data`: unknown): *A*
 
 Run the validator and return the value on success, or throw an exception
 with a formatted error string.
@@ -288,7 +288,7 @@ with a formatted error string.
 
 Name | Type |
 ------ | ------ |
-`json` | unknown |
+`data` | unknown |
 
 **Returns:** *A*
 
@@ -434,7 +434,7 @@ ___
 
 ▸ **fail**<**A**>(`errorMessage`: string): *[Validator](_validator_.validator.md)‹A›*
 
-Validator that ignores the input json and always fails with `errorMessage`.
+Validator that ignores the input data and always fails with `errorMessage`.
 
 **Type parameters:**
 
@@ -759,7 +759,7 @@ ___
 
 ▸ **succeed**<**A**>(`fixedValue`: A): *[Validator](_validator_.validator.md)‹A›*
 
-Validator that ignores the input json and always succeeds with `fixedValue`.
+Validator that ignores the input data and always succeeds with `fixedValue`.
 
 **Type parameters:**
 
@@ -804,9 +804,9 @@ ___
 
 ▸ **tArray**(): *[Validator](_validator_.validator.md)‹unknown[]›*
 
-Validator for json arrays. Runs `validator` on each array element, and succeeds
+Validator for data arrays. Runs `validator` on each array element, and succeeds
 if all elements are successfully validated. If no `validator` argument is
-provided then the outer array part of the json is validated but not the
+provided then the outer array part of the data is validated but not the
 contents, typing the result as `unknown[]`.
 
 To validate a single value that is inside of an array see `valueAt`.
@@ -865,7 +865,7 @@ ___
 
 ▸ **tDict**<**A**>(`validator`: [Validator](_validator_.validator.md)‹A›): *[Validator](_validator_.validator.md)‹Record‹string, A››*
 
-Validator for json objects where the keys are unknown strings, but the values
+Validator for data objects where the keys are unknown strings, but the values
 should all be of the same type.
 
 Example:
@@ -904,7 +904,7 @@ ___
 
 An higher-order validator that runs validators on specified fields of an object,
 and returns a new object with those fields. If `object` is called with no
-arguments, then the outer object part of the json is validated but not the
+arguments, then the outer object part of the data is validated but not the
 contents, typing the result as a record where all keys have a value of
 type `unknown`.
 
@@ -1382,7 +1382,7 @@ ___
 
 ▸ **valueAt**<**A**>(`paths`: string | number[], `validator`: [Validator](_validator_.validator.md)‹A›): *[Validator](_validator_.validator.md)‹A›*
 
-Validator that pulls a specific field out of a json structure, instead of
+Validator that pulls a specific field out of a data structure, instead of
 decoding and returning the full structure. The `paths` array describes the
 object keys and array indices to traverse, so that values can be pulled out
 of a nested structure.

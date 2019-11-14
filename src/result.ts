@@ -61,18 +61,18 @@ export const asPromise = <V>(r: Result<V, any>): Promise<V> =>
  *
  * Example:
  * ```
- * Result.withDefault(5, number().run(json))
+ * Result.withDefault(5, number().run(data))
  * ```
  *
  * It would be nice if `Validator` had an instance method that mirrored this
  * function. Such a method would look something like this:
  * ```
  * class Validator<A> {
- *   runWithDefault = (defaultValue: A, json: any): A =>
- *     Result.withDefault(defaultValue, this.run(json));
+ *   runWithDefault = (defaultValue: A, data: any): A =>
+ *     Result.withDefault(defaultValue, this.run(data));
  * }
  *
- * number().runWithDefault(5, json)
+ * number().runWithDefault(5, data)
  * ```
  * Unfortunately, the type of `defaultValue: A` on the method causes issues
  * with type inference on  the `object` validator in some situations. While these
