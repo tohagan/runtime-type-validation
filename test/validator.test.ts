@@ -257,7 +257,7 @@ describe('constant', () => {
 });
 
 describe('tObject', () => {
-  describe('when given valid JSON', () => {
+  describe('when given valid data', () => {
     it('can validate a simple object', () => {
       const validator = tObject({x: tNumber()});
 
@@ -275,7 +275,7 @@ describe('tObject', () => {
     });
   });
 
-  describe('when given incorrect JSON', () => {
+  describe('when given incorrect data', () => {
     it('fails when not given an object', () => {
       const validator = tObject({x: tNumber()});
 
@@ -351,7 +351,7 @@ describe('tObject', () => {
 
 describe('tObjectStrict', () => {
 
-  describe('when given valid JSON', () => {
+  describe('when given valid data', () => {
     it('can validate a simple object', () => {
       const validator = tObjectStrict({x: tNumber()});
 
@@ -369,7 +369,7 @@ describe('tObjectStrict', () => {
     });
   });
 
-  describe('when given incorrect JSON', () => {
+  describe('when given incorrect data', () => {
     it('fails when not given an object', () => {
       const validator = tObjectStrict({x: tNumber()});
 
@@ -504,7 +504,7 @@ describe('tArray', () => {
 });
 
 describe('tuple', () => {
-  describe('when given valid JSON', () => {
+  describe('when given valid data', () => {
     it('can validate a simple tuple', () => {
       const validator: Validator<[number, number]> = tuple([tNumber(), tNumber()]);
 
@@ -528,7 +528,7 @@ describe('tuple', () => {
     });
   });
 
-  describe('when given incorrect JSON', () => {
+  describe('when given incorrect data', () => {
     it('fails when the array length does not match', () => {
       const validator: Validator<[number]> = tuple([tNumber()]);
 
