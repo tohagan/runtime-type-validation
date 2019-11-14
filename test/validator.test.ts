@@ -1002,18 +1002,18 @@ describe('runPromise', () => {
   });
 });
 
-describe('runWithException', () => {
+describe('asException', () => {
   const validator = tBoolean();
 
   it('can check a validator and return the successful value', () => {
-    expect(validator.runWithException(false)).toBe(false);
+    expect(validator.asException(false)).toBe(false);
   });
 
   it('throws an exception when the validator fails', () => {
     let thrownError: any;
 
     try {
-      validator.runWithException(42);
+      validator.asException(42);
     } catch (e) {
       thrownError = e;
     }
@@ -1027,21 +1027,21 @@ describe('runWithException', () => {
   });
 });
 
-describe('runWithSuccess', () => {
+describe('asSuccess', () => {
   const validator = tNumber();
 
   it('can check a validator and return the successful value', () => {
-    expect(validator.runWithSuccess(42)).toBe(true);
+    expect(validator.asSuccess(42)).toBe(true);
   });
 
   it('can check a validator and return the unsuccessful value', () => {
-    expect(validator.runWithSuccess('xy')).toBe(false);
+    expect(validator.asSuccess('xy')).toBe(false);
   });
 
   it('logs an error when the validator fails', () => {
     let theError: string;
 
-    validator.runWithSuccess('xy', (err: string) => { theError = err; });
+    validator.asSuccess('xy', (err: string) => { theError = err; });
     expect(theError).toBe('sdfsjdf');
   });
 

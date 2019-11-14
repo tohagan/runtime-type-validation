@@ -32,11 +32,11 @@ export const tObjectStrict = Validator.tObjectStrict;
 /** See `Validator.tArray` */
 export const tArray = Validator.tArray;
 
-/** See `Validator.tuple` */
-export const tuple = Validator.tuple;
-
 /** See `Validator.tDict` */
 export const tDict = Validator.tDict;
+
+/** See `Validator.tuple` */
+export const tuple = Validator.tuple;
 
 /** See `Validator.optional` */
 export const optional = Validator.optional;
