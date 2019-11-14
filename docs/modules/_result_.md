@@ -16,7 +16,9 @@
 ### Functions
 
 * [andThen](_result_.md#const-andthen)
+* [asException](_result_.md#const-asexception)
 * [asPromise](_result_.md#const-aspromise)
+* [asSuccess](_result_.md#const-assuccess)
 * [err](_result_.md#const-err)
 * [isErr](_result_.md#const-iserr)
 * [isOk](_result_.md#const-isok)
@@ -26,7 +28,6 @@
 * [ok](_result_.md#const-ok)
 * [successes](_result_.md#const-successes)
 * [withDefault](_result_.md#const-withdefault)
-* [withException](_result_.md#const-withexception)
 
 ## Type aliases
 
@@ -35,7 +36,7 @@
 Ƭ **Result**: *[Ok](../interfaces/_result_.ok.md)‹V› | [Err](../interfaces/_result_.err.md)‹E›*
 
 The result of a computation that may fail. The decoding function
-`Validator.run` returns a `Result`. The value of a `Result` is either `Ok` if
+`Validator.check` returns a `Result`. The value of a `Result` is either `Ok` if
 the computation succeeded, or `Err` if there was some failure in the
 process.
 
@@ -76,6 +77,26 @@ Name | Type |
 
 ___
 
+### `Const` asException
+
+▸ **asException**<**V**>(`r`: [Result](_result_.md#result)‹V, any›): *V*
+
+Return the successful result, or throw an error.
+
+**Type parameters:**
+
+▪ **V**
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`r` | [Result](_result_.md#result)‹V, any› |
+
+**Returns:** *V*
+
+___
+
 ### `Const` asPromise
 
 ▸ **asPromise**<**V**>(`r`: [Result](_result_.md#result)‹V, any›): *Promise‹V›*
@@ -94,6 +115,29 @@ Name | Type |
 `r` | [Result](_result_.md#result)‹V, any› |
 
 **Returns:** *Promise‹V›*
+
+___
+
+### `Const` asSuccess
+
+▸ **asSuccess**<**V**>(`r`: [Result](_result_.md#result)‹V, any›, `log?`: Logger): *boolean*
+
+If successful return `true`,
+If error return `false` and log error to console.
+Useful in Vue component property validation.
+
+**Type parameters:**
+
+▪ **V**
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`r` | [Result](_result_.md#result)‹V, any› | Validation result |
+`log?` | Logger | optional error logger. Defaults to `console.error`  |
+
+**Returns:** *boolean*
 
 ___
 
@@ -312,18 +356,18 @@ Unwraps a `Result` and returns either the result of an `Ok`, or
 
 Example:
 ```
-Result.withDefault(5, number().run(data))
+Result.withDefault(5, number().check(data))
 ```
 
 It would be nice if `Validator` had an instance method that mirrored this
 function. Such a method would look something like this:
 ```
 class Validator<A> {
-  runWithDefault = (defaultValue: A, data: any): A =>
-    Result.withDefault(defaultValue, this.run(data));
+  asDefault = (defaultValue: A, data: any): A =>
+    Result.withDefault(defaultValue, this.check(data));
 }
 
-number().runWithDefault(5, data)
+number().asDefault(5, data)
 ```
 Unfortunately, the type of `defaultValue: A` on the method causes issues
 with type inference on  the `object` validator in some situations. While these
@@ -339,26 +383,6 @@ inference issues can be solved by providing the optional type argument for
 Name | Type |
 ------ | ------ |
 `defaultValue` | V |
-`r` | [Result](_result_.md#result)‹V, any› |
-
-**Returns:** *V*
-
-___
-
-### `Const` withException
-
-▸ **withException**<**V**>(`r`: [Result](_result_.md#result)‹V, any›): *V*
-
-Return the successful result, or throw an error.
-
-**Type parameters:**
-
-▪ **V**
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
 `r` | [Result](_result_.md#result)‹V, any› |
 
 **Returns:** *V*

@@ -2,7 +2,7 @@
 
 # Interface: ValidatorError
 
-Information describing how a type check failed.
+Information describing how a validation failed.
 Includes the input path (.at) and value showing
 where and why and on what value it failed.
 

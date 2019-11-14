@@ -17,6 +17,7 @@
 * [tArray](_combinators_.md#const-tarray)
 * [tBoolean](_combinators_.md#const-tboolean)
 * [tDict](_combinators_.md#const-tdict)
+* [tFunction](_combinators_.md#const-tfunction)
 * [tNumber](_combinators_.md#const-tnumber)
 * [tObject](_combinators_.md#const-tobject)
 * [tObjectStrict](_combinators_.md#const-tobjectstrict)
@@ -114,6 +115,14 @@ ___
 • **tDict**: *[tDict](undefined)* =  Validator.tDict
 
 See `Validator.tDict`
+
+___
+
+### `Const` tFunction
+
+• **tFunction**: *[tFunction](../classes/_validator_.validator.md#static-tfunction)* =  Validator.tFunction
+
+See `Validator.tFunction`
 
 ___
 
