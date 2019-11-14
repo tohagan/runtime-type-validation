@@ -1,10 +1,13 @@
 import {
   Validator,
   Result,
+  isOk,
+  isErr,
   isValidatorError,
   tString,
   tNumber,
   tBoolean,
+  tFunction,
   tAny,
   tUnknown,
   constant,
@@ -23,6 +26,28 @@ import {
   fail,
   lazy
 } from '../src/index';
+
+describe('Result', () => {
+  const validator = tString();
+  const validResult = validator.run('hey');
+  const invalidResult = validator.run(3);
+
+  it('isOk is true when given a valid value', () => {
+    expect(isOk(validResult)).toEqual(true);
+  });
+
+  it('isOk is false when given an invalid value', () => {
+    expect(isOk(invalidResult)).toEqual(false);
+  });
+
+  it('isErr is false when given a valid value', () => {
+    expect(isErr(validResult)).toEqual(false);
+  });
+
+  it('isErr is true when given an invalid value', () => {
+    expect(isErr(invalidResult)).toEqual(true);
+  });
+});
 
 describe('tString', () => {
   const validator = tString();
@@ -100,6 +125,29 @@ describe('tBoolean', () => {
     expect(validator.run(1)).toMatchObject({
       ok: false,
       error: {at: 'input', message: 'expected a boolean, got a number'}
+    });
+  });
+});
+
+describe('tFunction', () => {
+  const validator = tFunction();
+
+  it('succeeds when given a function', () => {
+    const func = () => 3;
+    expect(validator.run((func))).toEqual({ok: true, result: func});
+  });
+
+  it('fails when given a string', () => {
+    expect(validator.run('hey')).toMatchObject({
+      ok: false,
+      error: {at: 'input', message: 'expected a function, got a string'}
+    });
+  });
+
+  it('fails when given a number', () => {
+    expect(validator.run(1)).toMatchObject({
+      ok: false,
+      error: {at: 'input', message: 'expected a function, got a number'}
     });
   });
 });

@@ -11,6 +11,9 @@ export const tNumber = Validator.tNumber;
 /** See `Validator.tBoolean` */
 export const tBoolean = Validator.tBoolean;
 
+/** See `Validator.tFunction` */
+export const tFunction = Validator.tFunction;
+
 /** See `Validator.tAny` */
 export const tAny = Validator.tAny;
 

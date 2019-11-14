@@ -1,10 +1,11 @@
 import * as Result from './result';
+export { isOk, isErr } from './result';
 
 export { Result };
 export { Validator, ValidatorError, isValidatorError, ValidatorObject } from './validator';
 
 export {
-  tString, tNumber, tBoolean, tObject, tObjectStrict, tArray, tDict, tAny, tUnknown,
+  tString, tNumber, tBoolean, tFunction, tObject, tObjectStrict, tArray, tDict, tAny, tUnknown,
   constant, tuple, optional, oneOf, union, intersection,
   withDefault, valueAt, succeed, fail, lazy
 } from './combinators';

@@ -85,6 +85,8 @@ const typeString = (data: unknown): string => {
         return 'an object';
       }
     default:
+      // defensive coding only - ignore from test coverage
+      /* istanbul ignore next */
       return JSON.stringify(data);
   }
 };
@@ -139,7 +141,7 @@ export class Validator<A> {
   private constructor(private validate: (data: unknown) => ValidateResult<A>) {}
 
   /**
-   * Validator primitive that validates strings, and fails on all other input.
+   * Validates strings, and fails on all other input.
    */
   static tString(): Validator<string> {
     return new Validator<string>(
@@ -151,7 +153,7 @@ export class Validator<A> {
   }
 
   /**
-   * Validator primitive that validates numbers, and fails on all other input.
+   * Validates numbers, and fails on all other input.
    */
   static tNumber(): Validator<number> {
     return new Validator<number>(
@@ -163,7 +165,7 @@ export class Validator<A> {
   }
 
   /**
-   * Validator primitive that validates booleans, and fails on all other input.
+   * Validates booleans, and fails on all other input.
    */
   static tBoolean(): Validator<boolean> {
     return new Validator<boolean>(
@@ -171,6 +173,18 @@ export class Validator<A> {
         typeof data === 'boolean'
           ? Result.ok(data)
           : Result.err({message: expectedGot('a boolean', data)})
+    );
+  }
+
+  /**
+   * Validates functions, and fails on all other input.
+   */
+  static tFunction(): Validator<Function> {
+    return new Validator<Function>(
+      (data: unknown) =>
+        typeof data === 'function'
+          ? Result.ok(data)
+          : Result.err({message: expectedGot('a function', data)})
     );
   }
 
