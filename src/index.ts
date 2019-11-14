@@ -10,6 +10,6 @@ export {
 } from './combinators';
 
 export {
-  tNullable, tEnum, range, chars, charsMin, charsMax, charsRange, matches, url
+  tNullable, tEnum, range, chars, charsMin, charsMax, charsRange, matches, urlHttp
 } from './extensions';
 

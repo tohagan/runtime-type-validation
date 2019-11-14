@@ -6,7 +6,7 @@
 
 ### Variables
 
-* [url](_extensions_.md#const-url)
+* [urlHttp](_extensions_.md#const-urlhttp)
 
 ### Functions
 
@@ -21,9 +21,11 @@
 
 ## Variables
 
-### `Const` url
+### `Const` urlHttp
 
-• **url**: *[Decoder](../classes/_decoder_.decoder.md)‹string›* =  tString().where((s) => patterns.url.test(s), `expected a URL`)
+• **urlHttp**: *[Decoder](../classes/_decoder_.decoder.md)‹string›* =  tString().where((s) => patterns.urlHttp.test(s), `expected a http or https URL`)
+
+Matches a string containg a HTTP or HTTPS URL.
 
 ## Functions
 
@@ -31,11 +33,13 @@
 
 ▸ **chars**(`length`: number): *[Decoder](../classes/_decoder_.decoder.md)‹string›*
 
+Matches a string having exactly `length` characters.
+
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`length` | number |
+Name | Type | Description |
+------ | ------ | ------ |
+`length` | number |   |
 
 **Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹string›*
 
@@ -45,11 +49,13 @@ ___
 
 ▸ **charsMax**(`max`: number): *[Decoder](../classes/_decoder_.decoder.md)‹string›*
 
+Matches a string having a maximum of `max` characters.
+
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`max` | number |
+Name | Type | Description |
+------ | ------ | ------ |
+`max` | number |   |
 
 **Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹string›*
 
@@ -59,11 +65,13 @@ ___
 
 ▸ **charsMin**(`min`: number): *[Decoder](../classes/_decoder_.decoder.md)‹string›*
 
+Matches a string having a minimum of `min` characters.
+
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`min` | number |
+Name | Type | Description |
+------ | ------ | ------ |
+`min` | number |   |
 
 **Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹string›*
 
@@ -73,12 +81,14 @@ ___
 
 ▸ **charsRange**(`min`: number, `max`: number): *[Decoder](../classes/_decoder_.decoder.md)‹string›*
 
+Matches a string having a `length` between `min` .. `max` (inclusive).
+
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`min` | number |
-`max` | number |
+Name | Type | Description |
+------ | ------ | ------ |
+`min` | number | - |
+`max` | number |   |
 
 **Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹string›*
 
@@ -88,11 +98,13 @@ ___
 
 ▸ **matches**(`pattern`: RegExp): *[Decoder](../classes/_decoder_.decoder.md)‹string›*
 
+Matches a string that matches the RegEx pattern `pattern`.
+
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`pattern` | RegExp |
+Name | Type | Description |
+------ | ------ | ------ |
+`pattern` | RegExp |   |
 
 **Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹string›*
 
@@ -102,12 +114,14 @@ ___
 
 ▸ **range**(`min`: number, `max`: number): *[Decoder](../classes/_decoder_.decoder.md)‹number›*
 
+Matches a number between `min` .. `max` (inclusive).
+
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`min` | number |
-`max` | number |
+Name | Type | Description |
+------ | ------ | ------ |
+`min` | number | - |
+`max` | number |   |
 
 **Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹number›*
 
@@ -117,15 +131,18 @@ ___
 
 ▸ **tEnum**<**T**>(...`values`: T[]): *[Decoder](../classes/_decoder_.decoder.md)‹T›*
 
+Converts zero or more string or number arguments into a `oneOf()` condition
+that matches exactly one of the string values as a constant.
+
 **Type parameters:**
 
 ▪ **T**: *string | number*
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`...values` | T[] |
+Name | Type | Description |
+------ | ------ | ------ |
+`...values` | T[] |   |
 
 **Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹T›*
 
@@ -135,14 +152,16 @@ ___
 
 ▸ **tNullable**<**A**>(`decoder`: [Decoder](../classes/_decoder_.decoder.md)‹A›): *[Decoder](../classes/_decoder_.decoder.md)‹A | null›*
 
+Allow null or the type checked value.
+
 **Type parameters:**
 
 ▪ **A**
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`decoder` | [Decoder](../classes/_decoder_.decoder.md)‹A› |
+Name | Type | Description |
+------ | ------ | ------ |
+`decoder` | [Decoder](../classes/_decoder_.decoder.md)‹A› |   |
 
 **Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹A | null›*
