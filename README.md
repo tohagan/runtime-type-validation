@@ -1,4 +1,4 @@
-# Runtime Type Checking and Validation for TypeScript or JavaScript
+# Runtime type checking & validation for TypeScript/JavaScript
 
 A **light weight** library to perform run-time type checking and validation for
 [TypeScript](https://www.typescriptlang.org/) and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript).
@@ -16,10 +16,12 @@ A **light weight** library to perform run-time type checking and validation for
 
 ## Applications
 
-- Validate and filter client or server side payloads.
+- Validate and client or server side payloads (can remove unexpected fields)
 - Validate function arguments
 - Validate component properties
-- Assist in unit testing
+- Unit testing
+
+Not currently designed for Form Validation as error messages are not very end user friendly nor indexed by form field.
 
 ## Acknowledgements
 
