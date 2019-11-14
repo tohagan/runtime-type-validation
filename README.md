@@ -1,97 +1,70 @@
-# Runtime type checking & validation for TypeScript/JavaScript
+# Runtime type checking & validation
 
-A **light weight** library to perform run-time type checking and validation for
+A **light weight** library to perform run-time type checking and field validation for
 [TypeScript](https://www.typescriptlang.org/) and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript).
+
+## Documentation
+
+[API Documentation](https://github.com/tohagan/runtime-validation/tree/master/docs).
 
 ## Features
 
-- Small foot print
-- Concise functional composition makes it easily extensible.
-  - Often a "one liner" to add new a validation rule.
-- Detailed error reporting.
+- Small lib. Easy to learn and read. Simple to extend.
+- Use with either TypeScript OR JavaScript.
+- Detailed error reporting with nested values and paths.
+- `Validator` objects are concise, composable and type check TS types and interfaces.
+  - Can perform both type checking and value constraint checking (validation).
+- Useful for multiple validation contexts (Angular, Vue, React, NodeJS)
 - Helper functions convert a validation result to:
-  - Error or cleaned data result for your own custom mapping.
-  - An exception
-  - A success/fail boolean (with console logging)
-    - Useful for Vue/React component property validation
+  - A value result OR An exception
+  - A Promise result
+  - A success/fail boolean result (logs errors).
+  - Create your own
 
 ## Applications
 
-- Validate and client or server side payloads (can remove unexpected fields)
+- Validate and client or server side request/response payloads.
+  - Can either filter out (`tObject`) or prevent (`tObjectStrict`) additional fields.
 - Validate function arguments
 - Validate component properties (Vue)
 - Unit testing
 
-Not currently designed for Form Validation as error messages are not very end user friendly nor indexed by form field.
+## Roadmap
 
-## Acknowledgements
-
-This library is evolution owes thanks to:
-
-- [TypeScript JSON type validation](https://github.com/mojotech/json-type-validation) by Elias Mulhall
-- [JsonValidator](https://github.com/aische/JsonValidator) by Daniel van den Eijkel
-- [Type-safe JSON Validator](https://github.com/ooesili/type-safe-json-decoder) by Wesley Merkel
-- The Elm [Json.Decode](http://package.elm-lang.org/packages/elm-lang/core/latest/Json-Decode) API
+- Error reporting could be improved by recording a collection of errors (one per field) to support Form Validation.
+- tEnum() could be improved to better support TypeScript enums.
 
 ## Installation
 
 ```
-npm i runtime-type-validation
+npm i runtime-validation
 ```
 
 Projects using `< typescript@3.0.1` will need a polyfill for the `unknown`
 type, such as [unknown-ts](https://www.npmjs.com/package/unknown-ts).
 
-## Motivation
+## Examples
 
-Let's say we're creating a web app for our pet sitting business, and we've
-picked TypeScript or as one of our core technologies. This is a great choice
-because the extra stability and type safety that TypeScript provides is really
-going to help us market our business.
+### Typescript Example #1 - Runtime type checking
 
-We've defined the data we need to track about each client's pet:
+TypeScript only checks types at compile time not at run-time.
+The TypeScript project have excluded this from their stated
+[goals](https://github.com/Microsoft/TypeScript/wiki/TypeScript-Design-Goals#non-goals),
+
+[Type guards](https://basarat.gitbooks.io/typescript/docs/types/typeGuard.html)
+work, but are limited in that they circumvent type inference instead of working
+with it, and can be cumbersome to write.
 
 ```typescript
+
+import { Validator, tObject, tString, tNumber, tBoolean, optional } from 'runtime-validation'
+
 interface Pet {
   name: string;
   species: string;
   age?: number;
   isCute?: boolean;
 }
-```
-
-And we've got some data about current client's pets which is stored as JSON:
-
-```typescript
-const croc: Pet = JSON.parse('{"name":"Lyle","species":"Crocodile","isCute":true}')
-const moose: Pet = JSON.parse('{"name":"Bullwinkle","age":59}')
-```
-
-But that can't be right -- our data for `moose` is missing information required
-for the `Pet` interface, but TypeScript compiles the code just fine!
-
-Of course this isn't an issue with TypeScript, but with our own type
-annotations. In TypeScript `JSON.parse` has a return type of `any`, which pushes
-the responsibility of verifying the type of data onto the user. By assuming that
-all of our data is correctly formed, we've left ourselves open to unexpected
-errors at runtime.
-
-Unfortunately TypeScript doesn't provide a good built-in way to deal with this
-issue. Providing run-time type information is one of TypeScript's
-[non-goals](https://github.com/Microsoft/TypeScript/wiki/TypeScript-Design-Goals#non-goals),
-and our web app is too important to risk using a forked version of TypeScript
-with that added functionality.
-
-[Type guards](https://basarat.gitbooks.io/typescript/docs/types/typeGuard.html)
-work, but are limited in that they circumvent type inference instead of working
-with it, and can be cumbersome to write.
-
-With `runtime-type-validation` we can define a function that validate untyped objects
-at run-time and returns the TypeScript type. Validators are concise, composable,
-and type check against our defined types and interfaces.
-
-```typescript
-import { Validator, tObject, tString, optional, tNumber, tBoolean} from 'json-type-validation'
 
 const petValidator: Validator<Pet> = tObject({
   name: tString(),
@@ -99,22 +72,53 @@ const petValidator: Validator<Pet> = tObject({
   age: optional(tNumber()),
   isCute: optional(tBoolean())
 })
-```
 
-Finally, we can choose from a number of methods to validate Javascript types and
-report success or failure. When an object fails validation the validator
-clearly shows how the data was malformed.
+// Since `JSON.parse()` returns `any` we need to type check the result at run-time.
+const json: any = JSON.parse('{"name":"Lyle", "age":15, "isCute":true}');
 
-```typescript
-const lyle: Pet = petValidator.asException(croc)
-
-const bullwinkle: Pet = petValidator.asException(moose)
 // Throws the exception:
-// `Input: {"name":"Bullwinkle","age":59}
+// `Input: {"name":"Lyle","age":15}
 //  Failed at input: the key 'species' is required but was not present`
+const pet: Pet = petValidator.asException(json); // throw exception if invalid
+
+const petPromise: Promse<Pet> = petValidator.asPromise(json); // reject() if invalid
+
+const isValid: boolean = petValidator.asSuccess(json); // false if invalid with error logging.
+
 ```
 
-## Documentation
+### JavaScript Example #2 - VueJS Object Field Validation
 
-[Documentation](https://github.com/tohagan/runtime-type-validation/tree/master/docs).
+VueJS supports custom validation of [component properties](https://vuejs.org/v2/guide/components-props.html#Prop-Validation)
+via a `validator` field defined on the property. Since the `asSuccess` modifier matches the call signature
+of this validator interface, here's how we could validate a Pet data type:
 
+```javascript
+
+// VueJs component
+export default {
+  props: {
+    pet: {
+      type: Object,
+      required: true,
+      validator: tObject({
+        name: tString(),
+        species: tString(),
+        age: optional(tNumber()),
+        isCute: optional(tBoolean())
+      }).asSuccess
+    }
+  }
+}
+
+```
+
+## Acknowledgements
+
+This library owes thanks to:
+
+- [TypeScript JSON type validation](https://github.com/mojotech/json-type-validation) by Elias Mulhall
+  - Forked with major changes. Now works with JavaScript. Many additional features.
+- [JsonValidator](https://github.com/aische/JsonValidator) by Daniel van den Eijkel
+- [Type-safe JSON Validator](https://github.com/ooesili/type-safe-json-decoder) by Wesley Merkel
+- The Elm [Json.Decode](http://package.elm-lang.org/packages/elm-lang/core/latest/Json-Decode) API
