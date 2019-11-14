@@ -13,6 +13,8 @@ export function tNullable<A>(decoder: Decoder<A>): Decoder<A | null> {
  * Converts zero or more string or number arguments into a `oneOf()` condition
  * that matches exactly one of the string values as a constant.
  *
+ * Note: The return type is `Decoder<string>` not `Decoder<some enum>` as you might expect.
+ *
  * @param values
  */
 export function tEnum<T extends string | number>(...values: T[]): Decoder<T> {
@@ -52,17 +54,18 @@ export const charsMax = (max: number) => tString().where((s) => s.length <= max,
  */
 export const charsRange = (min: number, max: number) => tString().where((s) => s.length >= min && s.length <= max, `expected a string of between ${min} and ${max} in length`);
 
-const patterns = {
-  urlHttp: /(https?):\/\/(-\.)?([^\s/?.#-]+\.?)+(\/[^\s]*)?$/i
-};
-
 /**
  * Matches a string that matches the RegEx pattern `pattern`.
  * @param pattern
  */
 export const matches = (pattern: RegExp) => tString().where((s) => pattern.test(s), `expected a string that match the pattern ${pattern.toString()}`);
 
+const patterns = {
+  // @imme_emosol from https://mathiasbynens.be/demo/url-regex
+  httpUrl: /(https?):\/\/(-\.)?([^\s/?.#-]+\.?)+(\/[^\s]*)?$/i
+};
+
 /**
  * Matches a string containg a HTTP or HTTPS URL.
  */
-export const urlHttp = tString().where((s) => patterns.urlHttp.test(s), `expected a http or https URL`);
+export const httpUrl = () => tString().where((s) => patterns.httpUrl.test(s), `expected a valid http or https URL`);

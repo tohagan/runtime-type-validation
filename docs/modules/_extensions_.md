@@ -4,28 +4,17 @@
 
 ## Index
 
-### Variables
-
-* [urlHttp](_extensions_.md#const-urlhttp)
-
 ### Functions
 
 * [chars](_extensions_.md#const-chars)
 * [charsMax](_extensions_.md#const-charsmax)
 * [charsMin](_extensions_.md#const-charsmin)
 * [charsRange](_extensions_.md#const-charsrange)
+* [httpUrl](_extensions_.md#const-httpurl)
 * [matches](_extensions_.md#const-matches)
 * [range](_extensions_.md#const-range)
 * [tEnum](_extensions_.md#tenum)
 * [tNullable](_extensions_.md#tnullable)
-
-## Variables
-
-### `Const` urlHttp
-
-• **urlHttp**: *[Decoder](../classes/_decoder_.decoder.md)‹string›* =  tString().where((s) => patterns.urlHttp.test(s), `expected a http or https URL`)
-
-Matches a string containg a HTTP or HTTPS URL.
 
 ## Functions
 
@@ -94,6 +83,16 @@ Name | Type | Description |
 
 ___
 
+### `Const` httpUrl
+
+▸ **httpUrl**(): *[Decoder](../classes/_decoder_.decoder.md)‹string›*
+
+Matches a string containg a HTTP or HTTPS URL.
+
+**Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹string›*
+
+___
+
 ### `Const` matches
 
 ▸ **matches**(`pattern`: RegExp): *[Decoder](../classes/_decoder_.decoder.md)‹string›*
@@ -133,6 +132,8 @@ ___
 
 Converts zero or more string or number arguments into a `oneOf()` condition
 that matches exactly one of the string values as a constant.
+
+Note: The return type is `Decoder<string>` not `Decoder<some enum>` as you might expect.
 
 **Type parameters:**
 
