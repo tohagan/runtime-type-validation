@@ -1,5 +1,5 @@
 import {
-  Decoder,
+  Validator,
   tString,
   tNumber,
   tBoolean,
@@ -21,17 +21,17 @@ describe('create tagged json objects', () => {
 
   const json: any = [{x: 1, y: 5}, {a: true, b: 'false'}, 1, true];
 
-  const taggedJsonDecoder: Decoder<TaggedJson> = union(
+  const taggedJsonValidator: Validator<TaggedJson> = union(
     constant(null).map<TaggedJson>(value => ({tag: 'null', value: value})),
     tString().map<TaggedJson>(value => ({tag: 'string', value: value})),
     tNumber().map<TaggedJson>(value => ({tag: 'number', value: value})),
     tBoolean().map<TaggedJson>(value => ({tag: 'boolean', value: value})),
-    lazy(() => tArray(taggedJsonDecoder).map<TaggedJson>(value => ({tag: 'array', value: value}))),
-    lazy(() => tDict(taggedJsonDecoder).map<TaggedJson>(value => ({tag: 'object', value: value})))
+    lazy(() => tArray(taggedJsonValidator).map<TaggedJson>(value => ({tag: 'array', value: value}))),
+    lazy(() => tDict(taggedJsonValidator).map<TaggedJson>(value => ({tag: 'object', value: value})))
   );
 
   it('maps json to tagged json', () => {
-    expect(taggedJsonDecoder.run(json)).toEqual({
+    expect(taggedJsonValidator.run(json)).toEqual({
       ok: true,
       result: {
         tag: 'array',

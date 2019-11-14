@@ -31,162 +31,162 @@
 
 ### `Const` constant
 
-• **constant**: *[constant](../classes/_decoder_.decoder.md#static-constant)* =  Decoder.constant
+• **constant**: *[constant](../classes/_validator_.validator.md#static-constant)* =  Validator.constant
 
-See `Decoder.constant`
+See `Validator.constant`
 
 ___
 
 ### `Const` fail
 
-• **fail**: *[fail](undefined)* =  Decoder.fail
+• **fail**: *[fail](undefined)* =  Validator.fail
 
-See `Decoder.fail`
+See `Validator.fail`
 
 ___
 
 ### `Const` intersection
 
-• **intersection**: *[intersection](../classes/_decoder_.decoder.md#static-intersection)* =  Decoder.intersection
+• **intersection**: *[intersection](../classes/_validator_.validator.md#static-intersection)* =  Validator.intersection
 
-See `Decoder.intersection`
+See `Validator.intersection`
 
 ___
 
 ### `Const` lazy
 
-• **lazy**: *[lazy](undefined)* =  Decoder.lazy
+• **lazy**: *[lazy](undefined)* =  Validator.lazy
 
-See `Decoder.lazy`
+See `Validator.lazy`
 
 ___
 
 ### `Const` oneOf
 
-• **oneOf**: *[oneOf](undefined)* =  Decoder.oneOf
+• **oneOf**: *[oneOf](undefined)* =  Validator.oneOf
 
-See `Decoder.oneOf`
+See `Validator.oneOf`
 
 ___
 
 ### `Const` optional
 
-• **optional**: *[optional](undefined)* =  Decoder.optional
+• **optional**: *[optional](undefined)* =  Validator.optional
 
-See `Decoder.optional`
+See `Validator.optional`
 
 ___
 
 ### `Const` succeed
 
-• **succeed**: *[succeed](undefined)* =  Decoder.succeed
+• **succeed**: *[succeed](undefined)* =  Validator.succeed
 
-See `Decoder.succeed`
+See `Validator.succeed`
 
 ___
 
 ### `Const` tAny
 
-• **tAny**: *[tAny](undefined)* =  Decoder.tAny
+• **tAny**: *[tAny](undefined)* =  Validator.tAny
 
-See `Decoder.tAny`
+See `Validator.tAny`
 
 ___
 
 ### `Const` tArray
 
-• **tArray**: *[tArray](../classes/_decoder_.decoder.md#static-tarray)* =  Decoder.tArray
+• **tArray**: *[tArray](../classes/_validator_.validator.md#static-tarray)* =  Validator.tArray
 
-See `Decoder.tArray`
+See `Validator.tArray`
 
 ___
 
 ### `Const` tBoolean
 
-• **tBoolean**: *[tBoolean](../classes/_decoder_.decoder.md#static-tboolean)* =  Decoder.tBoolean
+• **tBoolean**: *[tBoolean](../classes/_validator_.validator.md#static-tboolean)* =  Validator.tBoolean
 
-See `Decoder.tBoolean`
+See `Validator.tBoolean`
 
 ___
 
 ### `Const` tDict
 
-• **tDict**: *[tDict](undefined)* =  Decoder.tDict
+• **tDict**: *[tDict](undefined)* =  Validator.tDict
 
-See `Decoder.tDict`
+See `Validator.tDict`
 
 ___
 
 ### `Const` tNumber
 
-• **tNumber**: *[tNumber](../classes/_decoder_.decoder.md#static-tnumber)* =  Decoder.tNumber
+• **tNumber**: *[tNumber](../classes/_validator_.validator.md#static-tnumber)* =  Validator.tNumber
 
-See `Decoder.tNumber`
+See `Validator.tNumber`
 
 ___
 
 ### `Const` tObject
 
-• **tObject**: *[tObject](../classes/_decoder_.decoder.md#static-tobject)* =  Decoder.tObject
+• **tObject**: *[tObject](../classes/_validator_.validator.md#static-tobject)* =  Validator.tObject
 
-See `Decoder.tObject`
+See `Validator.tObject`
 
 ___
 
 ### `Const` tObjectStrict
 
-• **tObjectStrict**: *[tObjectStrict](../classes/_decoder_.decoder.md#static-tobjectstrict)* =  Decoder.tObjectStrict
+• **tObjectStrict**: *[tObjectStrict](../classes/_validator_.validator.md#static-tobjectstrict)* =  Validator.tObjectStrict
 
-See `Decoder.tObjectStrict`
+See `Validator.tObjectStrict`
 
 ___
 
 ### `Const` tString
 
-• **tString**: *[tString](../classes/_decoder_.decoder.md#static-tstring)* =  Decoder.tString
+• **tString**: *[tString](../classes/_validator_.validator.md#static-tstring)* =  Validator.tString
 
-See `Decoder.tString`
+See `Validator.tString`
 
 ___
 
 ### `Const` tUnknown
 
-• **tUnknown**: *function* =  Decoder.tUnknown
+• **tUnknown**: *function* =  Validator.tUnknown
 
-See `Decoder.tUnknown`
+See `Validator.tUnknown`
 
 #### Type declaration:
 
-▸ (): *[Decoder](../classes/_decoder_.decoder.md)‹unknown›*
+▸ (): *[Validator](../classes/_validator_.validator.md)‹unknown›*
 
 ___
 
 ### `Const` tuple
 
-• **tuple**: *[tuple](../classes/_decoder_.decoder.md#static-tuple)* =  Decoder.tuple
+• **tuple**: *[tuple](../classes/_validator_.validator.md#static-tuple)* =  Validator.tuple
 
-See `Decoder.tuple`
+See `Validator.tuple`
 
 ___
 
 ### `Const` union
 
-• **union**: *[union](../classes/_decoder_.decoder.md#static-union)* =  Decoder.union
+• **union**: *[union](../classes/_validator_.validator.md#static-union)* =  Validator.union
 
-See `Decoder.union`
+See `Validator.union`
 
 ___
 
 ### `Const` valueAt
 
-• **valueAt**: *[valueAt](undefined)* =  Decoder.valueAt
+• **valueAt**: *[valueAt](undefined)* =  Validator.valueAt
 
-See `Decoder.valueAt`
+See `Validator.valueAt`
 
 ___
 
 ### `Const` withDefault
 
-• **withDefault**: *[withDefault](undefined)* =  Decoder.withDefault
+• **withDefault**: *[withDefault](undefined)* =  Validator.withDefault
 
-See `Decoder.withDefault`
+See `Validator.withDefault`

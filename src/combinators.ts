@@ -1,63 +1,63 @@
-import { Decoder } from './decoder';
+import { Validator } from './validator';
 
 /* tslint:disable:variable-name */
 
-/** See `Decoder.tString` */
-export const tString = Decoder.tString;
+/** See `Validator.tString` */
+export const tString = Validator.tString;
 
-/** See `Decoder.tNumber` */
-export const tNumber = Decoder.tNumber;
+/** See `Validator.tNumber` */
+export const tNumber = Validator.tNumber;
 
-/** See `Decoder.tBoolean` */
-export const tBoolean = Decoder.tBoolean;
+/** See `Validator.tBoolean` */
+export const tBoolean = Validator.tBoolean;
 
-/** See `Decoder.tAny` */
-export const tAny = Decoder.tAny;
+/** See `Validator.tAny` */
+export const tAny = Validator.tAny;
 
-/** See `Decoder.tUnknown` */
-export const tUnknown: () => Decoder<unknown> = Decoder.tUnknown;
+/** See `Validator.tUnknown` */
+export const tUnknown: () => Validator<unknown> = Validator.tUnknown;
 
-/** See `Decoder.constant` */
-export const constant = Decoder.constant;
+/** See `Validator.constant` */
+export const constant = Validator.constant;
 
-/** See `Decoder.tObject` */
-export const tObject = Decoder.tObject;
+/** See `Validator.tObject` */
+export const tObject = Validator.tObject;
 
-/** See `Decoder.tObjectStrict` */
-export const tObjectStrict = Decoder.tObjectStrict;
+/** See `Validator.tObjectStrict` */
+export const tObjectStrict = Validator.tObjectStrict;
 
-/** See `Decoder.tArray` */
-export const tArray = Decoder.tArray;
+/** See `Validator.tArray` */
+export const tArray = Validator.tArray;
 
-/** See `Decoder.tuple` */
-export const tuple = Decoder.tuple;
+/** See `Validator.tuple` */
+export const tuple = Validator.tuple;
 
-/** See `Decoder.tDict` */
-export const tDict = Decoder.tDict;
+/** See `Validator.tDict` */
+export const tDict = Validator.tDict;
 
-/** See `Decoder.optional` */
-export const optional = Decoder.optional;
+/** See `Validator.optional` */
+export const optional = Validator.optional;
 
-/** See `Decoder.oneOf` */
-export const oneOf = Decoder.oneOf;
+/** See `Validator.oneOf` */
+export const oneOf = Validator.oneOf;
 
-/** See `Decoder.union` */
-export const union = Decoder.union;
+/** See `Validator.union` */
+export const union = Validator.union;
 
-/** See `Decoder.intersection` */
-export const intersection = Decoder.intersection;
+/** See `Validator.intersection` */
+export const intersection = Validator.intersection;
 
-/** See `Decoder.withDefault` */
-export const withDefault = Decoder.withDefault;
+/** See `Validator.withDefault` */
+export const withDefault = Validator.withDefault;
 
-/** See `Decoder.valueAt` */
-export const valueAt = Decoder.valueAt;
+/** See `Validator.valueAt` */
+export const valueAt = Validator.valueAt;
 
-/** See `Decoder.succeed` */
-export const succeed = Decoder.succeed;
+/** See `Validator.succeed` */
+export const succeed = Validator.succeed;
 
-/** See `Decoder.fail` */
-export const fail = Decoder.fail;
+/** See `Validator.fail` */
+export const fail = Validator.fail;
 
-/** See `Decoder.lazy` */
-export const lazy = Decoder.lazy;
+/** See `Validator.lazy` */
+export const lazy = Validator.lazy;

@@ -1,6 +1,6 @@
 /**
  * The result of a computation that may fail. The decoding function
- * `Decoder.run` returns a `Result`. The value of a `Result` is either `Ok` if
+ * `Validator.run` returns a `Result`. The value of a `Result` is either `Ok` if
  * the computation succeeded, or `Err` if there was some failure in the
  * process.
  */
@@ -64,10 +64,10 @@ export const asPromise = <V>(r: Result<V, any>): Promise<V> =>
  * Result.withDefault(5, number().run(json))
  * ```
  *
- * It would be nice if `Decoder` had an instance method that mirrored this
+ * It would be nice if `Validator` had an instance method that mirrored this
  * function. Such a method would look something like this:
  * ```
- * class Decoder<A> {
+ * class Validator<A> {
  *   runWithDefault = (defaultValue: A, json: any): A =>
  *     Result.withDefault(defaultValue, this.run(json));
  * }
@@ -75,7 +75,7 @@ export const asPromise = <V>(r: Result<V, any>): Promise<V> =>
  * number().runWithDefault(5, json)
  * ```
  * Unfortunately, the type of `defaultValue: A` on the method causes issues
- * with type inference on  the `object` decoder in some situations. While these
+ * with type inference on  the `object` validator in some situations. While these
  * inference issues can be solved by providing the optional type argument for
  * `object`s, the extra trouble and confusion doesn't seem worth it.
  */

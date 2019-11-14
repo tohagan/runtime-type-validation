@@ -1,7 +1,7 @@
 import * as Result from './result';
 
 export { Result };
-export { Decoder, DecoderError, isDecoderError, DecoderObject } from './decoder';
+export { Validator, ValidatorError, isValidatorError, ValidatorObject } from './validator';
 
 export {
   tString, tNumber, tBoolean, tObject, tObjectStrict, tArray, tDict, tAny, tUnknown,

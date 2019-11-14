@@ -1,5 +1,5 @@
 import {
-  Decoder,
+  Validator,
   tString,
   tNumber,
   constant,
@@ -10,7 +10,7 @@ import {
   union
 } from '../src/index';
 
-describe('decode phone number objects', () => {
+describe('validate phone number objects', () => {
   enum PhoneUse {
     Mobile = 'Mobile',
     Home = 'Home',
@@ -36,33 +36,33 @@ describe('decode phone number objects', () => {
 
   type Phone = DomesticPhone | InternationalPhone;
 
-  const phoneUseDecoder: Decoder<PhoneUse> = oneOf(
+  const phoneUseValidator: Validator<PhoneUse> = oneOf(
     constant(PhoneUse.Mobile),
     constant(PhoneUse.Home),
     constant(PhoneUse.Work)
   );
 
-  const internationalPhoneDecoder: Decoder<InternationalPhone> = tObject({
+  const internationalPhoneValidator: Validator<InternationalPhone> = tObject({
     id: tNumber(),
-    use: optional(phoneUseDecoder),
+    use: optional(phoneUseValidator),
     international: constant(true),
     rawNumber: tString()
   });
 
-  const domesticPhoneDecoder: Decoder<DomesticPhone> = tObject({
+  const domesticPhoneValidator: Validator<DomesticPhone> = tObject({
     id: tNumber(),
-    use: optional(phoneUseDecoder),
+    use: optional(phoneUseValidator),
     international: constant(false),
     areaCode: tString(),
     prefix: tString(),
     lineNumber: tString()
   });
 
-  const phoneDecoder: Decoder<Phone> = union(domesticPhoneDecoder, internationalPhoneDecoder);
+  const phoneValidator: Validator<Phone> = union(domesticPhoneValidator, internationalPhoneValidator);
 
-  const phonesDecoder: Decoder<Phone[]> = tArray(phoneDecoder);
+  const phonesValidator: Validator<Phone[]> = tArray(phoneValidator);
 
-  it('can decode both international and domestic phones', () => {
+  it('can validate both international and domestic phones', () => {
     const json = [
       {
         id: 1,
@@ -87,7 +87,7 @@ describe('decode phone number objects', () => {
       }
     ];
 
-    expect(phonesDecoder.run(json)).toEqual({ok: true, result: json});
+    expect(phonesValidator.run(json)).toEqual({ok: true, result: json});
   });
 
   it('fails when an object is neither an international or domestic phone', () => {
@@ -105,13 +105,13 @@ describe('decode phone number objects', () => {
       }
     ];
 
-    const error = phonesDecoder.run(json);
+    const error = phonesValidator.run(json);
     expect(error).toMatchObject({
       ok: false,
       error: {
         at: 'input[1]',
         message: [
-          'expected a value matching one of the decoders, got the errors ',
+          'expected a value matching one of the validators, got the errors ',
           `["at error: the key 'international' is required but was not present", `,
           `"at error: the key 'international' is required but was not present"]`
         ].join('')

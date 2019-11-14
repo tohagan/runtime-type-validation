@@ -29,8 +29,8 @@ Not currently designed for Form Validation as error messages are not very end us
 This library is evolution owes thanks to:
 
 - [TypeScript JSON type validation](https://github.com/mojotech/json-type-validation) by Elias Mulhall
-- [JsonDecoder](https://github.com/aische/JsonDecoder) by Daniel van den Eijkel
-- [Type-safe JSON Decoder](https://github.com/ooesili/type-safe-json-decoder) by Wesley Merkel
+- [JsonValidator](https://github.com/aische/JsonValidator) by Daniel van den Eijkel
+- [Type-safe JSON Validator](https://github.com/ooesili/type-safe-json-decoder) by Wesley Merkel
 - The Elm [Json.Decode](http://package.elm-lang.org/packages/elm-lang/core/latest/Json-Decode) API
 
 ## Installation
@@ -87,13 +87,13 @@ work, but are limited in that they circumvent type inference instead of working
 with it, and can be cumbersome to write.
 
 With `runtime-type-validation` we can define a function that validate untyped objects
-at run-time and returns the TypeScript type. Decoders are concise, composable,
+at run-time and returns the TypeScript type. Validators are concise, composable,
 and type check against our defined types and interfaces.
 
 ```typescript
-import { Decoder, tObject, tString, optional, tNumber, tBoolean} from 'json-type-validation'
+import { Validator, tObject, tString, optional, tNumber, tBoolean} from 'json-type-validation'
 
-const petDecoder: Decoder<Pet> = tObject({
+const petValidator: Validator<Pet> = tObject({
   name: tString(),
   species: tString(),
   age: optional(tNumber()),
@@ -102,13 +102,13 @@ const petDecoder: Decoder<Pet> = tObject({
 ```
 
 Finally, we can choose from a number of methods to validate Javascript types and
-report success or failure. When an object fails validation the decoder
+report success or failure. When an object fails validation the validator
 clearly shows how the data was malformed.
 
 ```typescript
-const lyle: Pet = petDecoder.runWithException(croc)
+const lyle: Pet = petValidator.runWithException(croc)
 
-const bullwinkle: Pet = petDecoder.runWithException(moose)
+const bullwinkle: Pet = petValidator.runWithException(moose)
 // Throws the exception:
 // `Input: {"name":"Bullwinkle","age":59}
 //  Failed at input: the key 'species' is required but was not present`

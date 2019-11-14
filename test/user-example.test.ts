@@ -1,6 +1,6 @@
-import {Decoder, tString, tNumber, tBoolean, tObject} from '../src/index';
+import {Validator, tString, tNumber, tBoolean, tObject} from '../src/index';
 
-describe('decode json as User interface', () => {
+describe('validate json as User interface', () => {
   interface User {
     firstname: string;
     lastname: string;
@@ -22,7 +22,7 @@ describe('decode json as User interface', () => {
     active: false
   };
 
-  const userDecoder: Decoder<User> = tObject({
+  const userValidator: Validator<User> = tObject({
     firstname: tString(),
     lastname: tString(),
     age: tNumber(),
@@ -30,14 +30,14 @@ describe('decode json as User interface', () => {
   });
 
   it('successfuly passes through the valid user object', () => {
-    expect(userDecoder.run(userJson)).toEqual({
+    expect(userValidator.run(userJson)).toEqual({
       ok: true,
       result: userJson
     });
   });
 
   it('fails when a required key is missing', () => {
-    const error = userDecoder.run(invalidUserJson);
+    const error = userValidator.run(invalidUserJson);
     expect(error).toMatchObject({
       ok: false,
       error: {at: 'input', message: "the key 'lastname' is required but was not present"}

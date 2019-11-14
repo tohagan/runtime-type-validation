@@ -20,7 +20,7 @@
 
 ### `Const` chars
 
-▸ **chars**(`length`: number): *[Decoder](../classes/_decoder_.decoder.md)‹string›*
+▸ **chars**(`length`: number): *[Validator](../classes/_validator_.validator.md)‹string›*
 
 Matches a string having exactly `length` characters.
 
@@ -30,13 +30,13 @@ Name | Type | Description |
 ------ | ------ | ------ |
 `length` | number |   |
 
-**Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹string›*
+**Returns:** *[Validator](../classes/_validator_.validator.md)‹string›*
 
 ___
 
 ### `Const` charsMax
 
-▸ **charsMax**(`max`: number): *[Decoder](../classes/_decoder_.decoder.md)‹string›*
+▸ **charsMax**(`max`: number): *[Validator](../classes/_validator_.validator.md)‹string›*
 
 Matches a string having a maximum of `max` characters.
 
@@ -46,13 +46,13 @@ Name | Type | Description |
 ------ | ------ | ------ |
 `max` | number |   |
 
-**Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹string›*
+**Returns:** *[Validator](../classes/_validator_.validator.md)‹string›*
 
 ___
 
 ### `Const` charsMin
 
-▸ **charsMin**(`min`: number): *[Decoder](../classes/_decoder_.decoder.md)‹string›*
+▸ **charsMin**(`min`: number): *[Validator](../classes/_validator_.validator.md)‹string›*
 
 Matches a string having a minimum of `min` characters.
 
@@ -62,13 +62,13 @@ Name | Type | Description |
 ------ | ------ | ------ |
 `min` | number |   |
 
-**Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹string›*
+**Returns:** *[Validator](../classes/_validator_.validator.md)‹string›*
 
 ___
 
 ### `Const` charsRange
 
-▸ **charsRange**(`min`: number, `max`: number): *[Decoder](../classes/_decoder_.decoder.md)‹string›*
+▸ **charsRange**(`min`: number, `max`: number): *[Validator](../classes/_validator_.validator.md)‹string›*
 
 Matches a string having a `length` between `min` .. `max` (inclusive).
 
@@ -79,23 +79,23 @@ Name | Type | Description |
 `min` | number | - |
 `max` | number |   |
 
-**Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹string›*
+**Returns:** *[Validator](../classes/_validator_.validator.md)‹string›*
 
 ___
 
 ### `Const` httpUrl
 
-▸ **httpUrl**(): *[Decoder](../classes/_decoder_.decoder.md)‹string›*
+▸ **httpUrl**(): *[Validator](../classes/_validator_.validator.md)‹string›*
 
 Matches a string containg a HTTP or HTTPS URL.
 
-**Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹string›*
+**Returns:** *[Validator](../classes/_validator_.validator.md)‹string›*
 
 ___
 
 ### `Const` matches
 
-▸ **matches**(`pattern`: RegExp): *[Decoder](../classes/_decoder_.decoder.md)‹string›*
+▸ **matches**(`pattern`: RegExp): *[Validator](../classes/_validator_.validator.md)‹string›*
 
 Matches a string that matches the RegEx pattern `pattern`.
 
@@ -105,13 +105,13 @@ Name | Type | Description |
 ------ | ------ | ------ |
 `pattern` | RegExp |   |
 
-**Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹string›*
+**Returns:** *[Validator](../classes/_validator_.validator.md)‹string›*
 
 ___
 
 ### `Const` range
 
-▸ **range**(`min`: number, `max`: number): *[Decoder](../classes/_decoder_.decoder.md)‹number›*
+▸ **range**(`min`: number, `max`: number): *[Validator](../classes/_validator_.validator.md)‹number›*
 
 Matches a number between `min` .. `max` (inclusive).
 
@@ -122,18 +122,18 @@ Name | Type | Description |
 `min` | number | - |
 `max` | number |   |
 
-**Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹number›*
+**Returns:** *[Validator](../classes/_validator_.validator.md)‹number›*
 
 ___
 
 ###  tEnum
 
-▸ **tEnum**<**T**>(...`values`: T[]): *[Decoder](../classes/_decoder_.decoder.md)‹T›*
+▸ **tEnum**<**T**>(...`values`: T[]): *[Validator](../classes/_validator_.validator.md)‹T›*
 
 Converts zero or more string or number arguments into a `oneOf()` condition
 that matches exactly one of the string values as a constant.
 
-Note: The return type is `Decoder<string>` not `Decoder<some enum>` as you might expect.
+Note: The return type is `Validator<string>` not `Validator<some enum>` as you might expect.
 
 **Type parameters:**
 
@@ -145,13 +145,13 @@ Name | Type | Description |
 ------ | ------ | ------ |
 `...values` | T[] |   |
 
-**Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹T›*
+**Returns:** *[Validator](../classes/_validator_.validator.md)‹T›*
 
 ___
 
 ###  tNullable
 
-▸ **tNullable**<**A**>(`decoder`: [Decoder](../classes/_decoder_.decoder.md)‹A›): *[Decoder](../classes/_decoder_.decoder.md)‹A | null›*
+▸ **tNullable**<**A**>(`validator`: [Validator](../classes/_validator_.validator.md)‹A›): *[Validator](../classes/_validator_.validator.md)‹A | null›*
 
 Allow null or the type checked value.
 
@@ -163,6 +163,6 @@ Allow null or the type checked value.
 
 Name | Type | Description |
 ------ | ------ | ------ |
-`decoder` | [Decoder](../classes/_decoder_.decoder.md)‹A› |   |
+`validator` | [Validator](../classes/_validator_.validator.md)‹A› |   |
 
-**Returns:** *[Decoder](../classes/_decoder_.decoder.md)‹A | null›*
+**Returns:** *[Validator](../classes/_validator_.validator.md)‹A | null›*

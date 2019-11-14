@@ -1,25 +1,25 @@
-import { Decoder } from './decoder';
+import { Validator } from './validator';
 import { union, constant, oneOf, tNumber, tString } from './combinators';
 
 /**
  * Allow null or the type checked value.
- * @param decoder
+ * @param validator
  */
-export function tNullable<A>(decoder: Decoder<A>): Decoder<A | null> {
-  return union(decoder, constant(null));
+export function tNullable<A>(validator: Validator<A>): Validator<A | null> {
+  return union(validator, constant(null));
 }
 
 /**
  * Converts zero or more string or number arguments into a `oneOf()` condition
  * that matches exactly one of the string values as a constant.
  *
- * Note: The return type is `Decoder<string>` not `Decoder<some enum>` as you might expect.
+ * Note: The return type is `Validator<string>` not `Validator<some enum>` as you might expect.
  *
  * @param values
  */
-export function tEnum<T extends string | number>(...values: T[]): Decoder<T> {
-  const decoders: Decoder<T>[] = values.map(v => constant(v));
-  return oneOf(...decoders);
+export function tEnum<T extends string | number>(...values: T[]): Validator<T> {
+  const validators: Validator<T>[] = values.map(v => constant(v));
+  return oneOf(...validators);
 };
 
 /**
