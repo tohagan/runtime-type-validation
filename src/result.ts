@@ -1,6 +1,6 @@
 /**
  * The result of a computation that may fail. The decoding function
- * `Validator.run` returns a `Result`. The value of a `Result` is either `Ok` if
+ * `Validator.check` returns a `Result`. The value of a `Result` is either `Ok` if
  * the computation succeeded, or `Err` if there was some failure in the
  * process.
  */
@@ -61,7 +61,7 @@ export const asPromise = <V>(r: Result<V, any>): Promise<V> =>
  *
  * Example:
  * ```
- * Result.withDefault(5, number().run(data))
+ * Result.withDefault(5, number().check(data))
  * ```
  *
  * It would be nice if `Validator` had an instance method that mirrored this
@@ -69,7 +69,7 @@ export const asPromise = <V>(r: Result<V, any>): Promise<V> =>
  * ```
  * class Validator<A> {
  *   runWithDefault = (defaultValue: A, data: any): A =>
- *     Result.withDefault(defaultValue, this.run(data));
+ *     Result.withDefault(defaultValue, this.check(data));
  * }
  *
  * number().runWithDefault(5, data)

@@ -30,14 +30,14 @@ describe('validate data as User interface', () => {
   });
 
   it('successfuly passes through the valid user object', () => {
-    expect(userValidator.run(userJson)).toEqual({
+    expect(userValidator.check(userJson)).toEqual({
       ok: true,
       result: userJson
     });
   });
 
   it('fails when a required key is missing', () => {
-    const error = userValidator.run(invalidUserJson);
+    const error = userValidator.check(invalidUserJson);
     expect(error).toMatchObject({
       ok: false,
       error: {at: 'input', message: "the key 'lastname' is required but was not present"}

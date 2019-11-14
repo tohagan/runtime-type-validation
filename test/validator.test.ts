@@ -29,8 +29,8 @@ import {
 
 describe('Result', () => {
   const validator = tString();
-  const validResult = validator.run('hey');
-  const invalidResult = validator.run(3);
+  const validResult = validator.check('hey');
+  const invalidResult = validator.check(3);
 
   it('isOk is true when given a valid value', () => {
     expect(isOk(validResult)).toEqual(true);
@@ -53,25 +53,25 @@ describe('tString', () => {
   const validator = tString();
 
   it('succeeds when given a string', () => {
-    expect(validator.run('hey')).toEqual({ok: true, result: 'hey'});
+    expect(validator.check('hey')).toEqual({ok: true, result: 'hey'});
   });
 
   it('fails when given a number', () => {
-    expect(validator.run(1)).toMatchObject({
+    expect(validator.check(1)).toMatchObject({
       ok: false,
       error: {at: 'input', message: 'expected a string, got a number'}
     });
   });
 
   it('fails when given null', () => {
-    expect(validator.run(null)).toMatchObject({
+    expect(validator.check(null)).toMatchObject({
       ok: false,
       error: {at: 'input', message: 'expected a string, got null'}
     });
   });
 
   it('fails when given a boolean', () => {
-    expect(validator.run(true)).toMatchObject({
+    expect(validator.check(true)).toMatchObject({
       ok: false,
       error: {at: 'input', message: 'expected a string, got a boolean'}
     });
@@ -82,25 +82,25 @@ describe('tNumber', () => {
   const validator = tNumber();
 
   it('succeeds when given a number', () => {
-    expect(validator.run(5)).toEqual({ok: true, result: 5});
+    expect(validator.check(5)).toEqual({ok: true, result: 5});
   });
 
   it('fails when given a string', () => {
-    expect(validator.run('hey')).toMatchObject({
+    expect(validator.check('hey')).toMatchObject({
       ok: false,
       error: {at: 'input', message: 'expected a number, got a string'}
     });
   });
 
   it('fails when given a symbol', () => {
-    expect(validator.run(Symbol())).toMatchObject({
+    expect(validator.check(Symbol())).toMatchObject({
       ok: false,
       error: {at: 'input', message: 'expected a number, got a symbol'}
     });
   });
 
   it('fails when given boolean', () => {
-    expect(validator.run(true)).toMatchObject({
+    expect(validator.check(true)).toMatchObject({
       ok: false,
       error: {at: 'input', message: 'expected a number, got a boolean'}
     });
@@ -111,18 +111,18 @@ describe('tBoolean', () => {
   const validator = tBoolean();
 
   it('succeeds when given a boolean', () => {
-    expect(validator.run(true)).toEqual({ok: true, result: true});
+    expect(validator.check(true)).toEqual({ok: true, result: true});
   });
 
   it('fails when given a string', () => {
-    expect(validator.run('hey')).toMatchObject({
+    expect(validator.check('hey')).toMatchObject({
       ok: false,
       error: {at: 'input', message: 'expected a boolean, got a string'}
     });
   });
 
   it('fails when given a number', () => {
-    expect(validator.run(1)).toMatchObject({
+    expect(validator.check(1)).toMatchObject({
       ok: false,
       error: {at: 'input', message: 'expected a boolean, got a number'}
     });
@@ -134,18 +134,18 @@ describe('tFunction', () => {
 
   it('succeeds when given a function', () => {
     const func = () => 3;
-    expect(validator.run((func))).toEqual({ok: true, result: func});
+    expect(validator.check((func))).toEqual({ok: true, result: func});
   });
 
   it('fails when given a string', () => {
-    expect(validator.run('hey')).toMatchObject({
+    expect(validator.check('hey')).toMatchObject({
       ok: false,
       error: {at: 'input', message: 'expected a function, got a string'}
     });
   });
 
   it('fails when given a number', () => {
-    expect(validator.run(1)).toMatchObject({
+    expect(validator.check(1)).toMatchObject({
       ok: false,
       error: {at: 'input', message: 'expected a function, got a number'}
     });
@@ -167,17 +167,17 @@ describe('tAny', () => {
       complexUserData: tAny()
     });
 
-    expect(userValidator.run({name: 'Wanda', complexUserData: true})).toEqual({
+    expect(userValidator.check({name: 'Wanda', complexUserData: true})).toEqual({
       ok: true,
       result: {name: 'Wanda', complexUserData: true}
     });
 
-    expect(userValidator.run({name: 'Willard', complexUserData: 'trash data'})).toEqual({
+    expect(userValidator.check({name: 'Willard', complexUserData: 'trash data'})).toEqual({
       ok: true,
       result: {name: 'Willard', complexUserData: 'trash data'}
     });
 
-    expect(userValidator.run({name: 73, complexUserData: []})).toMatchObject({
+    expect(userValidator.check({name: 73, complexUserData: []})).toMatchObject({
       ok: false,
       error: {at: 'input.name', message: 'expected a string, got a number'}
     });
@@ -186,9 +186,9 @@ describe('tAny', () => {
 
 describe('tUnknown', () => {
   it('accepts any values', () => {
-    expect(tUnknown().run(1)).toEqual({ok: true, result: 1});
-    expect(tUnknown().run(false)).toEqual({ok: true, result: false});
-    expect(tUnknown().run({boots: 'n cats'})).toEqual({ok: true, result: {boots: 'n cats'}});
+    expect(tUnknown().check(1)).toEqual({ok: true, result: 1});
+    expect(tUnknown().check(false)).toEqual({ok: true, result: false});
+    expect(tUnknown().check({boots: 'n cats'})).toEqual({ok: true, result: {boots: 'n cats'}});
   });
 });
 
@@ -196,13 +196,13 @@ describe('constant', () => {
   it('works for string-literals', () => {
     const validator: Validator<'zero'> = constant('zero');
 
-    expect(validator.run('zero')).toEqual({ok: true, result: 'zero'});
+    expect(validator.check('zero')).toEqual({ok: true, result: 'zero'});
   });
 
   it('fails when given two different values', () => {
     const validator: Validator<42> = constant(42);
 
-    expect(validator.run(true)).toMatchObject({
+    expect(validator.check(true)).toMatchObject({
       ok: false,
       error: {at: 'input', message: 'expected 42, got true'}
     });
@@ -214,7 +214,7 @@ describe('constant', () => {
     }
     const validator: Validator<TrueValue> = tObject({x: constant(true)});
 
-    expect(validator.run({x: true})).toEqual({ok: true, result: {x: true}});
+    expect(validator.check({x: true})).toEqual({ok: true, result: {x: true}});
   });
 
   it('can validate the false-literal type', () => {
@@ -223,7 +223,7 @@ describe('constant', () => {
     }
     const validator: Validator<FalseValue> = tObject({x: constant(false)});
 
-    expect(validator.run({x: false})).toEqual({ok: true, result: {x: false}});
+    expect(validator.check({x: false})).toEqual({ok: true, result: {x: false}});
   });
 
   it('can validate the null-literal type', () => {
@@ -232,14 +232,14 @@ describe('constant', () => {
     }
     const validator: Validator<NullValue> = tObject({x: constant(null)});
 
-    expect(validator.run({x: null})).toEqual({ok: true, result: {x: null}});
+    expect(validator.check({x: null})).toEqual({ok: true, result: {x: null}});
   });
 
   it('can validate a constant array', () => {
     const validator: Validator<[1, 2, 3]> = constant([1, 2, 3]);
 
-    expect(validator.run([1, 2, 3])).toEqual({ok: true, result: [1, 2, 3]});
-    expect(validator.run([1, 2, 3, 4])).toMatchObject({
+    expect(validator.check([1, 2, 3])).toEqual({ok: true, result: [1, 2, 3]});
+    expect(validator.check([1, 2, 3, 4])).toMatchObject({
       ok: false,
       error: {at: 'input', message: 'expected [1,2,3], got [1,2,3,4]'}
     });
@@ -248,8 +248,8 @@ describe('constant', () => {
   it('can validate a constant object', () => {
     const validator: Validator<{a: true; b: 12}> = constant({a: true, b: 12});
 
-    expect(validator.run({a: true, b: 12})).toEqual({ok: true, result: {a: true, b: 12}});
-    expect(validator.run({a: true, b: 7})).toMatchObject({
+    expect(validator.check({a: true, b: 12})).toEqual({ok: true, result: {a: true, b: 12}});
+    expect(validator.check({a: true, b: 7})).toMatchObject({
       ok: false,
       error: {at: 'input', message: 'expected {"a":true,"b":12}, got {"a":true,"b":7}'}
     });
@@ -261,7 +261,7 @@ describe('tObject', () => {
     it('can validate a simple object', () => {
       const validator = tObject({x: tNumber()});
 
-      expect(validator.run({x: 5})).toMatchObject({ok: true, result: {x: 5}});
+      expect(validator.check({x: 5})).toMatchObject({ok: true, result: {x: 5}});
     });
 
     it('can validate a nested object', () => {
@@ -271,7 +271,7 @@ describe('tObject', () => {
       });
       const data = {payload: {x: 5, y: 2}, error: false};
 
-      expect(validator.run(data)).toEqual({ok: true, result: data});
+      expect(validator.check(data)).toEqual({ok: true, result: data});
     });
   });
 
@@ -279,7 +279,7 @@ describe('tObject', () => {
     it('fails when not given an object', () => {
       const validator = tObject({x: tNumber()});
 
-      expect(validator.run('true')).toMatchObject({
+      expect(validator.check('true')).toMatchObject({
         ok: false,
         error: {at: 'input', message: 'expected an object, got a string'}
       });
@@ -288,7 +288,7 @@ describe('tObject', () => {
     it('fails when given an array', () => {
       const validator = tObject({x: tNumber()});
 
-      expect(validator.run([])).toMatchObject({
+      expect(validator.check([])).toMatchObject({
         ok: false,
         error: {at: 'input', message: 'expected an object, got an array'}
       });
@@ -297,7 +297,7 @@ describe('tObject', () => {
     it('reports a missing key', () => {
       const validator = tObject({x: tNumber()});
 
-      expect(validator.run({})).toMatchObject({
+      expect(validator.check({})).toMatchObject({
         ok: false,
         error: {at: 'input', message: "the key 'x' is required but was not present"}
       });
@@ -306,7 +306,7 @@ describe('tObject', () => {
     it('reports invalid values', () => {
       const validator = tObject({name: tString()});
 
-      expect(validator.run({name: 5})).toMatchObject({
+      expect(validator.check({name: 5})).toMatchObject({
         ok: false,
         error: {at: 'input.name', message: 'expected a string, got a number'}
       });
@@ -321,7 +321,7 @@ describe('tObject', () => {
         })
       });
 
-      const error = validator.run({hello: {hey: {'Howdy!': {}}}});
+      const error = validator.check({hello: {hey: {'Howdy!': {}}}});
       expect(error).toMatchObject({
         ok: false,
         error: {at: 'input.hello.hey.Howdy!', message: 'expected a string, got an object'}
@@ -335,14 +335,14 @@ describe('tObject', () => {
       b: optional(tString())
     });
 
-    expect(validator.run({a: 12, b: 'hats'})).toEqual({ok: true, result: {a: 12, b: 'hats'}});
-    expect(validator.run({a: 12})).toEqual({ok: true, result: {a: 12}});
+    expect(validator.check({a: 12, b: 'hats'})).toEqual({ok: true, result: {a: 12, b: 'hats'}});
+    expect(validator.check({a: 12})).toEqual({ok: true, result: {a: 12}});
   });
 
   it('validates any object when the object shape is not specified', () => {
     const objectKeysValidator: Validator<string[]> = tObject().map(Object.keys);
 
-    expect(objectKeysValidator.run({n: 1, i: [], c: {}, e: 'e'})).toEqual({
+    expect(objectKeysValidator.check({n: 1, i: [], c: {}, e: 'e'})).toEqual({
       ok: true,
       result: ['n', 'i', 'c', 'e']
     });
@@ -355,7 +355,7 @@ describe('tObjectStrict', () => {
     it('can validate a simple object', () => {
       const validator = tObjectStrict({x: tNumber()});
 
-      expect(validator.run({x: 5})).toMatchObject({ok: true, result: {x: 5}});
+      expect(validator.check({x: 5})).toMatchObject({ok: true, result: {x: 5}});
     });
 
     it('can validate a nested object', () => {
@@ -365,7 +365,7 @@ describe('tObjectStrict', () => {
       });
       const data = {payload: {x: 5, y: 2}, error: false};
 
-      expect(validator.run(data)).toEqual({ok: true, result: data});
+      expect(validator.check(data)).toEqual({ok: true, result: data});
     });
   });
 
@@ -373,7 +373,7 @@ describe('tObjectStrict', () => {
     it('fails when not given an object', () => {
       const validator = tObjectStrict({x: tNumber()});
 
-      expect(validator.run('true')).toMatchObject({
+      expect(validator.check('true')).toMatchObject({
         ok: false,
         error: {at: 'input', message: 'expected an object, got a string'}
       });
@@ -382,7 +382,7 @@ describe('tObjectStrict', () => {
     it('fails when given an array', () => {
       const validator = tObjectStrict({x: tNumber()});
 
-      expect(validator.run([])).toMatchObject({
+      expect(validator.check([])).toMatchObject({
         ok: false,
         error: {at: 'input', message: 'expected an object, got an array'}
       });
@@ -391,7 +391,7 @@ describe('tObjectStrict', () => {
     it('reports a missing key', () => {
       const validator = tObjectStrict({x: tNumber()});
 
-      expect(validator.run({})).toMatchObject({
+      expect(validator.check({})).toMatchObject({
         ok: false,
         error: {at: 'input', message: "the key 'x' is required but was not present"}
       });
@@ -400,7 +400,7 @@ describe('tObjectStrict', () => {
     it('reports an added (non-strict) key', () => {
       const validator = tObjectStrict({x: tNumber()});
 
-      expect(validator.run({x: 3, added: 7})).toMatchObject({
+      expect(validator.check({x: 3, added: 7})).toMatchObject({
         ok: false,
         error: {at: 'input', message: "an undefined key 'added' is present in the object"}
       });
@@ -409,7 +409,7 @@ describe('tObjectStrict', () => {
     it('reports invalid values', () => {
       const validator = tObjectStrict({name: tString()});
 
-      expect(validator.run({name: 5})).toMatchObject({
+      expect(validator.check({name: 5})).toMatchObject({
         ok: false,
         error: {at: 'input.name', message: 'expected a string, got a number'}
       });
@@ -424,7 +424,7 @@ describe('tObjectStrict', () => {
         })
       });
 
-      const error = validator.run({hello: {hey: {'Howdy!': {}}}});
+      const error = validator.check({hello: {hey: {'Howdy!': {}}}});
       expect(error).toMatchObject({
         ok: false,
         error: {at: 'input.hello.hey.Howdy!', message: 'expected a string, got an object'}
@@ -438,14 +438,14 @@ describe('tObjectStrict', () => {
       b: optional(tString())
     });
 
-    expect(validator.run({a: 12, b: 'hats'})).toEqual({ok: true, result: {a: 12, b: 'hats'}});
-    expect(validator.run({a: 12})).toEqual({ok: true, result: {a: 12}});
+    expect(validator.check({a: 12, b: 'hats'})).toEqual({ok: true, result: {a: 12, b: 'hats'}});
+    expect(validator.check({a: 12})).toEqual({ok: true, result: {a: 12}});
   });
 
   it('validates any object when the object shape is not specified', () => {
     const objectKeysValidator: Validator<string[]> = tObject().map(Object.keys);
 
-    expect(objectKeysValidator.run({n: 1, i: [], c: {}, e: 'e'})).toEqual({
+    expect(objectKeysValidator.check({n: 1, i: [], c: {}, e: 'e'})).toEqual({
       ok: true,
       result: ['n', 'i', 'c', 'e']
     });
@@ -456,11 +456,11 @@ describe('tArray', () => {
   const validator = tArray(tNumber());
 
   it('works when given an array', () => {
-    expect(validator.run([1, 2, 3])).toEqual({ok: true, result: [1, 2, 3]});
+    expect(validator.check([1, 2, 3])).toEqual({ok: true, result: [1, 2, 3]});
   });
 
   it('fails when given something other than a array', () => {
-    expect(validator.run('oops')).toMatchObject({
+    expect(validator.check('oops')).toMatchObject({
       ok: false,
       error: {at: 'input', message: 'expected an array, got a string'}
     });
@@ -468,7 +468,7 @@ describe('tArray', () => {
 
   describe('when given something other than an array', () => {
     it('fails when the elements are of the wrong type', () => {
-      expect(validator.run(['dang'])).toMatchObject({
+      expect(validator.check(['dang'])).toMatchObject({
         ok: false,
         error: {at: 'input[0]', message: 'expected a number, got a string'}
       });
@@ -477,7 +477,7 @@ describe('tArray', () => {
     it('properly displays nested errors', () => {
       const nestedValidator = tArray(tArray(tArray(tNumber())));
 
-      expect(nestedValidator.run([[], [], [[1, 2, 3, false]]])).toMatchObject({
+      expect(nestedValidator.check([[], [], [[1, 2, 3, false]]])).toMatchObject({
         ok: false,
         error: {at: 'input[2][0][3]', message: 'expected a number, got a boolean'}
       });
@@ -486,17 +486,17 @@ describe('tArray', () => {
 
   it('validates any array when the array members validator is not specified', () => {
     const validNumbersValidator = tArray()
-      .map((arr: unknown[]) => arr.map(tNumber().run))
+      .map((arr: unknown[]) => arr.map(tNumber().check))
       .map(Result.successes);
 
-    expect(validNumbersValidator.run([1, true, 2, 3, 'five', 4, []])).toEqual({
+    expect(validNumbersValidator.check([1, true, 2, 3, 'five', 4, []])).toEqual({
       ok: true,
       result: [1, 2, 3, 4]
     });
 
-    expect(validNumbersValidator.run([false, 'hi', {}])).toEqual({ok: true, result: []});
+    expect(validNumbersValidator.check([false, 'hi', {}])).toEqual({ok: true, result: []});
 
-    expect(validNumbersValidator.run(false)).toMatchObject({
+    expect(validNumbersValidator.check(false)).toMatchObject({
       ok: false,
       error: {message: 'expected an array, got a boolean'}
     });
@@ -508,13 +508,13 @@ describe('tuple', () => {
     it('can validate a simple tuple', () => {
       const validator: Validator<[number, number]> = tuple([tNumber(), tNumber()]);
 
-      expect(validator.run([5, 6])).toMatchObject({ok: true, result: [5, 6]});
+      expect(validator.check([5, 6])).toMatchObject({ok: true, result: [5, 6]});
     });
 
     it('can validate tuples of mixed types', () => {
       const validator: Validator<[number, string]> = tuple([tNumber(), tString()]);
 
-      expect(validator.run([1, 'a'])).toMatchObject({ok: true, result: [1, 'a']});
+      expect(validator.check([1, 'a'])).toMatchObject({ok: true, result: [1, 'a']});
     });
 
     it('can validate a nested object', () => {
@@ -524,7 +524,7 @@ describe('tuple', () => {
       ]);
       const data = [{x: 5, y: 2}, false];
 
-      expect(validator.run(data)).toEqual({ok: true, result: data});
+      expect(validator.check(data)).toEqual({ok: true, result: data});
     });
   });
 
@@ -532,7 +532,7 @@ describe('tuple', () => {
     it('fails when the array length does not match', () => {
       const validator: Validator<[number]> = tuple([tNumber()]);
 
-      expect(validator.run([1, 2])).toMatchObject({
+      expect(validator.check([1, 2])).toMatchObject({
         ok: false,
         error: {at: 'input', message: 'expected a tuple of length 1, got one of length 2'}
       });
@@ -541,7 +541,7 @@ describe('tuple', () => {
     it('fails when given an object', () => {
       const validator: Validator<[number]> = tuple([tNumber()]);
 
-      expect(validator.run({x: 1})).toMatchObject({
+      expect(validator.check({x: 1})).toMatchObject({
         ok: false,
         error: {at: 'input', message: 'expected a tuple of length 1, got an object'}
       });
@@ -550,7 +550,7 @@ describe('tuple', () => {
     it('reports invalid values', () => {
       const validator: Validator<[number, string]> = tuple([tNumber(), tString()]);
 
-      expect(validator.run([4, 5])).toMatchObject({
+      expect(validator.check([4, 5])).toMatchObject({
         ok: false,
         error: {at: 'input[1]', message: 'expected a string, got a number'}
       });
@@ -565,7 +565,7 @@ describe('tuple', () => {
         })
       ]);
 
-      const error = validator.run([{hey: {'Howdy!': {}}}]);
+      const error = validator.check([{hey: {'Howdy!': {}}}]);
       expect(error).toMatchObject({
         ok: false,
         error: {at: 'input[0].hey.Howdy!', message: 'expected a string, got an object'}
@@ -579,29 +579,29 @@ describe('tDict', () => {
     const validator = tDict(tNumber());
 
     it('can validate an empty object', () => {
-      expect(validator.run({})).toEqual({ok: true, result: {}});
+      expect(validator.check({})).toEqual({ok: true, result: {}});
     });
 
     it('can validate an object of with arbitrary keys', () => {
-      expect(validator.run({a: 1, b: 2})).toEqual({ok: true, result: {a: 1, b: 2}});
+      expect(validator.check({a: 1, b: 2})).toEqual({ok: true, result: {a: 1, b: 2}});
     });
 
     it('fails if a value cannot be validated', () => {
-      expect(validator.run({oh: 'no'})).toMatchObject({
+      expect(validator.check({oh: 'no'})).toMatchObject({
         ok: false,
         error: {at: 'input.oh', message: 'expected a number, got a string'}
       });
     });
 
     it('fails if given an array', () => {
-      expect(validator.run([])).toMatchObject({
+      expect(validator.check([])).toMatchObject({
         ok: false,
         error: {at: 'input', message: 'expected an object, got an array'}
       });
     });
 
     it('fails if given a primitive', () => {
-      expect(validator.run(5)).toMatchObject({
+      expect(validator.check(5)).toMatchObject({
         ok: false,
         error: {at: 'input', message: 'expected an object, got a number'}
       });
@@ -612,7 +612,7 @@ describe('tDict', () => {
     const validator = tDict(tString().map(str => str + '!'));
 
     it('transforms the values', () => {
-      expect(validator.run({hey: 'there', yo: 'dude'})).toEqual({
+      expect(validator.check({hey: 'there', yo: 'dude'})).toEqual({
         ok: true,
         result: {hey: 'there!', yo: 'dude!'}
       });
@@ -625,15 +625,15 @@ describe('optional', () => {
     const validator = optional(tNumber());
 
     it('can validate the given type', () => {
-      expect(validator.run(5)).toEqual({ok: true, result: 5});
+      expect(validator.check(5)).toEqual({ok: true, result: 5});
     });
 
     it('can validate undefined', () => {
-      expect(validator.run(undefined)).toEqual({ok: true, result: undefined});
+      expect(validator.check(undefined)).toEqual({ok: true, result: undefined});
     });
 
     it('fails when the value is invalid', () => {
-      expect(validator.run(false)).toMatchObject({
+      expect(validator.check(false)).toMatchObject({
         ok: false,
         error: {at: 'input', message: 'expected a number, got a boolean'}
       });
@@ -652,15 +652,15 @@ describe('optional', () => {
     });
 
     it('can validate the object when the optional field is present', () => {
-      expect(validator.run({id: 1, isDog: true})).toEqual({ok: true, result: {id: 1, isDog: true}});
+      expect(validator.check({id: 1, isDog: true})).toEqual({ok: true, result: {id: 1, isDog: true}});
     });
 
     it('can validate the object when the optional field is missing', () => {
-      expect(validator.run({id: 2})).toEqual({ok: true, result: {id: 2}});
+      expect(validator.check({id: 2})).toEqual({ok: true, result: {id: 2}});
     });
 
     it('fails when the optional field is invalid', () => {
-      const error = validator.run({id: 3, isDog: 'supdog'});
+      const error = validator.check({id: 3, isDog: 'supdog'});
       expect(error).toMatchObject({
         ok: false,
         error: {at: 'input.isDog', message: 'expected a boolean, got a string'}
@@ -674,20 +674,20 @@ describe('oneOf', () => {
     it('can validate a value with a single alternative', () => {
       const validator = oneOf(tString());
 
-      expect(validator.run('yo')).toEqual({ok: true, result: 'yo'});
+      expect(validator.check('yo')).toEqual({ok: true, result: 'yo'});
     });
 
     it('can validate a value with multiple alternatives', () => {
       const validator = tArray(oneOf(tString().map(s => s.length), tNumber()));
 
-      expect(validator.run(['hey', 10])).toEqual({ok: true, result: [3, 10]});
+      expect(validator.check(['hey', 10])).toEqual({ok: true, result: [3, 10]});
     });
   });
 
   it('fails when a value does not match any validator', () => {
     const validator = oneOf(tString(), tNumber().map(String));
 
-    expect(validator.run([])).toMatchObject({
+    expect(validator.check([])).toMatchObject({
       ok: false,
       error: {
         at: 'input',
@@ -703,7 +703,7 @@ describe('oneOf', () => {
       oneOf(valueAt([1, 'a', 'b'], tNumber()), valueAt([1, 'a', 'x'], tNumber()))
     );
 
-    expect(validator.run([[{}, {a: {b: true}}]])).toMatchObject({
+    expect(validator.check([[{}, {a: {b: true}}]])).toMatchObject({
       ok: false,
       error: {
         at: 'input[0]',
@@ -720,7 +720,7 @@ describe('oneOf', () => {
 
     const validator: Validator<C> = oneOf(tObject<C>({a: tString()}), tObject<C>({b: tNumber()}));
 
-    expect(validator.run({a: 'xyz'})).toEqual({ok: true, result: {a: 'xyz'}});
+    expect(validator.check({a: 'xyz'})).toEqual({ok: true, result: {a: 'xyz'}});
   });
 });
 
@@ -742,11 +742,11 @@ describe('union', () => {
 
   it('can validate a value that matches one of the union types', () => {
     const data = {kind: 'a', value: 12};
-    expect(validator.run(data)).toEqual({ok: true, result: data});
+    expect(validator.check(data)).toEqual({ok: true, result: data});
   });
 
   it('fails when a value does not match any validators', () => {
-    const error = validator.run({kind: 'b', value: 12});
+    const error = validator.check({kind: 'b', value: 12});
     expect(error).toMatchObject({
       ok: false,
       error: {
@@ -772,7 +772,7 @@ describe('intersection', () => {
     const aValidator: Validator<A> = tObject({a: tNumber()});
     const abValidator: Validator<AB> = intersection(aValidator, tObject({b: tString()}));
 
-    expect(abValidator.run({a: 12, b: '!!!'})).toEqual({ok: true, result: {a: 12, b: '!!!'}});
+    expect(abValidator.check({a: 12, b: '!!!'})).toEqual({ok: true, result: {a: 12, b: '!!!'}});
   });
 
   it('can combine many validators', () => {
@@ -793,7 +793,7 @@ describe('intersection', () => {
       tObject({y: tString(), z: tBoolean()})
     );
 
-    expect(uvwxyzValidator.run({u: true, v: [], w: null, x: 4, y: 'y', z: false})).toEqual({
+    expect(uvwxyzValidator.check({u: true, v: [], w: null, x: 4, y: 'y', z: false})).toEqual({
       ok: true,
       result: {u: true, v: [], w: null, x: 4, y: 'y', z: false}
     });
@@ -804,11 +804,11 @@ describe('withDefault', () => {
   const validator = withDefault('puppies', tString());
 
   it('uses the data value when decoding is successful', () => {
-    expect(validator.run('pancakes')).toEqual({ok: true, result: 'pancakes'});
+    expect(validator.check('pancakes')).toEqual({ok: true, result: 'pancakes'});
   });
 
   it('uses the default when the validator fails', () => {
-    expect(validator.run(5)).toEqual({ok: true, result: 'puppies'});
+    expect(validator.check(5)).toEqual({ok: true, result: 'puppies'});
   });
 });
 
@@ -816,12 +816,12 @@ describe('valueAt', () => {
   describe('validate an value', () => {
     it('can validate a single object field', () => {
       const validator = valueAt(['a'], tString());
-      expect(validator.run({a: 'boots', b: 'cats'})).toEqual({ok: true, result: 'boots'});
+      expect(validator.check({a: 'boots', b: 'cats'})).toEqual({ok: true, result: 'boots'});
     });
 
     it('can validate a single array value', () => {
       const validator = valueAt([1], tString());
-      expect(validator.run(['boots', 'cats'])).toEqual({ok: true, result: 'cats'});
+      expect(validator.check(['boots', 'cats'])).toEqual({ok: true, result: 'cats'});
     });
   });
 
@@ -829,25 +829,25 @@ describe('valueAt', () => {
     const validator = valueAt(['a', 1, 'b'], tString());
 
     it('can validate a field in a nested structure', () => {
-      expect(validator.run({a: [{}, {b: 'surprise!'}]})).toEqual({ok: true, result: 'surprise!'});
+      expect(validator.check({a: [{}, {b: 'surprise!'}]})).toEqual({ok: true, result: 'surprise!'});
     });
 
     it('fails when an array path does not exist', () => {
-      expect(validator.run({a: []})).toMatchObject({
+      expect(validator.check({a: []})).toMatchObject({
         ok: false,
         error: {at: 'input.a[1].b', message: 'path does not exist'}
       });
     });
 
     it('fails when an object path does not exist', () => {
-      expect(validator.run({x: 12})).toMatchObject({
+      expect(validator.check({x: 12})).toMatchObject({
         ok: false,
         error: {at: 'input.a[1]', message: 'path does not exist'}
       });
     });
 
     it('fails when the validator fails at the end of the path', () => {
-      expect(validator.run({a: ['a', {b: 12}]})).toMatchObject({
+      expect(validator.check({a: ['a', {b: 12}]})).toMatchObject({
         ok: false,
         error: {at: 'input.a[1].b', message: 'expected a string, got a number'}
       });
@@ -858,7 +858,7 @@ describe('valueAt', () => {
     const validator = valueAt(['a', 'b', 'c'], optional(tString()));
 
     it('fails when the path does not exist', () => {
-      const error = validator.run({a: {x: 'cats'}});
+      const error = validator.check({a: {x: 'cats'}});
       expect(error).toMatchObject({
         ok: false,
         error: {at: 'input.a.b.c', message: 'path does not exist'}
@@ -866,7 +866,7 @@ describe('valueAt', () => {
     });
 
     it('succeeds when the final field is not found', () => {
-      expect(validator.run({a: {b: {z: 1}}})).toEqual({ok: true, result: undefined});
+      expect(validator.check({a: {b: {z: 1}}})).toEqual({ok: true, result: undefined});
     });
   });
 
@@ -874,11 +874,11 @@ describe('valueAt', () => {
     it('only accepts data objects and arrays', () => {
       const validator = valueAt(['a'], tString());
 
-      expect(validator.run('abc')).toMatchObject({
+      expect(validator.check('abc')).toMatchObject({
         ok: false,
         error: {at: 'input.a', message: 'expected an object, got a string'}
       });
-      expect(validator.run(true)).toMatchObject({
+      expect(validator.check(true)).toMatchObject({
         ok: false,
         error: {at: 'input.a', message: 'expected an object, got a boolean'}
       });
@@ -887,7 +887,7 @@ describe('valueAt', () => {
     it('fails when a feild in the path does not correspond to a data object', () => {
       const validator = valueAt(['a', 'b', 'c'], tString());
 
-      const error = validator.run({a: {b: 1}});
+      const error = validator.check({a: {b: 1}});
       expect(error).toMatchObject({
         ok: false,
         error: {at: 'input.a.b.c', message: 'expected an object, got a number'}
@@ -897,7 +897,7 @@ describe('valueAt', () => {
     it('fails when an index in the path does not correspond to a data array', () => {
       const validator = valueAt([0, 0, 1], tString());
 
-      const error = validator.run([[false]]);
+      const error = validator.check([[false]]);
       expect(error).toMatchObject({
         ok: false,
         error: {at: 'input[0][0][1]', message: 'expected an array, got a boolean'}
@@ -908,7 +908,7 @@ describe('valueAt', () => {
   it('validates the input when given an empty path', () => {
     const validator = valueAt([], tNumber());
 
-    expect(validator.run(12)).toEqual({ok: true, result: 12});
+    expect(validator.check(12)).toEqual({ok: true, result: 12});
   });
 });
 
@@ -916,8 +916,8 @@ describe('succeed', () => {
   const validator = succeed(12345);
 
   it('always validates the input as the same value', () => {
-    expect(validator.run('pancakes')).toEqual({ok: true, result: 12345});
-    expect(validator.run(5)).toEqual({ok: true, result: 12345});
+    expect(validator.check('pancakes')).toEqual({ok: true, result: 12345});
+    expect(validator.check(5)).toEqual({ok: true, result: 12345});
   });
 });
 
@@ -926,11 +926,11 @@ describe('fail', () => {
   const validator = fail(wisdom);
 
   it('always fails and returns the same error message', () => {
-    expect(validator.run('pancakes')).toMatchObject({
+    expect(validator.check('pancakes')).toMatchObject({
       ok: false,
       error: {at: 'input', message: wisdom}
     });
-    expect(validator.run(5)).toMatchObject({ok: false, error: {at: 'input', message: wisdom}});
+    expect(validator.check(5)).toMatchObject({ok: false, error: {at: 'input', message: wisdom}});
   });
 });
 
@@ -939,11 +939,11 @@ describe('lazy', () => {
     const validator = lazy(() => tString());
 
     it('can validate type as normal', () => {
-      expect(validator.run('hello')).toEqual({ok: true, result: 'hello'});
+      expect(validator.check('hello')).toEqual({ok: true, result: 'hello'});
     });
 
     it('does not alter the error message', () => {
-      expect(validator.run(5)).toMatchObject({
+      expect(validator.check(5)).toMatchObject({
         ok: false,
         error: {at: 'input', message: 'expected a string, got a number'}
       });
@@ -964,7 +964,7 @@ describe('lazy', () => {
     it('can validate the data structure', () => {
       const tree = {msg: 'hey', replies: [{msg: 'hi', replies: []}]};
 
-      expect(validator.run(tree)).toEqual({
+      expect(validator.check(tree)).toEqual({
         ok: true,
         result: {msg: 'hey', replies: [{msg: 'hi', replies: []}]}
       });
@@ -973,7 +973,7 @@ describe('lazy', () => {
     it('fails when a nested value is invalid', () => {
       const badTree = {msg: 'hey', replies: [{msg: 'hi', replies: ['hello']}]};
 
-      expect(validator.run(badTree)).toMatchObject({
+      expect(validator.check(badTree)).toMatchObject({
         ok: false,
         error: {at: 'input.replies[0].replies[0]', message: 'expected an object, got a string'}
       });
@@ -1005,7 +1005,7 @@ describe('runPromise', () => {
 describe('runWithException', () => {
   const validator = tBoolean();
 
-  it('can run a validator and return the successful value', () => {
+  it('can check a validator and return the successful value', () => {
     expect(validator.runWithException(false)).toBe(false);
   });
 
@@ -1027,23 +1027,44 @@ describe('runWithException', () => {
   });
 });
 
+describe('runWithSuccess', () => {
+  const validator = tNumber();
+
+  it('can check a validator and return the successful value', () => {
+    expect(validator.runWithSuccess(42)).toBe(true);
+  });
+
+  it('can check a validator and return the unsuccessful value', () => {
+    expect(validator.runWithSuccess('xy')).toBe(false);
+  });
+
+  it('logs an error when the validator fails', () => {
+    let theError: string;
+
+    validator.runWithSuccess('xy', (err: string) => { theError = err; });
+    expect(theError).toBe('sdfsjdf');
+  });
+
+});
+
+
 describe('map', () => {
   it('can apply the identity function to the validator', () => {
     const validator = tString().map(x => x);
 
-    expect(validator.run('hey there')).toEqual({ok: true, result: 'hey there'});
+    expect(validator.check('hey there')).toEqual({ok: true, result: 'hey there'});
   });
 
   it('can apply an endomorphic function to the validator', () => {
     const validator = tNumber().map(x => x * 5);
 
-    expect(validator.run(10)).toEqual({ok: true, result: 50});
+    expect(validator.check(10)).toEqual({ok: true, result: 50});
   });
 
   it('can apply a function that transforms the type', () => {
     const validator = tString().map(x => x.length);
 
-    expect(validator.run('hey')).toEqual({ok: true, result: 3});
+    expect(validator.check('hey')).toEqual({ok: true, result: 3});
   });
 });
 
@@ -1062,16 +1083,16 @@ describe('andThen', () => {
     });
 
     it('can validate using both the first and second validator', () => {
-      expect(validator.run({version: 5, x: 'bootsncats'})).toMatchObject({
+      expect(validator.check({version: 5, x: 'bootsncats'})).toMatchObject({
         ok: false,
         error: {at: 'input', message: 'Unable to validate info, version 5 is not supported.'}
       });
 
-      expect(validator.run({version: 3, a: true})).toEqual({ok: true, result: {a: true}});
+      expect(validator.check({version: 3, a: true})).toEqual({ok: true, result: {a: true}});
     });
 
     it('fails when the first validator fails', () => {
-      expect(validator.run({version: null, a: true})).toMatchObject({
+      expect(validator.check({version: null, a: true})).toMatchObject({
         ok: false,
         error: {at: 'input.version', message: 'expected a number, got null'}
       });
@@ -1079,7 +1100,7 @@ describe('andThen', () => {
 
     it('fails when the second validator fails', () => {
       const data = {version: 3, a: 1};
-      expect(validator.run(data)).toMatchObject({
+      expect(validator.check(data)).toMatchObject({
         ok: false,
         error: {at: 'input.a', message: 'expected a boolean, got a number'}
       });
@@ -1098,12 +1119,12 @@ describe('andThen', () => {
             : fail(`expected a non-empty array, got an empty array`)
       );
 
-    expect(nonEmptyArrayValidator(tNumber()).run([1, 2, 3])).toEqual({
+    expect(nonEmptyArrayValidator(tNumber()).check([1, 2, 3])).toEqual({
       ok: true,
       result: [1, 2, 3]
     });
 
-    expect(nonEmptyArrayValidator(tNumber()).run([])).toMatchObject({
+    expect(nonEmptyArrayValidator(tNumber()).check([])).toMatchObject({
       ok: false,
       error: {message: 'expected a non-empty array, got an empty array'}
     });
@@ -1121,30 +1142,30 @@ describe('where', () => {
     );
 
   it('can test for strings of a given length', () => {
-    expect(chars(7).run('7777777')).toEqual({ok: true, result: '7777777'});
+    expect(chars(7).check('7777777')).toEqual({ok: true, result: '7777777'});
 
-    expect(chars(7).run('666666')).toMatchObject({
+    expect(chars(7).check('666666')).toMatchObject({
       ok: false,
       error: {message: 'expected a string of length 7'}
     });
   });
 
   it('can test for numbers in a given range', () => {
-    expect(range(1, 9).run(7)).toEqual({ok: true, result: 7});
+    expect(range(1, 9).check(7)).toEqual({ok: true, result: 7});
 
-    expect(range(1, 9).run(12)).toMatchObject({
+    expect(range(1, 9).check(12)).toMatchObject({
       ok: false,
       error: {message: 'expected a number between 1 and 9'}
     });
   });
 
   it('reports when the base validator fails', () => {
-    expect(chars(7).run(false)).toMatchObject({
+    expect(chars(7).check(false)).toMatchObject({
       ok: false,
       error: {message: 'expected a string, got a boolean'}
     });
 
-    expect(range(0, 1).run(null)).toMatchObject({
+    expect(range(0, 1).check(null)).toMatchObject({
       ok: false,
       error: {message: 'expected a number, got null'}
     });
@@ -1152,22 +1173,22 @@ describe('where', () => {
 });
 
 describe('Result', () => {
-  describe('can run a validator with default value', () => {
+  describe('can check a validator with default value', () => {
     const validator = tNumber();
 
     it('succeeds with the value', () => {
-      expect(Result.withDefault(0, validator.run(12))).toEqual(12);
+      expect(Result.withDefault(0, validator.check(12))).toEqual(12);
     });
 
     it('succeeds with the default value instead of failing', () => {
-      expect(Result.withDefault(0, validator.run('999'))).toEqual(0);
+      expect(Result.withDefault(0, validator.check('999'))).toEqual(0);
     });
   });
 
   it('can return successes from an array of validated values', () => {
     const data: unknown = [1, true, 2, 3, 'five', 4, []];
-    const dataArray: unknown[] = Result.withDefault([], tArray().run(data));
-    const numbers: number[] = Result.successes(dataArray.map(tNumber().run));
+    const dataArray: unknown[] = Result.withDefault([], tArray().check(data));
+    const numbers: number[] = Result.successes(dataArray.map(tNumber().check));
 
     expect(numbers).toEqual([1, 2, 3, 4]);
   });

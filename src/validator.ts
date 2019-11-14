@@ -1,8 +1,9 @@
 import * as Result from './result';
 const isEqual = require('lodash.isequal'); // this syntax avoids TS1192
 
+
 /**
- * Information describing how a type check failed.
+ * Information describing how a validation failed.
  * Includes the input path (.at) and value showing
  * where and why and on what value it failed.
  */
@@ -14,7 +15,7 @@ export interface ValidatorError {
 }
 
 /**
- * Alias for the result of the `Validator.run` method. On success returns `Ok`
+ * Alias for the result of the `Validator.check` method. On success returns `Ok`
  * with the validated value of type `A`, on failure returns `Err` containing a
  * `ValidatorError`.
  */
@@ -23,7 +24,7 @@ type RunResult<A> = Result.Result<A, ValidatorError>;
 /**
  * Alias for the result of the internal `Validator.validate` method. Since `validate`
  * is a private function it returns a partial validator error on failure, which
- * will be completed and polished when handed off to the `run` method.
+ * will be completed and polished when handed off to the `check` method.
  */
 type ValidateResult<A> = Result.Result<A, Partial<ValidatorError>>;
 
@@ -114,11 +115,11 @@ const prependAt = (newAt: string, {at, ...rest}: Partial<ValidatorError>): Parti
  * defined at `Validator.string()`, but is also aliased to `string()`. Using the
  * function aliases exported with the library is recommended.
  *
- * `Validator` exposes a number of 'run' methods, which all validate data in the
+ * `Validator` exposes a number of 'check' methods, which all validate data in the
  * same way, but communicate success and failure in different ways. The `map`
- * and `andThen` methods modify validators without having to call a 'run' method.
+ * and `andThen` methods modify validators without having to call a 'check' method.
  *
- * Alternatively, the main validator `run()` method returns an object of type
+ * Alternatively, the main validator `check()` method returns an object of type
  * `Result<A, ValidatorError>`. This library provides a number of helper
  * functions for dealing with the `Result` type, so you can do all the same
  * things with a `Result` as with the validator methods.
@@ -126,10 +127,10 @@ const prependAt = (newAt: string, {at, ...rest}: Partial<ValidatorError>): Parti
 export class Validator<A> {
   /**
    * The Validator class constructor is kept private to separate the internal
-   * `validate` function from the external `run` function. The distinction
+   * `validate` function from the external `check` function. The distinction
    * between the two functions is that `validate` returns a
    * `Partial<ValidatorError>` on failure, which contains an unfinished error
-   * report. When `run` is called on a validator, the relevant series of `validate`
+   * report. When `check` is called on a validator, the relevant series of `validate`
    * calls is made, and then on failure the resulting `Partial<ValidatorError>`
    * is turned into a `ValidatorError` by filling in the missing information.
    *
@@ -271,10 +272,10 @@ export class Validator<A> {
    *
    * Example:
    * ```
-   * tObject({x: tNumber(), y: tNumber()}).run({x: 5, y: 10})
+   * tObject({x: tNumber(), y: tNumber()}).check({x: 5, y: 10})
    * // => {ok: true, result: {x: 5, y: 10}}
    *
-   * tObject().map(Object.keys).run({n: 1, i: [], c: {}, e: 'e'})
+   * tObject().map(Object.keys).check({n: 1, i: [], c: {}, e: 'e'})
    * // => {ok: true, result: ['n', 'i', 'c', 'e']}
    * ```
    */
@@ -306,14 +307,14 @@ export class Validator<A> {
 
   /**
    * Same as tObject but will return an error if input field names are added
-   * beyond those defined by the run-time type (interface).
+   * beyond those defined by the check-time type (interface).
    *
    * Example:
    * ```
-   * tObject({x: tNumber(), y: tNumber()}).run({x: 5, y: 10})
+   * tObject({x: tNumber(), y: tNumber()}).check({x: 5, y: 10})
    * // => {ok: true, result: {x: 5, y: 10}}
    *
-   * tObject().map(Object.keys).run({n: 1, i: [], c: {}, e: 'e'})
+   * tObject().map(Object.keys).check({n: 1, i: [], c: {}, e: 'e'})
    * // => {ok: true, result: ['n', 'i', 'c', 'e']}
    * ```
    */
@@ -358,24 +359,24 @@ export class Validator<A> {
    *
    * Examples:
    * ```
-   * tArray(tNumber()).run([1, 2, 3])
+   * tArray(tNumber()).check([1, 2, 3])
    * // => {ok: true, result: [1, 2, 3]}
    *
-   * tArray(tArray(tBoolean())).run([[true], [], [true, false, false]])
+   * tArray(tArray(tBoolean())).check([[true], [], [true, false, false]])
    * // => {ok: true, result: [[true], [], [true, false, false]]}
    *
    *
    * const validNumbersValidator = tArray()
-   *   .map((arr: unknown[]) => arr.map(tNumber().run))
+   *   .map((arr: unknown[]) => arr.map(tNumber().check))
    *   .map(Result.successes)
    *
-   * validNumbersValidator.run([1, true, 2, 3, 'five', 4, []])
+   * validNumbersValidator.check([1, true, 2, 3, 'five', 4, []])
    * // {ok: true, result: [1, 2, 3, 4]}
    *
-   * validNumbersValidator.run([false, 'hi', {}])
+   * validNumbersValidator.check([false, 'hi', {}])
    * // {ok: true, result: []}
    *
-   * validNumbersValidator.run(false)
+   * validNumbersValidator.check(false)
    * // {ok: false, error: {..., message: "expected an array, got a boolean"}}
    * ```
    */
@@ -407,7 +408,7 @@ export class Validator<A> {
    *
    * Example:
    * ```
-   * tuple([tNumber(), tNumber(), string()]).run([5, 10, 'px'])
+   * tuple([tNumber(), tNumber(), string()]).check([5, 10, 'px'])
    * // => {ok: true, result: [5, 10, 'px']}
    * ```
    */
@@ -451,7 +452,7 @@ export class Validator<A> {
    *
    * Example:
    * ```
-   * tDict(tNumber()).run({chocolate: 12, vanilla: 10, mint: 37});
+   * tDict(tNumber()).check({chocolate: 12, vanilla: 10, mint: 37});
    * // => {ok: true, result: {chocolate: 12, vanilla: 10, mint: 37}}
    * ```
    */
@@ -498,7 +499,7 @@ export class Validator<A> {
     );
 
   /**
-   * Validator that attempts to run each validator in `validators` and either succeeds
+   * Validator that attempts to check each validator in `validators` and either succeeds
    * with the first successful validator, or fails after all validators have failed.
    *
    * Note that `oneOf` expects the validators to all have the same return type,
@@ -610,10 +611,10 @@ export class Validator<A> {
    * ```
    * const validator = valueAt(['a', 'b', 0], string());
    *
-   * validator.run({a: {b: ['surprise!']}})
+   * validator.check({a: {b: ['surprise!']}})
    * // => {ok: true, result: 'surprise!'}
    *
-   * validator.run({a: {x: 'cats'}})
+   * validator.check({a: {x: 'cats'}})
    * // => {ok: false, error: {... at: 'input.a.b[0]' message: 'path does not exist'}}
    * ```
    *
@@ -623,13 +624,13 @@ export class Validator<A> {
    * ```
    * const optionalValidator = valueAt(['a', 'b', 'c'], optional(string()));
    *
-   * optionalValidator.run({a: {b: {c: 'surprise!'}}})
+   * optionalValidator.check({a: {b: {c: 'surprise!'}}})
    * // => {ok: true, result: 'surprise!'}
    *
-   * optionalValidator.run({a: {b: 'cats'}})
+   * optionalValidator.check({a: {b: 'cats'}})
    * // => {ok: false, error: {... at: 'input.a.b.c' message: 'expected an object, got "cats"'}
    *
-   * optionalValidator.run({a: {b: {z: 1}}})
+   * optionalValidator.check({a: {b: {z: 1}}})
    * // => {ok: true, result: undefined}
    * ```
    */
@@ -707,10 +708,10 @@ export class Validator<A> {
    *
    * Examples:
    * ```
-   * tNumber().run(12)
+   * tNumber().check(12)
    * // => {ok: true, result: 12}
    *
-   * string().run(9001)
+   * string().check(9001)
    * // =>
    * // {
    * //   ok: false,
@@ -723,7 +724,7 @@ export class Validator<A> {
    * // }
    * ```
    */
-  run = (data: unknown): RunResult<A> =>
+  check = (data: unknown): RunResult<A> =>
     Result.mapError(
       error => ({
         kind: 'ValidatorError' as 'ValidatorError',
@@ -752,7 +753,7 @@ export class Validator<A> {
    *
    * Example:
    * ```
-   * tNumber().map(x => x * 5).run(10)
+   * tNumber().map(x => x * 5).check(10)
    * // => {ok: true, result: 50}
    * ```
    */
@@ -760,8 +761,8 @@ export class Validator<A> {
     new Validator<B>((data: unknown) => Result.map(f, this.validate(data)));
 
   /**
-   * Chain together a sequence of validators. The first validator will run, and
-   * then the function will determine what validator to run second. If the result
+   * Chain together a sequence of validators. The first validator will check, and
+   * then the function will determine what validator to check second. If the result
    * of the first validator succeeds then `f` will be applied to the validated
    * value. If it fails the error will propagate through.
    *
@@ -783,10 +784,10 @@ export class Validator<A> {
    *   }
    * });
    *
-   * validator.run({version: 3, a: true})
+   * validator.check({version: 3, a: true})
    * // => {ok: true, result: {a: true}}
    *
-   * validator.run({version: 5, x: 'abc'})
+   * validator.check({version: 5, x: 'abc'})
    * // =>
    * // {
    * //   ok: false,
@@ -825,13 +826,13 @@ export class Validator<A> {
    *     `expected a string of length ${length}`
    *   );
    *
-   * chars(5).run('12345')
+   * chars(5).check('12345')
    * // => {ok: true, result: '12345'}
    *
-   * chars(2).run('HELLO')
+   * chars(2).check('HELLO')
    * // => {ok: false, error: {... message: 'expected a string of length 2'}}
    *
-   * chars(12).run(true)
+   * chars(12).check(true)
    * // => {ok: false, error: {... message: 'expected a string, got a boolean'}}
    * ```
    */

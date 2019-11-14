@@ -87,7 +87,7 @@ describe('validate phone number objects', () => {
       }
     ];
 
-    expect(phonesValidator.run(data)).toEqual({ok: true, result: data});
+    expect(phonesValidator.check(data)).toEqual({ok: true, result: data});
   });
 
   it('fails when an object is neither an international or domestic phone', () => {
@@ -105,7 +105,7 @@ describe('validate phone number objects', () => {
       }
     ];
 
-    const error = phonesValidator.run(data);
+    const error = phonesValidator.check(data);
     expect(error).toMatchObject({
       ok: false,
       error: {

@@ -31,7 +31,7 @@ describe('create tagged data objects', () => {
   );
 
   it('maps data to tagged data', () => {
-    expect(taggedJsonValidator.run(data)).toEqual({
+    expect(taggedJsonValidator.check(data)).toEqual({
       ok: true,
       result: {
         tag: 'array',
