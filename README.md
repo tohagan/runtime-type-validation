@@ -1,26 +1,29 @@
-# Run-time Type Validation
+# Runtime Type Checking and Validation for TypeScript or JavaScript
 
 A **light weight** library to perform run-time type checking and validation for
 [TypeScript](https://www.typescriptlang.org/) and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript).
 
-## Features:
+## Features
 
-- Tiny foot print
+- Small foot print
 - Concise functional composition makes it easily extensible (often a "one liner")
-- Detailed validation error reporting.
-- Helper functions convert the validation result to:
-  - JSON result for your own custom mapping.
+- Detailed error reporting.
+- Helper functions convert a validation result to:
+  - Error or cleaned data result for your own custom mapping.
   - An exception
-  - A success/fail boolean (with logging) - Useful for component property validation
+  - A success/fail boolean (with console logging)
+    - Useful for Vue/React component property validation
 
-## Applications:
+## Applications
 
 - Validate and filter client or server side payloads.
 - Validate function arguments
 - Validate component properties
 - Assist in unit testing
 
-This library owes thanks to:
+## Acknowledgements
+
+This library is evolution owes thanks to:
 
 - [TypeScript JSON type validation](https://github.com/mojotech/json-type-validation) by Elias Mulhall
 - [JsonDecoder](https://github.com/aische/JsonDecoder) by Daniel van den Eijkel
@@ -38,8 +41,12 @@ type, such as [unknown-ts](https://www.npmjs.com/package/unknown-ts).
 
 ## Motivation
 
+For JavaScript projects:
+
+TypeScript provides excellent compile
+
 Let's say we're creating a web app for our pet sitting business, and we've
-picked TypeScript as one of our core technologies. This is a great choice
+picked TypeScript or as one of our core technologies. This is a great choice
 because the extra stability and type safety that TypeScript provides is really
 going to help us market our business.
 
