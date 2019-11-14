@@ -9,6 +9,7 @@ import {
   tUnknown,
   constant,
   tObject,
+  tObjectStrict,
   tArray,
   tDict,
   optional,
@@ -63,6 +64,13 @@ describe('tNumber', () => {
     expect(decoder.run('hey')).toMatchObject({
       ok: false,
       error: {at: 'input', message: 'expected a number, got a string'}
+    });
+  });
+
+  it('fails when given a symbol', () => {
+    expect(decoder.run(Symbol())).toMatchObject({
+      ok: false,
+      error: {at: 'input', message: 'expected a number, got a symbol'}
     });
   });
 
@@ -275,6 +283,109 @@ describe('tObject', () => {
 
   it('ignores optional fields that decode to undefined', () => {
     const decoder = tObject({
+      a: tNumber(),
+      b: optional(tString())
+    });
+
+    expect(decoder.run({a: 12, b: 'hats'})).toEqual({ok: true, result: {a: 12, b: 'hats'}});
+    expect(decoder.run({a: 12})).toEqual({ok: true, result: {a: 12}});
+  });
+
+  it('decodes any object when the object shape is not specified', () => {
+    const objectKeysDecoder: Decoder<string[]> = tObject().map(Object.keys);
+
+    expect(objectKeysDecoder.run({n: 1, i: [], c: {}, e: 'e'})).toEqual({
+      ok: true,
+      result: ['n', 'i', 'c', 'e']
+    });
+  });
+});
+
+describe('tObjectStrict', () => {
+
+  describe('when given valid JSON', () => {
+    it('can decode a simple object', () => {
+      const decoder = tObjectStrict({x: tNumber()});
+
+      expect(decoder.run({x: 5})).toMatchObject({ok: true, result: {x: 5}});
+    });
+
+    it('can decode a nested object', () => {
+      const decoder = tObjectStrict({
+        payload: tObjectStrict({x: tNumber(), y: tNumber()}),
+        error: constant(false)
+      });
+      const json = {payload: {x: 5, y: 2}, error: false};
+
+      expect(decoder.run(json)).toEqual({ok: true, result: json});
+    });
+  });
+
+  describe('when given incorrect JSON', () => {
+    it('fails when not given an object', () => {
+      const decoder = tObjectStrict({x: tNumber()});
+
+      expect(decoder.run('true')).toMatchObject({
+        ok: false,
+        error: {at: 'input', message: 'expected an object, got a string'}
+      });
+    });
+
+    it('fails when given an array', () => {
+      const decoder = tObjectStrict({x: tNumber()});
+
+      expect(decoder.run([])).toMatchObject({
+        ok: false,
+        error: {at: 'input', message: 'expected an object, got an array'}
+      });
+    });
+
+    it('reports a missing key', () => {
+      const decoder = tObjectStrict({x: tNumber()});
+
+      expect(decoder.run({})).toMatchObject({
+        ok: false,
+        error: {at: 'input', message: "the key 'x' is required but was not present"}
+      });
+    });
+
+    it('reports an added (non-strict) key', () => {
+      const decoder = tObjectStrict({x: tNumber()});
+
+      expect(decoder.run({x: 3, added: 7})).toMatchObject({
+        ok: false,
+        error: {at: 'input', message: "an undefined key 'added' is present in the object"}
+      });
+    });
+
+    it('reports invalid values', () => {
+      const decoder = tObjectStrict({name: tString()});
+
+      expect(decoder.run({name: 5})).toMatchObject({
+        ok: false,
+        error: {at: 'input.name', message: 'expected a string, got a number'}
+      });
+    });
+
+    it('properly displays nested errors', () => {
+      const decoder = tObjectStrict({
+        hello: tObjectStrict({
+          hey: tObjectStrict({
+            'Howdy!': tString()
+          })
+        })
+      });
+
+      const error = decoder.run({hello: {hey: {'Howdy!': {}}}});
+      expect(error).toMatchObject({
+        ok: false,
+        error: {at: 'input.hello.hey.Howdy!', message: 'expected a string, got an object'}
+      });
+    });
+  });
+
+  it('ignores optional fields that decode to undefined', () => {
+    const decoder = tObjectStrict({
       a: tNumber(),
       b: optional(tString())
     });
