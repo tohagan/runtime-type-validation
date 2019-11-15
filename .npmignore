@@ -1,8 +1,6 @@
 .git/
 .rpt2_cache/
-bin/
 coverage/
-nix-files/
 node_modules/
 src/
 test/
