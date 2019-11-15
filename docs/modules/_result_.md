@@ -36,9 +36,9 @@
 Ƭ **Result**: *[Ok](../interfaces/_result_.ok.md)‹V› | [Err](../interfaces/_result_.err.md)‹E›*
 
 The result of a computation that may fail. The validating function
-`Validator.check` returns a `Result`. The value of a `Result` is either `Ok` if
-the computation succeeded, or `Err` if there was some failure in the
-process.
+`Validator.check(input)` checks the input value and returns a `Result`.
+The value of a `Result` is either `Ok` if  the input is valid,
+or `Err` if the input was invalid.
 
 ## Functions
 

@@ -2,7 +2,7 @@
 
 # Class: Validator <**A**>
 
-Validators transform data objects with unknown structure into known and
+Validators can transform data objects with unknown structure into known and
 verified forms. You can create objects of type `Validator<A>` with either the
 primitive validator functions, such as `tBoolean()` and `tString()`, or by
 applying higher-order validators to the primitives, such as `tArray(tBoolean())`
