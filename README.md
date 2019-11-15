@@ -29,7 +29,7 @@ A **light weight** library to perform run-time type checking and field validatio
 ## Installation
 
 ```
-npm i runtime-validation
+npm i runtime-validator
 ```
 
 Projects using `< typescript@3.0.1` will need a polyfill for the `unknown`
@@ -89,7 +89,7 @@ Example use of `lazy(v)` to validate a recursive type:
 
 ```typescript
 const validator: Validator<Comment> = tObject({
-  msg: string(),
+  msg: tString(),
   replies: lazy(() => tArray(validator)) // self reference
 });
 ```
@@ -111,7 +111,7 @@ with it, and can be cumbersome to write.
 
 ```typescript
 
-import { Validator, tObject, tString, tNumber, tBoolean, optional } from 'runtime-validation'
+import { Validator, tObject, tString, tNumber, tBoolean, optional } from 'runtime-validator'
 
 interface Pet {
   name: string;
@@ -148,7 +148,7 @@ The `asSuccess` modifier matches the call signature of this validator interface 
 
 ```javascript
 
-import { tObject, tString, tNumber, tBoolean, optional } from 'runtime-validation'
+import { tObject, tString, tNumber, tBoolean, optional } from 'runtime-validator'
 
 // VueJs component
 export default {

@@ -655,7 +655,7 @@ describe('tDict', () => {
 });
 
 describe('optional', () => {
-  describe('decoding a non-object type', () => {
+  describe('validating a non-object type', () => {
     const validator = optional(tNumber());
 
     it('can validate the given type', () => {
@@ -674,7 +674,7 @@ describe('optional', () => {
     });
   });
 
-  describe('decoding an interface with optional fields', () => {
+  describe('validating an interface with optional fields', () => {
     interface User {
       id: number;
       isDog?: boolean;
@@ -707,20 +707,17 @@ describe('oneOf() with validators', () => {
   describe('when given valid input', () => {
     it('can validate a value with a single alternative', () => {
       const validator = oneOf(tString());
-
       expect(validator.check('yo')).toEqual({ok: true, result: 'yo'});
     });
 
     it('can validate a value with multiple alternatives', () => {
       const validator = tArray(oneOf(tString().map(s => s.length), tNumber()));
-
       expect(validator.check(['hey', 10])).toEqual({ok: true, result: [3, 10]});
     });
   });
 
   it('fails when a value does not match any validator', () => {
     const validator = oneOf(tString(), tNumber().map(String));
-
     expect(validator.check([])).toMatchObject({
       ok: false,
       error: {
@@ -877,7 +874,7 @@ describe('intersection', () => {
 describe('withDefault', () => {
   const validator = withDefault('puppies', tString());
 
-  it('uses the data value when decoding is successful', () => {
+  it('uses the data value when validating is successful', () => {
     expect(validator.check('pancakes')).toEqual({ok: true, result: 'pancakes'});
   });
 
@@ -1009,7 +1006,7 @@ describe('fail', () => {
 });
 
 describe('lazy', () => {
-  describe('decoding a primitive data type', () => {
+  describe('validating a primitive data type', () => {
     const validator = lazy(() => tString());
 
     it('can validate type as normal', () => {
@@ -1024,7 +1021,7 @@ describe('lazy', () => {
     });
   });
 
-  describe('decoding a recursive data structure', () => {
+  describe('validating a recursive data structure', () => {
     interface Comment {
       msg: string;
       replies: Comment[];

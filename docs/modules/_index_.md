@@ -1,4 +1,4 @@
-[runtime-type-validation](../README.md) › [Globals](../globals.md) › ["index"](_index_.md)
+[runtime-validator](../README.md) › [Globals](../globals.md) › ["index"](_index_.md)
 
 # External module: "index"
 

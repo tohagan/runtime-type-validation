@@ -1,4 +1,4 @@
-[runtime-type-validation](../README.md) › [Globals](../globals.md) › ["result"](../modules/_result_.md) › [Err](_result_.err.md)
+[runtime-validator](../README.md) › [Globals](../globals.md) › ["result"](../modules/_result_.md) › [Err](_result_.err.md)
 
 # Interface: Err <**E**>
 

@@ -1,4 +1,4 @@
-[runtime-type-validation](../README.md) › [Globals](../globals.md) › ["result"](_result_.md)
+[runtime-validator](../README.md) › [Globals](../globals.md) › ["result"](_result_.md)
 
 # External module: "result"
 
@@ -35,7 +35,7 @@
 
 Ƭ **Result**: *[Ok](../interfaces/_result_.ok.md)‹V› | [Err](../interfaces/_result_.err.md)‹E›*
 
-The result of a computation that may fail. The decoding function
+The result of a computation that may fail. The validating function
 `Validator.check` returns a `Result`. The value of a `Result` is either `Ok` if
 the computation succeeded, or `Err` if there was some failure in the
 process.

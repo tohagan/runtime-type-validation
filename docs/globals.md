@@ -1,6 +1,6 @@
-[runtime-type-validation](README.md) › [Globals](globals.md)
+[runtime-validator](README.md) › [Globals](globals.md)
 
-# runtime-type-validation
+# runtime-validator
 
 ## Index
 

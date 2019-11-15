@@ -1,4 +1,4 @@
-[runtime-type-validation](../README.md) › [Globals](../globals.md) › ["result"](../modules/_result_.md) › [Ok](_result_.ok.md)
+[runtime-validator](../README.md) › [Globals](../globals.md) › ["result"](../modules/_result_.md) › [Ok](_result_.ok.md)
 
 # Interface: Ok <**V**>
 

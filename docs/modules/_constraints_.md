@@ -1,4 +1,4 @@
-[runtime-type-validation](../README.md) › [Globals](../globals.md) › ["constraints"](_constraints_.md)
+[runtime-validator](../README.md) › [Globals](../globals.md) › ["constraints"](_constraints_.md)
 
 # External module: "constraints"
 

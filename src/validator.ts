@@ -44,7 +44,7 @@ type ValidateResult<A> = Result.Result<A, Partial<ValidatorError>>;
  *
  * const validatorObject: ValidatorObject<X> = {
  *   a: tBoolean(),
- *   b: string()
+ *   b: tString()
  * }
  * ```
  */
@@ -111,15 +111,15 @@ const prependAt = (newAt: string, {at, ...rest}: Partial<ValidatorError>): Parti
 });
 
 /**
- * Validators transform data objects with unknown structure into known and
+ * Validators can transform data objects with unknown structure into known and
  * verified forms. You can create objects of type `Validator<A>` with either the
- * primitive validator functions, such as `tBoolean()` and `string()`, or by
+ * primitive validator functions, such as `tBoolean()` and `tString()`, or by
  * applying higher-order validators to the primitives, such as `tArray(tBoolean())`
- * or `tDict(string())`.
+ * or `tDict(tString())`.
  *
  * Each of the validator functions are available both as a static method on
  * `Validator` and as a function alias -- for example the string validator is
- * defined at `Validator.string()`, but is also aliased to `string()`. Using the
+ * defined at `Validator.tString()`, but is also aliased to `tString()`. Using the
  * function aliases exported with the library is recommended.
  *
  * `Validator` exposes a number of 'check' methods, which all validate data in the
@@ -281,7 +281,7 @@ export class Validator<A> {
    * contents, typing the result as a record where all keys have a value of
    * type `unknown`.
    *
-   * The `optional` and `constant` validators are particularly useful for decoding
+   * The `optional` and `constant` validators are particularly useful for validating
    * objects that match typescript interfaces.
    *
    * To validate a single field that is inside of an object see `valueAt`.
@@ -424,7 +424,7 @@ export class Validator<A> {
    *
    * Example:
    * ```
-   * tuple([tNumber(), tNumber(), string()]).check([5, 10, 'px'])
+   * tuple([tNumber(), tNumber(), tString()]).check([5, 10, 'px'])
    * // => {ok: true, result: [5, 10, 'px']}
    * ```
    */
@@ -494,7 +494,7 @@ export class Validator<A> {
 
   /**
    * Validator for values that may be `undefined`. This is primarily helpful for
-   * decoding interfaces with optional fields.
+   * validating interfaces with optional fields.
    *
    * Example:
    * ```
@@ -524,7 +524,7 @@ export class Validator<A> {
    *
    * Examples:
    * ```
-   * oneOf(string(), tNumber().map(String))
+   * oneOf(tString(), tNumber().map(String))
    * oneOf(constant('start'), constant('stop'), succeed('unknown'))
    * oneOf('start', 'stop', 'unknown')
    * oneOf(23, 45, 67)
@@ -564,8 +564,8 @@ export class Validator<A> {
    * ```
    * type C = {a: string} | {b: number};
    *
-   * const unionValidator: Validator<C> = union(tObject({a: string()}), tObject({b: tNumber()}));
-   * const oneOfValidator: Validator<C> = oneOf(tObject<C>({a: string()}), tObject<C>({b: tNumber()}));
+   * const unionValidator: Validator<C> = union(tObject({a: tString()}), tObject({b: tNumber()}));
+   * const oneOfValidator: Validator<C> = oneOf(tObject<C>({a: tString()}), tObject<C>({b: tNumber()}));
    * ```
    */
   static union <A, B>(ad: Validator<A>, bd: Validator<B>): Validator<A | B>; // prettier-ignore
@@ -593,7 +593,7 @@ export class Validator<A> {
    *   evil: boolean;
    * }
    *
-   * const petValidator: Validator<Pet> = tObject({name: string(), maxLegs: tNumber()});
+   * const petValidator: Validator<Pet> = tObject({name: tString(), maxLegs: tNumber()});
    * const catValidator: Validator<Cat> = intersection(petValidator, tObject({evil: tBoolean()}));
    * ```
    */
@@ -624,13 +624,13 @@ export class Validator<A> {
 
   /**
    * Validator that pulls a specific field out of a data structure, instead of
-   * decoding and returning the full structure. The `paths` array describes the
+   * validating and returning the full structure. The `paths` array describes the
    * object keys and array indices to traverse, so that values can be pulled out
    * of a nested structure.
    *
    * Example:
    * ```
-   * const validator = valueAt(['a', 'b', 0], string());
+   * const validator = valueAt(['a', 'b', 0], tString());
    *
    * validator.check({a: {b: ['surprise!']}})
    * // => {ok: true, result: 'surprise!'}
@@ -643,7 +643,7 @@ export class Validator<A> {
    * path, even if the last key is not found. This allows the `optional`
    * validator to succeed when appropriate.
    * ```
-   * const optionalValidator = valueAt(['a', 'b', 'c'], optional(string()));
+   * const optionalValidator = valueAt(['a', 'b', 'c'], optional(tString()));
    *
    * optionalValidator.check({a: {b: {c: 'surprise!'}}})
    * // => {ok: true, result: 'surprise!'}
@@ -714,7 +714,7 @@ export class Validator<A> {
    * }
    *
    * const validator: Validator<Comment> = tObject({
-   *   msg: string(),
+   *   msg: tString(),
    *   replies: lazy(() => tArray(validator))
    * });
    * ```
@@ -732,7 +732,7 @@ export class Validator<A> {
    * tNumber().check(12)
    * // => {ok: true, result: 12}
    *
-   * string().check(9001)
+   * tString().check(9001)
    * // =>
    * // {
    * //   ok: false,
@@ -822,7 +822,7 @@ export class Validator<A> {
    * // }
    * ```
    *
-   * Example of decoding a custom type:
+   * Example of validating a custom type:
    * ```
    * // nominal type for arrays with a length of at least one
    * type NonEmptyArray<T> = T[] & { __nonEmptyArrayBrand__: void };
@@ -848,7 +848,7 @@ export class Validator<A> {
    *
    * ```
    * const chars = (length: number): Validator<string> =>
-   *   string().where(
+   *   tString().where(
    *     (s: string) => s.length === length,
    *     `expected a string of length ${length}`
    *   );

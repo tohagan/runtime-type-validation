@@ -1,4 +1,4 @@
-[runtime-type-validation](../README.md) › [Globals](../globals.md) › ["validator"](_validator_.md)
+[runtime-validator](../README.md) › [Globals](../globals.md) › ["validator"](_validator_.md)
 
 # External module: "validator"
 
@@ -41,7 +41,7 @@ interface X {
 
 const validatorObject: ValidatorObject<X> = {
   a: tBoolean(),
-  b: string()
+  b: tString()
 }
 ```
 

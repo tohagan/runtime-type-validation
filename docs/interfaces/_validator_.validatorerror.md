@@ -1,4 +1,4 @@
-[runtime-type-validation](../README.md) › [Globals](../globals.md) › ["validator"](../modules/_validator_.md) › [ValidatorError](_validator_.validatorerror.md)
+[runtime-validator](../README.md) › [Globals](../globals.md) › ["validator"](../modules/_validator_.md) › [ValidatorError](_validator_.validatorerror.md)
 
 # Interface: ValidatorError
 
