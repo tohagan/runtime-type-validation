@@ -7,11 +7,10 @@ A **light weight** library to perform run-time type checking and field validatio
 - Easy to learn and read. Simple and fast to extend.
 - Small lib. Optimised for [tree shaking](https://developers.google.com/web/fundamentals/performance/optimizing-javascript/tree-shaking).
 - Use with either [TypeScript](https://www.typescriptlang.org/) OR [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript).
-- Detailed error reporting showing invalid values with their location.
-- Create `Validator` objects that are **concise**, **composable**.
+- Detailed error reporting.
+- Create `Validator` objects that are **concise** and **composable**.
   - Type check against **compile-time** types and interfaces.
   - Validate both **run-time** type and field constraint.
-- Useful for multiple validation contexts and frameworks (Angular, Vue, React, NodeJS)
 - Emit the validation as:
   - A value result OR An exception
   - A Promise result
@@ -49,12 +48,12 @@ Primitive Type              | Description             |
 `tAny()`                    | Matches `any` type. Returns `any` type. |
 `tUndefined()`              | Matches a `undefined` type. Returns `any` type.  |
 `tUnknown()`                | Always succeeds and types the result as `unknown`  |
+`tArray(v)`                 | Matches an `array` containing elements that *all* match validator `v` |
+`tDict(v)`                  | Matches a dictionary `object` with `strings` as keys and values that *all* match `v` |
 
 Combinator                  | Description             |
 --------------------------- | ----------------------- |
 `constant(value)`           | Matches a constant string, number or boolean `value`  |
-`tArray(v)`                 | Matches an `array` containing elements that *all* match validator `v` |
-`tDict(v)`                  | Matches a dictionary `object` with `strings` as keys and values that *all* match `v` |
 `tuple([v1, ... vN])`       | Matches an `array` containing elements that match validators `v1` ... `vN` in sequence |
 `nullable(v)`               | Matches `null` or a value matching `v` |
 `optional(v)`               | Matches `undefined` or a value matching `v` |
