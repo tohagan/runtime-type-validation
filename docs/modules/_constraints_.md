@@ -1,19 +1,19 @@
-[runtime-type-validation](../README.md) › [Globals](../globals.md) › ["extensions"](_extensions_.md)
+[runtime-type-validation](../README.md) › [Globals](../globals.md) › ["constraints"](_constraints_.md)
 
-# External module: "extensions"
+# External module: "constraints"
 
 ## Index
 
 ### Functions
 
-* [chars](_extensions_.md#const-chars)
-* [charsMax](_extensions_.md#const-charsmax)
-* [charsMin](_extensions_.md#const-charsmin)
-* [charsRange](_extensions_.md#const-charsrange)
-* [httpUrl](_extensions_.md#const-httpurl)
-* [matches](_extensions_.md#const-matches)
-* [nullable](_extensions_.md#nullable)
-* [range](_extensions_.md#const-range)
+* [chars](_constraints_.md#const-chars)
+* [charsMax](_constraints_.md#const-charsmax)
+* [charsMin](_constraints_.md#const-charsmin)
+* [charsRange](_constraints_.md#const-charsrange)
+* [httpUrl](_constraints_.md#const-httpurl)
+* [matches](_constraints_.md#const-matches)
+* [nullable](_constraints_.md#nullable)
+* [range](_constraints_.md#const-range)
 
 ## Functions
 

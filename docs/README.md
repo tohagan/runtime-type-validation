@@ -4,34 +4,32 @@
 
 # Runtime type checking & validation
 
-A **light weight** library to perform run-time type checking and field validation for
-[TypeScript](https://www.typescriptlang.org/) and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript).
+A **light weight** library to perform run-time type checking and field validation for TypeScript and JavaScript.
 
 ## Features
 
-- Small lib. Easy to learn and read. Simple to extend.
-- Use with either TypeScript OR JavaScript.
-- Detailed error reporting with nested values and paths.
-- `Validator` objects are concise, composable and type check TS types and interfaces.
-  - Can perform both type checking and value constraint checking (validation).
-- Useful for multiple validation contexts (Angular, Vue, React, NodeJS)
-- Helper functions convert a validation result to:
+- Easy to learn and read. Simple and fast to extend.
+- Small lib. Optimised for [tree shaking](https://developers.google.com/web/fundamentals/performance/optimizing-javascript/tree-shaking).
+- Use with either [TypeScript](https://www.typescriptlang.org/) OR [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript).
+- Detailed error reporting showing invalid values with their location.
+- Create `Validator` objects that are **concise**, **composable**.
+  - Type check against **compile-time** types and interfaces.
+  - Validate both **run-time** type and field constraint.
+- Useful for multiple validation contexts and frameworks (Angular, Vue, React, NodeJS)
+- Emit the validation as:
   - A value result OR An exception
   - A Promise result
   - A success/fail boolean result (logs errors).
-  - Create your own
+  - Create your own!
 
 ## Applications
 
-- Validate and client or server side request/response payloads.
-  - Can either filter out (`tObject`) or prevent (`tObjectStrict`) additional fields.
-- Validate function arguments
+- Validate function call arguments
+- Unit test assertions
+- Validate client or server side request/response payloads.
+  - Can either filter out (`tObject`) or prevent (`tObjectStrict`) undefined fields.
 - Validate component properties (Vue)
-- Unit testing
-
-## Roadmap
-
-- Error reporting could be improved by recording a collection of errors (one per field) to support Form Validation.
+- Create a TypeScript [Type Guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards)
 
 ## Installation
 
@@ -42,9 +40,9 @@ npm i runtime-validation
 Projects using `< typescript@3.0.1` will need a polyfill for the `unknown`
 type, such as [unknown-ts](https://www.npmjs.com/package/unknown-ts).
 
-### API Documentation
+### API Summary
 
-This library uses the [combinator pattern](https://wiki.haskell.org/Combinator_pattern) to build validators.
+This library uses the [combinator pattern](https://wiki.haskell.org/Combinator_pattern) to build a `Validator`.
 
 Primitive Type              | Description             |
 --------------------------- | ----------------------- |
@@ -85,9 +83,12 @@ Value Constraint            | Description             |
 
 Validation Execution           | Description             |
 -----------------------------  | ----------------------- |
-`validator.asException(value)` | Returns validated `value` or throws an exception if invalid. |
-`validator.asPromise(value)`   | Returns a `Promise` that resolves to the validated `value` or rejects with the error. |
-`validator.asSuccess(value)`   | Returns `true` if `value` is valid, otherwise logs the error and returns `false`. |
+`validator.asException(value)` | Returns validated `value`. Throws an exception if invalid. |
+`validator.asPromise(value)`   | Returns a `Promise` that is resolved to the validated `value` or rejected with the error. |
+`validator.asSuccess(value [,logger])` | Returns `true` if `value` is valid, otherwise logs the error and returns `false`. |
+
+NOTE: `validator.asSuccess` is useful in a Vue property validator or in a TypeScript
+[Type Guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards).
 
 Example use of `lazy(v)` to validate a recursive type:
 

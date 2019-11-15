@@ -1,5 +1,5 @@
 import { Validator } from './validator';
-import { union, constant, oneOf, tNumber, tString } from './combinators';
+import { union, constant, tNumber, tString } from './index';
 
 /**
  * Allow null or the type checked value.
