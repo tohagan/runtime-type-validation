@@ -22,6 +22,7 @@
 * [tObject](_combinators_.md#const-tobject)
 * [tObjectStrict](_combinators_.md#const-tobjectstrict)
 * [tString](_combinators_.md#const-tstring)
+* [tUndefined](_combinators_.md#const-tundefined)
 * [tUnknown](_combinators_.md#const-tunknown)
 * [tuple](_combinators_.md#const-tuple)
 * [union](_combinators_.md#const-union)
@@ -64,7 +65,7 @@ ___
 
 ### `Const` oneOf
 
-• **oneOf**: *[oneOf](undefined)* =  Validator.oneOf
+• **oneOf**: *[oneOf](../classes/_validator_.validator.md#static-oneof)* =  Validator.oneOf
 
 See `Validator.oneOf`
 
@@ -155,6 +156,14 @@ ___
 • **tString**: *[tString](../classes/_validator_.validator.md#static-tstring)* =  Validator.tString
 
 See `Validator.tString`
+
+___
+
+### `Const` tUndefined
+
+• **tUndefined**: *[tUndefined](../classes/_validator_.validator.md#static-tundefined)* =  Validator.tUndefined
+
+See `Validator.tUndefined`
 
 ___
 

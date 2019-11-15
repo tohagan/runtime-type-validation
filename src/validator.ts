@@ -51,8 +51,16 @@ type ValidateResult<A> = Result.Result<A, Partial<ValidatorError>>;
 export type ValidatorObject<A> = {[t in keyof A]: Validator<A[t]>};
 
 /**
- * Type guard for `ValidatorError`. One use case of the type guard is in the
- * `catch` of a promise. Typescript types the error argument of `catch` as
+ * Type guard for `Validator`.
+ */
+export const isValidator = <A>(a: any): a is Validator<A> =>
+  typeof a.validate === 'function';
+
+/**
+ * Type guard for `ValidatorError`.
+ *
+ * One use case of the type guard is in the `catch` of a promise.
+ * Typescript types the error argument of `catch` as
  * `any`, so when dealing with a validator as a promise you may need to
  * distinguish between a `ValidatorError` and an error string.
  */
@@ -185,6 +193,15 @@ export class Validator<A> {
         typeof data === 'function'
           ? Result.ok(data)
           : Result.err({message: expectedGot('a function', data)})
+    );
+  }
+
+  static tUndefined(): Validator<any> {
+    return new Validator<any>(
+      (data: unknown) =>
+        typeof data === 'undefined'
+          ? Result.ok(data)
+          : Result.err({message: expectedGot('an undefined value', data)})
     );
   }
 
@@ -498,8 +515,8 @@ export class Validator<A> {
     );
 
   /**
-   * Validator that attempts to check each validator in `validators` and either succeeds
-   * with the first successful validator, or fails after all validators have failed.
+   * If given string, number or boolean arguments they will be converted into `constant()` validators.
+   * Succeeds if at least one validator succeeds.
    *
    * Note that `oneOf` expects the validators to all have the same return type,
    * while `union` creates a validator for the union type of all the input
@@ -509,26 +526,31 @@ export class Validator<A> {
    * ```
    * oneOf(string(), tNumber().map(String))
    * oneOf(constant('start'), constant('stop'), succeed('unknown'))
+   * oneOf('start', 'stop', 'unknown')
+   * oneOf(23, 45, 67)
    * ```
    */
-  static oneOf = <A>(...validators: Validator<A>[]): Validator<A> =>
-    new Validator<A>((data: unknown) => {
-      const errors: Partial<ValidatorError>[] = [];
-      for (let i: number = 0; i < validators.length; i++) {
-        const r = validators[i].validate(data);
-        if (r.ok === true) {
-          return r;
-        } else {
-          errors[i] = r.error;
-        }
+  static oneOf<A>(...validators: A[]): Validator<A>;
+  static oneOf<A>(...validators: Validator<A>[]): Validator<A> {
+    const validators1 = validators.map(v => isValidator<A>(v) ? v : Validator.constant(v));
+    return new Validator<A>((data: unknown) => {
+    const errors: Partial<ValidatorError>[] = [];
+    for (let i: number = 0; i < validators1.length; i++) {
+      const r = validators1[i].validate(data);
+      if (r.ok === true) {
+        return r;
+      } else {
+        errors[i] = r.error;
       }
-      const errorsList = errors
-        .map(error => `at error${error.at || ''}: ${error.message}`)
-        .join('", "');
-      return Result.err({
-        message: `expected a value matching one of the validators, got the errors ["${errorsList}"]`
-      });
+    }
+    const errorsList = errors
+      .map(error => `at error${error.at || ''}: ${error.message}`)
+      .join('", "');
+    return Result.err({
+      message: `expected a value matching one of the validators, got the errors ["${errorsList}"]`
     });
+  });
+}
 
   /**
    * Combines 2-8 validators of disparate types into a validator for the union of all

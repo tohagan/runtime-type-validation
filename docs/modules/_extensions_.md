@@ -12,9 +12,8 @@
 * [charsRange](_extensions_.md#const-charsrange)
 * [httpUrl](_extensions_.md#const-httpurl)
 * [matches](_extensions_.md#const-matches)
+* [nullable](_extensions_.md#nullable)
 * [range](_extensions_.md#const-range)
-* [tEnum](_extensions_.md#tenum)
-* [tNullable](_extensions_.md#tnullable)
 
 ## Functions
 
@@ -109,49 +108,9 @@ Name | Type | Description |
 
 ___
 
-### `Const` range
+###  nullable
 
-▸ **range**(`min`: number, `max`: number): *[Validator](../classes/_validator_.validator.md)‹number›*
-
-Matches a number between `min` .. `max` (inclusive).
-
-**Parameters:**
-
-Name | Type | Description |
------- | ------ | ------ |
-`min` | number | - |
-`max` | number |   |
-
-**Returns:** *[Validator](../classes/_validator_.validator.md)‹number›*
-
-___
-
-###  tEnum
-
-▸ **tEnum**<**T**>(...`values`: T[]): *[Validator](../classes/_validator_.validator.md)‹T›*
-
-Converts zero or more string or number arguments into a `oneOf()` condition
-that matches exactly one of the string values as a constant.
-
-Note: The return type is `Validator<string>` not `Validator<some enum>` as you might expect.
-
-**Type parameters:**
-
-▪ **T**: *string | number*
-
-**Parameters:**
-
-Name | Type | Description |
------- | ------ | ------ |
-`...values` | T[] |   |
-
-**Returns:** *[Validator](../classes/_validator_.validator.md)‹T›*
-
-___
-
-###  tNullable
-
-▸ **tNullable**<**A**>(`validator`: [Validator](../classes/_validator_.validator.md)‹A›): *[Validator](../classes/_validator_.validator.md)‹A | null›*
+▸ **nullable**<**A**>(`validator`: [Validator](../classes/_validator_.validator.md)‹A›): *[Validator](../classes/_validator_.validator.md)‹A | null›*
 
 Allow null or the type checked value.
 
@@ -166,3 +125,20 @@ Name | Type | Description |
 `validator` | [Validator](../classes/_validator_.validator.md)‹A› |   |
 
 **Returns:** *[Validator](../classes/_validator_.validator.md)‹A | null›*
+
+___
+
+### `Const` range
+
+▸ **range**(`min`: number, `max`: number): *[Validator](../classes/_validator_.validator.md)‹number›*
+
+Matches a number between `min` .. `max` (inclusive).
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`min` | number | - |
+`max` | number |   |
+
+**Returns:** *[Validator](../classes/_validator_.validator.md)‹number›*

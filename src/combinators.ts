@@ -14,6 +14,9 @@ export const tBoolean = Validator.tBoolean;
 /** See `Validator.tFunction` */
 export const tFunction = Validator.tFunction;
 
+/** See `Validator.tUndefined` */
+export const tUndefined = Validator.tUndefined;
+
 /** See `Validator.tAny` */
 export const tAny = Validator.tAny;
 

@@ -1,14 +1,14 @@
 import {
   Validator,
-  tNullable, tEnum,
-  tString, tNumber,
+  nullable,
+  tNumber,
   range,
   chars, charsMin, charsMax, charsRange,
   matches, httpUrl
 } from '../src/index';
 
-describe('tNullable', () => {
-  const validator = tNullable(tNumber());
+describe('nullable', () => {
+  const validator = nullable(tNumber());
 
   it('succeeds when given null', () => {
     expect(validator.check(null)).toEqual({ok: true, result: null});
@@ -39,46 +39,6 @@ describe('tNullable', () => {
   });
 });
 
-
-describe('tEnum', () => {
-  const validator: Validator<string> = tEnum("A", "B", "C");
-
-  it('succeeds when given A, B or C', () => {
-    expect(validator.check("A")).toEqual({ok: true, result: "A"});
-    expect(validator.check("B")).toEqual({ok: true, result: "B"});
-    expect(validator.check("C")).toEqual({ok: true, result: "C"});
-  });
-
-  it('fails when given an invalid string', () => {
-    expect(validator.check('Z')).toMatchObject({
-      ok: false,
-      error: {
-        at: 'input',
-        message: 'expected a value matching one of the validators, got the errors [\"at error: expected \"A\", got \"Z\"\", \"at error: expected \"B\", got \"Z\"\", \"at error: expected \"C\", got \"Z\"\"]'
-      }
-    });
-  });
-
-  it('fails when given a number', () => {
-    expect(validator.check(2)).toMatchObject({
-      ok: false,
-      error: {
-        at: 'input',
-        message: 'expected a value matching one of the validators, got the errors [\"at error: expected \"A\", got 2\", \"at error: expected \"B\", got 2\", \"at error: expected \"C\", got 2\"]'
-      }
-    });
-  });
-
-  it('fails when given a boolean', () => {
-    expect(validator.check(true)).toMatchObject({
-      ok: false,
-      error: {
-        at: 'input',
-        message: 'expected a value matching one of the validators, got the errors [\"at error: expected \"A\", got true\", \"at error: expected \"B\", got true\", \"at error: expected \"C\", got true\"]'
-      }
-    });
-  });
-});
 
 describe('range', () => {
   const validator = range(5, 10);

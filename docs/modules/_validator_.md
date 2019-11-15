@@ -18,6 +18,7 @@
 
 ### Functions
 
+* [isValidator](_validator_.md#const-isvalidator)
 * [isValidatorError](_validator_.md#const-isvalidatorerror)
 
 ## Type aliases
@@ -48,12 +49,34 @@ const validatorObject: ValidatorObject<X> = {
 
 ## Functions
 
+### `Const` isValidator
+
+▸ **isValidator**<**A**>(`a`: any): *a is Validator<A>*
+
+Type guard for `Validator`.
+
+**Type parameters:**
+
+▪ **A**
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`a` | any |
+
+**Returns:** *a is Validator<A>*
+
+___
+
 ### `Const` isValidatorError
 
 ▸ **isValidatorError**(`a`: any): *a is ValidatorError*
 
-Type guard for `ValidatorError`. One use case of the type guard is in the
-`catch` of a promise. Typescript types the error argument of `catch` as
+Type guard for `ValidatorError`.
+
+One use case of the type guard is in the `catch` of a promise.
+Typescript types the error argument of `catch` as
 `any`, so when dealing with a validator as a promise you may need to
 distinguish between a `ValidatorError` and an error string.
 

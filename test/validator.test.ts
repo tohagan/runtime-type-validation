@@ -8,6 +8,7 @@ import {
   tNumber,
   tBoolean,
   tFunction,
+  tUndefined,
   tAny,
   tUnknown,
   constant,
@@ -134,7 +135,7 @@ describe('tFunction', () => {
 
   it('succeeds when given a function', () => {
     const func = () => 3;
-    expect(validator.check((func))).toEqual({ok: true, result: func});
+    expect(validator.check(func)).toEqual({ok: true, result: func});
   });
 
   it('fails when given a string', () => {
@@ -151,6 +152,39 @@ describe('tFunction', () => {
     });
   });
 });
+
+describe('tUndefined', () => {
+  const validator = tUndefined();
+
+  it('succeeds when given an undefined value', () => {
+    let undef;
+    expect(validator.check(undef)).toEqual({ok: true, result: undefined});
+  });
+
+  it('fails when given a function', () => {
+    const func = () => 3;
+    expect(validator.check(func)).toMatchObject({
+      ok: false,
+      error: {at: 'input', message: 'expected an undefined value, got a function'}
+    });
+  });
+
+  it('fails when given a string', () => {
+    expect(validator.check('hey')).toMatchObject({
+      ok: false,
+      error: {at: 'input', message: 'expected an undefined value, got a string'}
+    });
+  });
+
+  it('fails when given a number', () => {
+    expect(validator.check(1)).toMatchObject({
+      ok: false,
+      error: {at: 'input', message: 'expected an undefined value, got a number'}
+    });
+  });
+
+});
+
 
 describe('tAny', () => {
   it('bypasses type validation', () => {
@@ -669,7 +703,7 @@ describe('optional', () => {
   });
 });
 
-describe('oneOf', () => {
+describe('oneOf() with validators', () => {
   describe('when given valid input', () => {
     it('can validate a value with a single alternative', () => {
       const validator = oneOf(tString());
@@ -721,6 +755,46 @@ describe('oneOf', () => {
     const validator: Validator<C> = oneOf(tObject<C>({a: tString()}), tObject<C>({b: tNumber()}));
 
     expect(validator.check({a: 'xyz'})).toEqual({ok: true, result: {a: 'xyz'}});
+  });
+});
+
+describe('oneOf() with values', () => {
+  const validator: Validator<string> = oneOf("A", "B", "C");
+
+  it('succeeds when given A, B or C', () => {
+    expect(validator.check("A")).toEqual({ok: true, result: "A"});
+    expect(validator.check("B")).toEqual({ok: true, result: "B"});
+    expect(validator.check("C")).toEqual({ok: true, result: "C"});
+  });
+
+  it('fails when given an invalid string', () => {
+    expect(validator.check('Z')).toMatchObject({
+      ok: false,
+      error: {
+        at: 'input',
+        message: 'expected a value matching one of the validators, got the errors [\"at error: expected \"A\", got \"Z\"\", \"at error: expected \"B\", got \"Z\"\", \"at error: expected \"C\", got \"Z\"\"]'
+      }
+    });
+  });
+
+  it('fails when given a number', () => {
+    expect(validator.check(2)).toMatchObject({
+      ok: false,
+      error: {
+        at: 'input',
+        message: 'expected a value matching one of the validators, got the errors [\"at error: expected \"A\", got 2\", \"at error: expected \"B\", got 2\", \"at error: expected \"C\", got 2\"]'
+      }
+    });
+  });
+
+  it('fails when given a boolean', () => {
+    expect(validator.check(true)).toMatchObject({
+      ok: false,
+      error: {
+        at: 'input',
+        message: 'expected a value matching one of the validators, got the errors [\"at error: expected \"A\", got true\", \"at error: expected \"B\", got true\", \"at error: expected \"C\", got true\"]'
+      }
+    });
   });
 });
 

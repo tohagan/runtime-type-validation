@@ -31,7 +31,7 @@
     "prebuild": "rimraf dist",
     "build": "yarn run build:lib && yarn run build:doc",
     "build:lib": "tsc --module commonjs --outDir dist/lib && rollup -c rollup.config.ts",
-    "build:doc": "typedoc --out docs --target es6 --theme markdown --readme DOCS.md --hideSources --mode modules --excludeNotExported src",
+    "build:doc": "typedoc --out docs --target es6 --theme markdown --hideSources --mode modules --excludeNotExported src",
     "start": "rollup -c rollup.config.ts -w",
     "test": "jest",
     "test:watch": "jest --watch",

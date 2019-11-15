@@ -5,22 +5,9 @@ import { union, constant, oneOf, tNumber, tString } from './combinators';
  * Allow null or the type checked value.
  * @param validator
  */
-export function tNullable<A>(validator: Validator<A>): Validator<A | null> {
+export function nullable<A>(validator: Validator<A>): Validator<A | null> {
   return union(validator, constant(null));
 }
-
-/**
- * Converts zero or more string or number arguments into a `oneOf()` condition
- * that matches exactly one of the string values as a constant.
- *
- * Note: The return type is `Validator<string>` not `Validator<some enum>` as you might expect.
- *
- * @param values
- */
-export function tEnum<T extends string | number>(...values: T[]): Validator<T> {
-  const validators: Validator<T>[] = values.map(v => constant(v));
-  return oneOf(...validators);
-};
 
 /**
  * Matches a number between `min` .. `max` (inclusive).

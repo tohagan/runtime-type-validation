@@ -44,10 +44,10 @@ things with a `Result` as with the validator methods.
 
 * [andThen](_validator_.validator.md#andthen)
 * [asException](_validator_.validator.md#asexception)
+* [asPromise](_validator_.validator.md#aspromise)
 * [asSuccess](_validator_.validator.md#assuccess)
 * [check](_validator_.validator.md#check)
 * [map](_validator_.validator.md#map)
-* [runPromise](_validator_.validator.md#runpromise)
 * [where](_validator_.validator.md#where)
 * [constant](_validator_.validator.md#static-constant)
 * [fail](_validator_.validator.md#static-fail)
@@ -65,6 +65,7 @@ things with a `Result` as with the validator methods.
 * [tObject](_validator_.validator.md#static-tobject)
 * [tObjectStrict](_validator_.validator.md#static-tobjectstrict)
 * [tString](_validator_.validator.md#static-tstring)
+* [tUndefined](_validator_.validator.md#static-tundefined)
 * [tUnknown](_validator_.validator.md#static-tunknown)
 * [tuple](_validator_.validator.md#static-tuple)
 * [union](_validator_.validator.md#static-union)
@@ -210,6 +211,22 @@ Name | Type |
 
 ___
 
+###  asPromise
+
+▸ **asPromise**(`data`: unknown): *Promise‹A›*
+
+Run the validator as a `Promise`.
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`data` | unknown |
+
+**Returns:** *Promise‹A›*
+
+___
+
 ###  asSuccess
 
 ▸ **asSuccess**(`data`: unknown, `log?`: Logger): *boolean*
@@ -230,7 +247,7 @@ ___
 
 ###  check
 
-▸ **check**(`data`: unknown): *RunResult‹A›*
+▸ **check**(`data`: unknown): *CheckResult‹A›*
 
 Run the validator and return a `Result` with either the validated value or a
 `ValidatorError` containing the data input, the location of the error, and
@@ -260,7 +277,7 @@ Name | Type |
 ------ | ------ |
 `data` | unknown |
 
-**Returns:** *RunResult‹A›*
+**Returns:** *CheckResult‹A›*
 
 ___
 
@@ -295,22 +312,6 @@ Name | Type |
 `value` | A |
 
 **Returns:** *[Validator](_validator_.validator.md)‹B›*
-
-___
-
-###  runPromise
-
-▸ **runPromise**(`data`: unknown): *Promise‹A›*
-
-Run the validator as a `Promise`.
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`data` | unknown |
-
-**Returns:** *Promise‹A›*
 
 ___
 
@@ -712,10 +713,10 @@ ___
 
 ### `Static` oneOf
 
-▸ **oneOf**<**A**>(...`validators`: [Validator](_validator_.validator.md)‹A›[]): *[Validator](_validator_.validator.md)‹A›*
+▸ **oneOf**<**A**>(...`validators`: A[]): *[Validator](_validator_.validator.md)‹A›*
 
-Validator that attempts to check each validator in `validators` and either succeeds
-with the first successful validator, or fails after all validators have failed.
+If given string, number or boolean arguments they will be converted into `constant()` validators.
+Succeeds if at least one validator succeeds.
 
 Note that `oneOf` expects the validators to all have the same return type,
 while `union` creates a validator for the union type of all the input
@@ -725,6 +726,8 @@ Examples:
 ```
 oneOf(string(), tNumber().map(String))
 oneOf(constant('start'), constant('stop'), succeed('unknown'))
+oneOf('start', 'stop', 'unknown')
+oneOf(23, 45, 67)
 ```
 
 **Type parameters:**
@@ -735,7 +738,7 @@ oneOf(constant('start'), constant('stop'), succeed('unknown'))
 
 Name | Type |
 ------ | ------ |
-`...validators` | [Validator](_validator_.validator.md)‹A›[] |
+`...validators` | A[] |
 
 **Returns:** *[Validator](_validator_.validator.md)‹A›*
 
@@ -1011,6 +1014,14 @@ ___
 Validates strings, and fails on all other input.
 
 **Returns:** *[Validator](_validator_.validator.md)‹string›*
+
+___
+
+### `Static` tUndefined
+
+▸ **tUndefined**(): *[Validator](_validator_.validator.md)‹any›*
+
+**Returns:** *[Validator](_validator_.validator.md)‹any›*
 
 ___
 

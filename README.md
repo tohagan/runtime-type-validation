@@ -32,7 +32,6 @@ A **light weight** library to perform run-time type checking and field validatio
 ## Roadmap
 
 - Error reporting could be improved by recording a collection of errors (one per field) to support Form Validation.
-- tEnum() could be improved to better support TypeScript enums.
 
 ## Installation
 
