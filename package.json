@@ -1,11 +1,13 @@
 {
-  "name": "runtime-type-validation",
-  "version": "1.0.0",
+  "name": "runtime-validator",
+  "version": "1.0.1",
   "description": "Runtime type checking and validation for TypeScript and JavaScript",
   "keywords": [
     "TypeScript",
     "Typechecking",
-    "Validation"
+    "Validation",
+    "Vue",
+    "Type Guard"
   ],
   "main": "dist/index.umd.js",
   "module": "dist/index.es5.js",
@@ -16,12 +18,12 @@
   "author": "Elias Mulhall <elias@mojotech.com> and Tony O'Hagan<tony@ohagan.name>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tohagan/runtime-type-validation"
+    "url": "https://github.com/tohagan/runtime-validator"
   },
   "bugs": {
-    "url": "https://github.com/tohagan/runtime-type-validation/issues"
+    "url": "https://github.com/tohagan/runtime-validator/issues"
   },
-  "homepage": "https://github.com/tohagan/runtime-type-validation",
+  "homepage": "https://github.com/tohagan/runtime-validator",
   "license": "MIT",
   "engines": {
     "node": ">=6.0.0"
@@ -85,7 +87,7 @@
     "tslint-config-standard": "^7.1.0",
     "typedoc": "^0.15.1",
     "typedoc-plugin-markdown": "^2.2.11",
-    "typescript": "~3.1.0"
+    "typescript": "~3.4.2"
   },
   "dependencies": {
     "lodash.isequal": "^4.5.0"
