@@ -1061,7 +1061,7 @@ describe('asPromise', () => {
 
   it('rejects the promise when the validator fails', () => {
     return expect(promise(42)).rejects.toEqual({
-      kind: 'ValidatorError',
+      name: 'ValidatorError',
       input: 42,
       at: 'input',
       message: 'expected a boolean, got a number'
@@ -1089,31 +1089,27 @@ describe('asException', () => {
       thrownError = e;
     }
 
-    expect(thrownError).toEqual({
-      kind: 'ValidatorError',
-      input: 42,
-      at: 'input',
-      message: 'expected a boolean, got a number'
-    });
+    expect(thrownError.message).toBe("value: '42' at: 'input' error: 'expected a boolean, got a number'");
+    expect(thrownError.at).toBe('input');
+    expect(thrownError.input).toBe(42);
+    expect(thrownError.name).toBe('ValidatorException');
+
   });
 });
 
 describe('asSuccess', () => {
   const validator = tNumber();
+  let logged: any = null;
+  const logger = (at: string, input: string, message: string) => { logged = { at, input, message }; }
 
-  it('can check a validator and return the successful value', () => {
-    expect(validator.asSuccess(42)).toBe(true);
+  it('when successful returns true and does not log any error', () => {
+    expect(validator.asSuccess(42, logger)).toBe(true);
+    expect(logged).toBeNull();
   });
 
-  it('can check a validator and return the unsuccessful value', () => {
-    expect(validator.asSuccess('xy')).toBe(false);
-  });
-
-  it('logs an error when the validator fails', () => {
-    let err: any;
-    const logger = (at: string, input: string, message: string) => { err = { at, input, message }; }
-    validator.asSuccess('xy', logger);
-    expect(err).toEqual({ at: 'input', input: 'xy', message: 'expected a number, got a string'});
+  it('when unsucessful return false and logs error', () => {
+    expect(validator.asSuccess('xy', logger)).toBe(false);
+    expect(logged).toEqual({ at: 'input', input: 'xy', message: 'expected a number, got a string'});
   });
 
 });

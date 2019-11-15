@@ -1,10 +1,12 @@
+import { ValidatorError, ValidationException } from "./validator";
+
 /**
  * The result of a computation that may fail. The validating function
  * `Validator.check(input)` checks the input value and returns a `Result`.
  * The value of a `Result` is either `Ok` if  the input is valid,
  * or `Err` if the input was invalid.
  */
-export type Result<V, E> = Ok<V> | Err<E>;
+export type Result<V, E extends ValidatorError> = Ok<V> | Err<E>;
 
 /**
  * The success type variant for `Result`. Denotes that a result value was
@@ -55,7 +57,7 @@ export const asException = <V>(r: Result<V, any>): V => {
   if (r.ok === true) {
     return r.result;
   } else {
-    throw r.error;
+    throw new ValidationException(r.error);
   }
 };
 

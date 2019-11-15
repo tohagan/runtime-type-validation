@@ -134,7 +134,7 @@ const petValidator: Validator<Pet> = tObject({
 // Since `JSON.parse()` returns `any` we need to type check the result at run-time.
 const json: any = JSON.parse('{"name":"Lyle", "age":15, "isCute":true}');
 
-const pet: Pet = petValidator.asException(json); // throw exception if invalid
+const pet: Pet = petValidator.asException(json); // throws ValidationError if invalid
 // Exception ... `Input: {"name":"Lyle","age":15}
 // Failed at input: the key 'species' is required but was not present`
 

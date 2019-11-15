@@ -8,11 +8,26 @@ type Logger = typeof console.error;
  * Includes the input path (.at) and value showing
  * where and why and on what value it failed.
  */
+
 export interface ValidatorError {
-  kind: 'ValidatorError';
+  name?: 'ValidatorError';
+  input?: unknown;
+  at?: string;
+  message?: string;
+}
+
+// thrown exception must be derived from Error
+export class ValidationException extends Error {
+  name: string = 'ValidatorException';
   input: unknown;
   at: string;
-  message: string;
+  constructor(e: ValidatorError)
+  {
+    // Report all fields in Error.message to assist external logging
+    super(`value: '${JSON.stringify(e.input)}' at: '${e.at}' error: '${e.message}'`);
+    this.input = e.input;
+    this.at = e.at || '';
+  }
 }
 
 /**
@@ -65,7 +80,7 @@ export const isValidator = <A>(a: any): a is Validator<A> =>
  * distinguish between a `ValidatorError` and an error string.
  */
 export const isValidatorError = (a: any): a is ValidatorError =>
-  a.kind === 'ValidatorError' && typeof a.at === 'string' && typeof a.message === 'string';
+  a.name === 'ValidatorError' && typeof a.at === 'string' && typeof a.message === 'string';
 
 /*
  * Helpers
@@ -748,7 +763,7 @@ export class Validator<A> {
   check = (data: unknown): CheckResult<A> =>
     Result.mapError(
       error => ({
-        kind: 'ValidatorError' as 'ValidatorError',
+        name: 'ValidatorError' as 'ValidatorError',
         input: data,
         at: 'input' + (error.at || ''),
         message: error.message || ''

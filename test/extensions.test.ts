@@ -134,7 +134,7 @@ describe('matches(/abc$/)', () => {
   it('fails when given strings not ending in abc', () => {
     expect(validator.check("abc123")).toMatchObject({
       ok: false,
-      error: { message: "expected a string that match the pattern /abc$/" }
+      error: { message: "expected a string that matches /abc$/" }
     });
   });
 
