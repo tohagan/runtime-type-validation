@@ -1,6 +1,6 @@
 {
   "name": "runtime-validator",
-  "version": "1.0.1",
+  "version": "4.0.1",
   "description": "Runtime type checking and validation for TypeScript and JavaScript",
   "keywords": [
     "TypeScript",
@@ -34,7 +34,7 @@
     "build": "yarn run build:lib && yarn run build:doc",
     "build:lib": "tsc --module commonjs --outDir dist/lib && rollup -c rollup.config.ts",
     "build:doc": "typedoc --out docs --target es6 --theme markdown --hideSources --mode modules --excludeNotExported src",
-    "publish": "yarn run build && yarn run publish",
+    "publish:npm": "yarn build && yarn publish",
     "start": "rollup -c rollup.config.ts -w",
     "test": "jest",
     "test:watch": "jest --watch",
