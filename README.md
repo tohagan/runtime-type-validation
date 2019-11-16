@@ -4,6 +4,7 @@ A **light weight** library to perform run-time type checking and field validatio
 
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![npm version](http://img.shields.io/npm/v/runtime-validator.svg?style=flat)](https://npmjs.org/package/runtime-validator "View this project on npm")
+[![Build Status](https://travis-ci.org/tohagan/runtime-validator.svg?branch=master)](https://travis-ci.org/tohagan/runtime-validator)
 [![Coverage Status](https://coveralls.io/repos/github/tohagan/runtime-validator/badge.svg)](https://coveralls.io/github/tohagan/runtime-validator)
 
 ## Features
@@ -12,9 +13,9 @@ A **light weight** library to perform run-time type checking and field validatio
 - Small lib. Optimised for [tree shaking](https://developers.google.com/web/fundamentals/performance/optimizing-javascript/tree-shaking).
 - Use with either [TypeScript](https://www.typescriptlang.org/) OR [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript).
 - Detailed error reporting.
-- Create `Validator` objects that are **concise** and **composable**.
+- Creates `Validator` objects that are **concise** and **composable**.
   - Type check against **compile-time** types and interfaces.
-  - Validate both **run-time** type and field constraints.
+  - Validate both **run-time** types and field **value constraints**.
   - Advanced: Apply transforms, data version upgrades ... to all or parts of your data.
 - Emit the validation as:
   - A value result OR An exception
@@ -138,7 +139,7 @@ const petValidator = tObject({
 });
 ```
 
-### Documentation
+## Documentation
 
 This library uses the [combinator pattern](https://wiki.haskell.org/Combinator_pattern) from functional programming to build a `Validator`.
 
