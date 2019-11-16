@@ -6,20 +6,20 @@
 
 ### Functions
 
-* [chars](_constraints_.md#const-chars)
-* [charsMax](_constraints_.md#const-charsmax)
-* [charsMin](_constraints_.md#const-charsmin)
-* [charsRange](_constraints_.md#const-charsrange)
-* [falsy](_constraints_.md#const-falsy)
-* [httpUrl](_constraints_.md#const-httpurl)
-* [matches](_constraints_.md#const-matches)
+* [chars](_constraints_.md#chars)
+* [charsMax](_constraints_.md#charsmax)
+* [charsMin](_constraints_.md#charsmin)
+* [charsRange](_constraints_.md#charsrange)
+* [falsy](_constraints_.md#falsy)
+* [httpUrl](_constraints_.md#httpurl)
+* [matches](_constraints_.md#matches)
 * [nullable](_constraints_.md#nullable)
-* [range](_constraints_.md#const-range)
-* [truthy](_constraints_.md#const-truthy)
+* [range](_constraints_.md#range)
+* [truthy](_constraints_.md#truthy)
 
 ## Functions
 
-### `Const` chars
+###  chars
 
 ▸ **chars**(`length`: number): *[Validator](../classes/_validator_.validator.md)‹string›*
 
@@ -35,7 +35,7 @@ Name | Type | Description |
 
 ___
 
-### `Const` charsMax
+###  charsMax
 
 ▸ **charsMax**(`max`: number): *[Validator](../classes/_validator_.validator.md)‹string›*
 
@@ -51,7 +51,7 @@ Name | Type | Description |
 
 ___
 
-### `Const` charsMin
+###  charsMin
 
 ▸ **charsMin**(`min`: number): *[Validator](../classes/_validator_.validator.md)‹string›*
 
@@ -67,7 +67,7 @@ Name | Type | Description |
 
 ___
 
-### `Const` charsRange
+###  charsRange
 
 ▸ **charsRange**(`min`: number, `max`: number): *[Validator](../classes/_validator_.validator.md)‹string›*
 
@@ -84,15 +84,17 @@ Name | Type | Description |
 
 ___
 
-### `Const` falsy
+###  falsy
 
 ▸ **falsy**(): *[Validator](../classes/_validator_.validator.md)‹any›*
+
+Matches any falsy value.
 
 **Returns:** *[Validator](../classes/_validator_.validator.md)‹any›*
 
 ___
 
-### `Const` httpUrl
+###  httpUrl
 
 ▸ **httpUrl**(): *[Validator](../classes/_validator_.validator.md)‹string›*
 
@@ -102,7 +104,7 @@ Matches a string containg a HTTP or HTTPS URL.
 
 ___
 
-### `Const` matches
+###  matches
 
 ▸ **matches**(`pattern`: RegExp): *[Validator](../classes/_validator_.validator.md)‹string›*
 
@@ -138,7 +140,7 @@ Name | Type | Description |
 
 ___
 
-### `Const` range
+###  range
 
 ▸ **range**(`min`: number, `max`: number): *[Validator](../classes/_validator_.validator.md)‹number›*
 
@@ -155,8 +157,10 @@ Name | Type | Description |
 
 ___
 
-### `Const` truthy
+###  truthy
 
 ▸ **truthy**(): *[Validator](../classes/_validator_.validator.md)‹any›*
+
+Matches any truthy value
 
 **Returns:** *[Validator](../classes/_validator_.validator.md)‹any›*
