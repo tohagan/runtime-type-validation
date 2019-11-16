@@ -118,9 +118,10 @@ export default {
 }
 ```
 
-### Custom Validators
+### Example #3: Data Validation
 
-The `Validator` includes the `.where()` method that can be used to add custom validation rules.
+- `oneOf()` acts like an enum that restricts a field to limited set of value of equal type.
+- `Validator.where()` can specify custom data validation conditions.
 
 ```typescript
 const range = (min: number, max: number) =>
@@ -246,7 +247,7 @@ Adaptors                     | Description             |
 `v.map(value => f(value))`   | Transforms a validated value to a new value. |
 `v1.andThen(f(value) => v2)` | `andThen()` can conditionally chain together validator sequences. |
 
-### Use of `lazy(v)` to validate a recursive type
+### Example: Use of `lazy(v)` to validate a recursive type
 
 ```typescript
 const validator: Validator<Comment> = tObject({
