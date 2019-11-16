@@ -7,7 +7,7 @@
 A **light weight** library to perform run-time type checking and field validation for TypeScript and JavaScript.
 
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
-[![npm version](http://img.shields.io/npm/v/REPO.svg?style=flat)](https://npmjs.org/package/REPO "View this project on npm")
+[![npm version](http://img.shields.io/npm/v/runtime-validator.svg?style=flat)](https://npmjs.org/package/runtime-validator "View this project on npm")
 
 ## Features
 
