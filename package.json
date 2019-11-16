@@ -41,7 +41,7 @@
     "test:prod": "yarn run lint && yarn run test -- --coverage --no-cache",
     "typecheck": "tsc --lib es2015 --noEmit --strict test/**.ts",
     "typecheck:watch": "tsc -w --lib es2015 --noEmit --strict test/**.ts",
-    "travis:coveralls": "cat ./coverage/lcov.info | coveralls"
+    "test:coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls"
   },
   "jest": {
     "testURL": "http://localhost/",
