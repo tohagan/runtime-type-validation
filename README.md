@@ -102,9 +102,11 @@ const isValid: boolean = petValidator.asSuccess(json);
 [VueJS](https://vuejs.org) supports custom validation of [component properties](https://vuejs.org/v2/guide/components-props.html#Prop-Validation) via a `validator` field defined on the property.  The `asSuccess` modifier matches the call signature so we can use it to validate a Pet property on a component:
 
 ```javascript
-import {
-  tObject, tString, tNumber, tBoolean, optional
-} from 'runtime-validator'
+import { tObject, tString, tNumber, tBoolean, optional } from 'runtime-validator';
+
+// Create a logger using NPM 'debug' library
+import debug from 'debug';
+const logger = debug('MyPet');
 
 // VueJs component
 export default {
@@ -118,7 +120,7 @@ export default {
         species: tString(),
         age: optional(tNumber()),
         isCute: optional(tBoolean())
-      }).asSuccess
+      }).asSuccessL(logger)
     }
   },
   ...
@@ -255,6 +257,7 @@ Execute Validation          | Description             |
 `v.asException(value)`      | Returns validated `value`. Throws an exception if invalid. |
 `v.asPromise(value)`        | Returns a `Promise` that is resolved to the validated `value` or rejected with the error.     |
 `v.asSuccess(value,logger)` | If valid returns `true`, if invalid returns `false` and logs error.  `logger` defaults to `console.error` |
+`v.asSuccessL(logger)`      | Injects the `logger` early, returning a new `asSuccess(value)` validator function.  |
 `v.check(value)`            | Returns a `CheckResult`. Use to create a custom `asXXX()`. |
 
 ### Validation Adaptors

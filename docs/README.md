@@ -105,9 +105,11 @@ const isValid: boolean = petValidator.asSuccess(json);
 [VueJS](https://vuejs.org) supports custom validation of [component properties](https://vuejs.org/v2/guide/components-props.html#Prop-Validation) via a `validator` field defined on the property.  The `asSuccess` modifier matches the call signature so we can use it to validate a Pet property on a component:
 
 ```javascript
-import {
-  tObject, tString, tNumber, tBoolean, optional
-} from 'runtime-validator'
+import { tObject, tString, tNumber, tBoolean, optional } from 'runtime-validator';
+
+// Create a logger using NPM 'debug' library
+import debug from 'debug';
+const logger = debug('MyPet');
 
 // VueJs component
 export default {
@@ -121,7 +123,7 @@ export default {
         species: tString(),
         age: optional(tNumber()),
         isCute: optional(tBoolean())
-      }).asSuccess
+      }).asSuccessL(logger)
     }
   },
   ...
@@ -245,19 +247,20 @@ Constraints            | Description             |
 
 ### Validation Execution
 
-The following functions execute the `validator` to check if a `value` is valid.
-They then return the validation result for use in different programming contexts.
-`v.asException()`, `v.asPromise()`, `v.asSuccess()` each adapt the output from `v.check()`.
-So if you need a validator with a different behaviour or call signature follow the
-same coding pattern and write your own!
+The following functions all internally call `v.check(value)` to check if a `value` is valid.
+`v.asException()`, `v.asPromise()`, `v.asSuccess()` adapt the output from `v.check()`
+for use in different programming contexts.  If you need a validator function with
+a different behaviour or call signature, follow the same coding pattern and create your own!
 
-`v.asSuccess` is useful in a Vue property validator (see example) or in a [TypeScript Type Guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards).
+**Example**: `v.asSuccess` is useful in a Vue property validator or in a
+[TypeScript Type Guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards).
 
 Execute Validation          | Description             |
 --------------------------- | ----------------------- |
 `v.asException(value)`      | Returns validated `value`. Throws an exception if invalid. |
 `v.asPromise(value)`        | Returns a `Promise` that is resolved to the validated `value` or rejected with the error.     |
 `v.asSuccess(value,logger)` | If valid returns `true`, if invalid returns `false` and logs error.  `logger` defaults to `console.error` |
+`v.asSuccessL(logger)`      | Injects the `logger` early, returning a new `asSuccess(value)` validator function.  |
 `v.check(value)`            | Returns a `CheckResult`. Use to create a custom `asXXX()`. |
 
 ### Validation Adaptors

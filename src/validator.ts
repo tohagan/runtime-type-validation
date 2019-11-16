@@ -789,9 +789,11 @@ export class Validator<A> {
   asSuccess = (data: unknown, log?: Logger): boolean => Result.asSuccess(this.check(data), log);
 
   /**
-   * Curried version of `asSuccess` that injects the logger as a partial function.
+   * Curried version of `asSuccess` that injects the logger early
+   * returning a new function that can be called later to perform the validation.
+   * Used in VueJS to inject a 'debug' logger into a property validator.
    */
-  asSuccessL = (log?: Logger) => (data: unknown): boolean => Result.asSuccess(this.check(data), log);
+  asSuccessL = (log: Logger) => (data: unknown): boolean => Result.asSuccess(this.check(data), log);
 
   /**
    * Construct a new validator that applies a transformation to the validated

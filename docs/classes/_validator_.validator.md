@@ -46,6 +46,7 @@ things with a `Result` as with the validator methods.
 * [asException](_validator_.validator.md#asexception)
 * [asPromise](_validator_.validator.md#aspromise)
 * [asSuccess](_validator_.validator.md#assuccess)
+* [asSuccessL](_validator_.validator.md#assuccessl)
 * [check](_validator_.validator.md#check)
 * [map](_validator_.validator.md#map)
 * [where](_validator_.validator.md#where)
@@ -242,6 +243,24 @@ Name | Type |
 `log?` | Logger |
 
 **Returns:** *boolean*
+
+___
+
+###  asSuccessL
+
+▸ **asSuccessL**(`log`: Logger): *(Anonymous function)*
+
+Curried version of `asSuccess` that injects the logger early
+returning a new function that can be called later to perform the validation.
+Used in VueJS to inject a 'debug' logger into a property validator.
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`log` | Logger |
+
+**Returns:** *(Anonymous function)*
 
 ___
 
