@@ -242,13 +242,13 @@ Constraints            | Description             |
 
 ### Validation Execution
 
-The following functions execute the `validator` to check if a `value` is valid.
-They then return the validation result for use in different programming contexts.
-`v.asException()`, `v.asPromise()`, `v.asSuccess()` each adapt the output from `v.check()`.
-So if you need a validator with a different behaviour or call signature follow the
-same coding pattern and write your own!
+The following functions all internally call `v.check(value)` to check if a `value` is valid.
+`v.asException()`, `v.asPromise()`, `v.asSuccess()` adapt the output from `v.check()`
+for use in different programming contexts.  If you need a validator function with
+a different behaviour or call signature, follow the same coding pattern and create your own!
 
-`v.asSuccess` is useful in a Vue property validator (see example) or in a [TypeScript Type Guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards).
+**Example**: `v.asSuccess` is useful in a Vue property validator or in a
+[TypeScript Type Guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards).
 
 Execute Validation          | Description             |
 --------------------------- | ----------------------- |
