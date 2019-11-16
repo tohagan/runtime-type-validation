@@ -1114,6 +1114,24 @@ describe('asSuccess', () => {
 
 });
 
+describe('asSuccessL', () => {
+  let logged: any = null;
+  const logger = (at: string, input: string, message: string) => { logged = { at, input, message }; }
+
+  const validator = tNumber().asSuccessL(logger);
+
+  it('when successful returns true and does not log any error', () => {
+    expect(validator(42)).toBe(true);
+    expect(logged).toBeNull();
+  });
+
+  it('when unsucessful return false and logs error', () => {
+    expect(validator('xy')).toBe(false);
+    expect(logged).toEqual({ at: 'input', input: 'xy', message: 'expected a number, got a string'});
+  });
+
+});
+
 
 describe('map', () => {
   it('can apply the identity function to the validator', () => {

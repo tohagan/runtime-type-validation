@@ -789,6 +789,11 @@ export class Validator<A> {
   asSuccess = (data: unknown, log?: Logger): boolean => Result.asSuccess(this.check(data), log);
 
   /**
+   * Curried version of `asSuccess` that injects the logger as a partial function.
+   */
+  asSuccessL = (log?: Logger) => (data: unknown): boolean => Result.asSuccess(this.check(data), log);
+
+  /**
    * Construct a new validator that applies a transformation to the validated
    * result. If the validator succeeds then `f` will be applied to the value. If
    * it fails the error will propagated through.
