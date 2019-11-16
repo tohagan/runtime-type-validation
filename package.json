@@ -40,7 +40,8 @@
     "test:watch": "jest --watch",
     "test:prod": "yarn run lint && yarn run test -- --coverage --no-cache",
     "typecheck": "tsc --lib es2015 --noEmit --strict test/**.ts",
-    "typecheck:watch": "tsc -w --lib es2015 --noEmit --strict test/**.ts"
+    "typecheck:watch": "tsc -w --lib es2015 --noEmit --strict test/**.ts",
+    "travis:coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "jest": {
     "testURL": "http://localhost/",
@@ -72,6 +73,7 @@
     "@types/lodash.isequal": "^4.5.3",
     "@types/node": "^12.12.7",
     "colors": "^1.1.2",
+    "coveralls": "^3.0.7",
     "cross-env": "^5.0.1",
     "jest": "^22.0.2",
     "prettier": "^1.4.4",

@@ -1,13 +1,18 @@
+sudo: false
 language: node_js
-cache:
-  yarn: true
-  directories:
-    - node_modules
-notifications:
-  email: false
 node_js:
-  - node
+- '8'
+branches:
+  only:
+  - master
+cache:
+  directories:
+  - node_modules
+before_install:
+- npm update
+install:
+- npm install
 script:
-  - npm run test:prod && npm run build
-after_success:
-  - npm run report-coverage
+- npm run test:prod
+- npm run build
+- npm run travis:coveralls
