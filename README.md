@@ -14,7 +14,8 @@ A **light weight** library to perform run-time type checking and field validatio
 - Detailed error reporting.
 - Create `Validator` objects that are **concise** and **composable**.
   - Type check against **compile-time** types and interfaces.
-  - Validate both **run-time** type and field constraint.
+  - Validate both **run-time** type and field constraints.
+  - Advanced: Apply transforms, data version upgrades ... to all or parts of your data.
 - Emit the validation as:
   - A value result OR An exception
   - A Promise result
