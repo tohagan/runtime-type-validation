@@ -63,7 +63,9 @@ with it, and can be cumbersome to write.
 
 ```typescript
 
-import { Validator, tObject, tString, tNumber, tBoolean, optional } from 'runtime-validator'
+import {
+  Validator, tObject, tString, tNumber, tBoolean, optional
+} from 'runtime-validator'
 
 interface Pet {
   name: string;
@@ -100,7 +102,9 @@ const isValid: boolean = petValidator.asSuccess(json);
 [VueJS](https://vuejs.org) supports custom validation of [component properties](https://vuejs.org/v2/guide/components-props.html#Prop-Validation) via a `validator` field defined on the property.  The `asSuccess` modifier matches the call signature so we can use it to validate a Pet property on a component:
 
 ```javascript
-import { tObject, tString, tNumber, tBoolean, optional } from 'runtime-validator'
+import {
+  tObject, tString, tNumber, tBoolean, optional
+} from 'runtime-validator'
 
 // VueJs component
 export default {
@@ -128,7 +132,10 @@ export default {
 
 ```typescript
 const range = (min: number, max: number) =>
-   tNumber().where(n => n >= min && n <= max, `expected a number between ${min} and ${max}`);
+  tNumber().where(
+    n => n >= min && n <= max,
+    `expected a number between ${min} and ${max}`
+  );
 
 const species = oneOf("dog", "cat", "bird", "snake");
 
@@ -204,6 +211,15 @@ Combinator                 | Description             |
 `withDefault(value, v)`    | If `v` fails to match input, return a default `value`. |
 `lazy(v)`                  | Supports validation of recursive types. See example below.  |
 
+**Example**: Use `lazy(v)` to validate a recursive type:
+
+```typescript
+const validator: Validator<Comment> = tObject({
+  msg: tString(),
+  replies: lazy(() => tArray(validator)) // self reference
+});
+```
+
 ### Constraints
 
 Constraints are just wrapper validators to add additional value conditions.
@@ -250,21 +266,12 @@ Adaptors                     | Description             |
 `v.map(value => f(value))`   | Transforms a validated value to a new value. |
 `v1.andThen(f(value) => v2)` | `andThen()` can conditionally chain together validator sequences. |
 
-### Example: Use of `lazy(v)` to validate a recursive type
-
-```typescript
-const validator: Validator<Comment> = tObject({
-  msg: tString(),
-  replies: lazy(() => tArray(validator)) // self reference
-});
-```
-
 ## Acknowledgements
 
 This library owes thanks to:
 
 - [TypeScript JSON type validation](https://github.com/mojotech/json-type-validation) by Elias Mulhall
-  - Forked from this project with major changes. Now works with JavaScript. Many features/fixes.
+  - Forked from this project with [major changes](https://github.com/tohagan/runtime-validator/releases/tag/v4.0.2).
 - JsonValidator by Daniel van den Eijkel
 - [Type-safe JSON Validator](https://github.com/ooesili/type-safe-json-decoder) by Wesley Merkel
 - The Elm [Json.Decode](http://package.elm-lang.org/packages/elm-lang/core/latest/Json-Decode) API
