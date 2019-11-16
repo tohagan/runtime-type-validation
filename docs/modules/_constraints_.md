@@ -10,10 +10,12 @@
 * [charsMax](_constraints_.md#const-charsmax)
 * [charsMin](_constraints_.md#const-charsmin)
 * [charsRange](_constraints_.md#const-charsrange)
+* [falsy](_constraints_.md#const-falsy)
 * [httpUrl](_constraints_.md#const-httpurl)
 * [matches](_constraints_.md#const-matches)
 * [nullable](_constraints_.md#nullable)
 * [range](_constraints_.md#const-range)
+* [truthy](_constraints_.md#const-truthy)
 
 ## Functions
 
@@ -82,6 +84,14 @@ Name | Type | Description |
 
 ___
 
+### `Const` falsy
+
+▸ **falsy**(): *[Validator](../classes/_validator_.validator.md)‹any›*
+
+**Returns:** *[Validator](../classes/_validator_.validator.md)‹any›*
+
+___
+
 ### `Const` httpUrl
 
 ▸ **httpUrl**(): *[Validator](../classes/_validator_.validator.md)‹string›*
@@ -142,3 +152,11 @@ Name | Type | Description |
 `max` | number |   |
 
 **Returns:** *[Validator](../classes/_validator_.validator.md)‹number›*
+
+___
+
+### `Const` truthy
+
+▸ **truthy**(): *[Validator](../classes/_validator_.validator.md)‹any›*
+
+**Returns:** *[Validator](../classes/_validator_.validator.md)‹any›*

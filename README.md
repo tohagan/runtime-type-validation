@@ -230,7 +230,7 @@ You'll likely want to create your own, so check out `src/constraints.ts` for ide
 
 Constraints            | Description             |
 ---------------------- | ----------------------- |
-`truth()`              | Matches `any` [truthy value](https://www.sitepoint.com/javascript-truthy-falsy/) |
+`truthy()`             | Matches `any` [truthy value](https://www.sitepoint.com/javascript-truthy-falsy/) |
 `falsy()`              | Matches `any` [falsy value](https://www.sitepoint.com/javascript-truthy-falsy/) |
 `range(min, max)`      | Matches a `number` value between `min` and `max` |
 `chars(n)`             | Matches a `string` of length `n` |
