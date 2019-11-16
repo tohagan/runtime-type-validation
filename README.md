@@ -56,10 +56,12 @@ type, such as [unknown-ts](https://www.npmjs.com/package/unknown-ts).
 TypeScript only checks types at compile time not at run-time.
 The TypeScript project have excluded this from their stated
 [goals](https://github.com/Microsoft/TypeScript/wiki/TypeScript-Design-Goals#non-goals),
-
 [Type guards](https://basarat.gitbooks.io/typescript/docs/types/typeGuard.html)
 work, but are limited in that they circumvent type inference instead of working
 with it, and can be cumbersome to write.
+
+This example demonstrates how to create a validator and then use it
+to check the schema of a parsed JSON object.
 
 ```typescript
 
@@ -108,6 +110,13 @@ import { tObject, tString, tNumber, tBoolean, optional } from 'runtime-validator
 import debug from 'debug';
 const logger = debug('MyPet');
 
+const vPet = tObject({
+  name: tString(),
+  species: tString(),
+  age: optional(tNumber()),
+  isCute: optional(tBoolean())
+});
+
 // VueJs component
 export default {
   name: 'MyPet',
@@ -115,12 +124,8 @@ export default {
     pet: {
       type: Object,
       required: true,
-      validator: tObject({
-        name: tString(),
-        species: tString(),
-        age: optional(tNumber()),
-        isCute: optional(tBoolean())
-      }).asSuccessL(logger)
+      validator: v => vPet.asSuccess(v, logger)
+      // OR validator: vPet.asSuccessL(logger)
     }
   },
   ...
