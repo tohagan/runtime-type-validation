@@ -1,5 +1,5 @@
 import { Validator } from './validator';
-import { union, constant, tNumber, tString } from './index';
+import { union, constant, tNumber, tString, tAny } from './index';
 
 /**
  * Allow null or the type checked value.
@@ -8,6 +8,9 @@ import { union, constant, tNumber, tString } from './index';
 export function nullable<A>(validator: Validator<A>): Validator<A | null> {
   return union(validator, constant(null));
 }
+
+export const truthy = () => tAny().where(val => !!val, `expected value to be truthy`);
+export const falsy = () => tAny().where(val => !val, `expected value to be falsy`);
 
 /**
  * Matches a number between `min` .. `max` (inclusive).

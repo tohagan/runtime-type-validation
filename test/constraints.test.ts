@@ -1,8 +1,7 @@
 import {
-  nullable,
   tNumber,
-  range,
-  chars, charsMin, charsMax, charsRange,
+  nullable, truthy, falsy,
+  range, chars, charsMin, charsMax, charsRange,
   matches, httpUrl
 } from '../src/index';
 
@@ -35,6 +34,52 @@ describe('nullable', () => {
         message: "expected a value matching one of the validators, got the errors [\"at error: expected a number, got a boolean\", \"at error: expected null, got true\"]"
       }
     });
+  });
+});
+
+describe('truthy', () => {
+  const validator = truthy();
+
+  it('succeeds when given a truthy value, ', () => {
+    expect(validator.check(true)).toEqual({ ok: true, result: true });
+    expect(validator.check(1)).toEqual({ ok: true, result: 1 });
+    expect(validator.check('x')).toEqual({ ok: true, result: 'x' });
+    expect(validator.check([])).toEqual({ ok: true, result: [] });
+    expect(validator.check({})).toEqual({ ok: true, result: {} });
+    const sym = Symbol('x');
+    expect(validator.check(sym)).toEqual({ ok: true, result: sym});
+  });
+
+  it('fails when given falsy value', () => {
+    const expectedErr = { ok: false, error: { message: 'expected value to be truthy' } };
+    expect(validator.check(false)).toMatchObject(expectedErr);
+    expect(validator.check(0)).toMatchObject(expectedErr);
+    expect(validator.check('')).toMatchObject(expectedErr);
+    expect(validator.check(null)).toMatchObject(expectedErr);
+    expect(validator.check(undefined)).toMatchObject(expectedErr);
+  });
+
+});
+
+describe('falsy', () => {
+  const validator = falsy();
+
+  it('succeeds when given a falsy value, ', () => {
+    expect(validator.check(false)).toEqual({ ok: true, result: false });
+    expect(validator.check(0)).toEqual({ ok: true, result: 0 });
+    expect(validator.check('')).toEqual({ ok: true, result: '' });
+    expect(validator.check(null)).toEqual({ ok: true, result: null });
+    expect(validator.check(undefined)).toEqual({ ok: true, result: undefined });
+  });
+
+  it('fails when given truthy value', () => {
+    const expectedErr = { ok: false, error: { message: 'expected value to be falsy' } };
+    expect(validator.check(true)).toMatchObject(expectedErr);
+    expect(validator.check(1)).toMatchObject(expectedErr);
+    expect(validator.check('x')).toMatchObject(expectedErr);
+    expect(validator.check([])).toMatchObject(expectedErr);
+    expect(validator.check({})).toMatchObject(expectedErr);
+    expect(validator.check(Symbol('x'))).toMatchObject(expectedErr);
   });
 });
 

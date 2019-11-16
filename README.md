@@ -33,6 +33,9 @@ A **light weight** library to perform run-time type checking and field validatio
 - Validate component properties (Vue)
 - Create a TypeScript [Type Guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards)
 
+Within an application, build a local library of composable validators that
+consistently check the types and values of all internal and external data structures.
+
 ## Installation
 
 ```
@@ -227,6 +230,8 @@ You'll likely want to create your own, so check out `src/constraints.ts` for ide
 
 Constraints            | Description             |
 ---------------------- | ----------------------- |
+`truth()`              | Matches `any` [truthy value](https://www.sitepoint.com/javascript-truthy-falsy/) |
+`falsy()`              | Matches `any` [falsy value](https://www.sitepoint.com/javascript-truthy-falsy/) |
 `range(min, max)`      | Matches a `number` value between `min` and `max` |
 `chars(n)`             | Matches a `string` of length `n` |
 `charsMin(min)`        | Matches a `string` of at least `min` characters |
