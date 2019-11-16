@@ -38,9 +38,7 @@ A **light weight** library to perform run-time type checking and field validatio
 ```
 npm i runtime-validator
 ```
-
 OR
-
 ```
 yarn add runtime-validator
 ```
