@@ -14,31 +14,31 @@ where and why and on what value it failed.
 
 ### Properties
 
-* [at](_validator_.validatorerror.md#at)
-* [input](_validator_.validatorerror.md#input)
-* [kind](_validator_.validatorerror.md#kind)
-* [message](_validator_.validatorerror.md#message)
+* [at](_validator_.validatorerror.md#optional-at)
+* [input](_validator_.validatorerror.md#optional-input)
+* [message](_validator_.validatorerror.md#optional-message)
+* [name](_validator_.validatorerror.md#optional-name)
 
 ## Properties
 
-###  at
+### `Optional` at
 
-• **at**: *string*
-
-___
-
-###  input
-
-• **input**: *unknown*
+• **at**? : *undefined | string*
 
 ___
 
-###  kind
+### `Optional` input
 
-• **kind**: *"ValidatorError"*
+• **input**? : *unknown*
 
 ___
 
-###  message
+### `Optional` message
 
-• **message**: *string*
+• **message**? : *undefined | string*
+
+___
+
+### `Optional` name
+
+• **name**? : *undefined | "ValidatorError"*

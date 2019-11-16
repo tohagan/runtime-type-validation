@@ -3,7 +3,7 @@ export { Result };
 
 export { isOk, isErr } from './result';
 
-export { Validator, ValidatorError, isValidatorError, ValidatorObject } from './validator';
+export { Validator, ValidatorError, isValidatorError, ValidatorObject, CheckResult } from './validator';
 export { nullable, range, chars, charsMin, charsMax, charsRange, matches, httpUrl } from './constraints';
 
 import { Validator } from './validator';

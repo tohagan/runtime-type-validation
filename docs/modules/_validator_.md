@@ -6,6 +6,7 @@
 
 ### Classes
 
+* [ValidationException](../classes/_validator_.validationexception.md)
 * [Validator](../classes/_validator_.validator.md)
 
 ### Interfaces
@@ -14,6 +15,7 @@
 
 ### Type aliases
 
+* [CheckResult](_validator_.md#checkresult)
 * [ValidatorObject](_validator_.md#validatorobject)
 
 ### Functions
@@ -22,6 +24,16 @@
 * [isValidatorError](_validator_.md#const-isvalidatorerror)
 
 ## Type aliases
+
+###  CheckResult
+
+Ƭ **CheckResult**: *Result.Result‹A, [ValidatorError](../interfaces/_validator_.validatorerror.md)›*
+
+Result of the `Validator.check` method.
+On success returns `Ok` with the validated value of type `A`.
+On failure returns `Err` containing a `ValidatorError`.
+
+___
 
 ###  ValidatorObject
 

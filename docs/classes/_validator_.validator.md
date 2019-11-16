@@ -247,7 +247,7 @@ ___
 
 ###  check
 
-▸ **check**(`data`: unknown): *CheckResult‹A›*
+▸ **check**(`data`: unknown): *[CheckResult](../modules/_validator_.md#checkresult)‹A›*
 
 Run the validator and return a `Result` with either the validated value or a
 `ValidatorError` containing the data input, the location of the error, and
@@ -277,7 +277,7 @@ Name | Type |
 ------ | ------ |
 `data` | unknown |
 
-**Returns:** *CheckResult‹A›*
+**Returns:** *[CheckResult](../modules/_validator_.md#checkresult)‹A›*
 
 ___
 

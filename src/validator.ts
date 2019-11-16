@@ -31,16 +31,16 @@ export class ValidationException extends Error {
 }
 
 /**
- * Alias for the result of the `Validator.check` method. On success returns `Ok`
- * with the validated value of type `A`, on failure returns `Err` containing a
- * `ValidatorError`.
+ * Result of the `Validator.check` method.
+ * On success returns `Ok` with the validated value of type `A`.
+ * On failure returns `Err` containing a `ValidatorError`.
  */
-type CheckResult<A> = Result.Result<A, ValidatorError>;
+export type CheckResult<A> = Result.Result<A, ValidatorError>;
 
 /**
- * Alias for the result of the internal `Validator.validate` method. Since `validate`
- * is a private function it returns a partial validator error on failure, which
- * will be completed and polished when handed off to the `check` method.
+ * Result of the internal `Validator.validate` method.
+ * Since `validate` is a private function it returns a partial validator error on failure,
+ * which will be completed by the `check` method.
  */
 type ValidateResult<A> = Result.Result<A, Partial<ValidatorError>>;
 
