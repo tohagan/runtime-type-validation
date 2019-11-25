@@ -134,7 +134,7 @@ export default {
 
 ### Example #3: Data Validation
 
-- `oneOf()` acts like an enum that restricts a field to limited set of value of equal type.
+- `oneOf()` acts like an enum that restricts a field to limited set of values of equal type.
 - `Validator.where()` can specify custom data validation conditions.
 
 ```typescript
