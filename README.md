@@ -88,7 +88,7 @@ const json: any = JSON.parse('{"name":"Lyle", "age":15, "isCute":true}');
 
 // Returns value if valid, throws exception if invalid
 // Exeception example
-// `Input: {"name":"Lyle","age":15}
+// `Input: {"name":"Lyle","age":15,"isCute":true}
 // Failed at input: the key 'species' is required but was not present`
 const pet: Pet = petValidator.asException(json);
 
