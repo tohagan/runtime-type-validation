@@ -319,7 +319,11 @@ export class Validator<A> {
       let result: any = {};
       for (const key in validators) {
         if (validators.hasOwnProperty(key)) {
-          const r = validators[key].validate(data[key]);
+          const validator = validators[key];
+          if (!(validator && typeof validator === 'object' && typeof validator.validate === 'function')) {
+            return Result.err({message: `tObject field '${key}' is not a validator.`});
+          }
+          const r = validator.validate(data[key]);
           if (r.ok === true) {
             // tslint:disable-next-line:strict-type-predicates
             if (r.result !== undefined) {
@@ -358,11 +362,11 @@ export class Validator<A> {
       let result: any = {};
       for (const key in validators) {
         if (validators.hasOwnProperty(key)) {
-          const validate = validators[key].validate;
-          if (typeof validate !== 'function') {
-            return Result.err({message: `field validator '${key}' is not a function.`});
+          const validator = validators[key];
+          if (!(validator && typeof validator === 'object' && typeof validator.validate === 'function')) {
+            return Result.err({message: `tObjectStrict field '${key}' is not a validator.`});
           }
-          const r = validate(data[key]);
+          const r = validator.validate(data[key]);
           if (r.ok === true) {
             // tslint:disable-next-line:strict-type-predicates
             if (r.result !== undefined) {

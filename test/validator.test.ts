@@ -381,6 +381,13 @@ describe('tObject', () => {
       result: ['n', 'i', 'c', 'e']
     });
   });
+
+  it('Invalid tObject field validator reports validator error', () => {
+    const invalidValidator = tObject({ x: tNumber(), y: null });
+    const result = invalidValidator.check({ x: 3, y: 7});
+    expect(isErr(result)).toEqual(true);
+  });
+
 });
 
 describe('tObjectStrict', () => {
@@ -484,6 +491,13 @@ describe('tObjectStrict', () => {
       result: ['n', 'i', 'c', 'e']
     });
   });
+
+  it('Invalid tObjectStrict field validator reports validator error', () => {
+    const invalidValidator = tObjectStrict({ x: tNumber(), y: null });
+    const result = invalidValidator.check({ x: 3, y: 7});
+    expect(isErr(result)).toEqual(true);
+  });
+
 });
 
 describe('tArray', () => {
