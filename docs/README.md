@@ -21,11 +21,11 @@ A **light weight** library to perform run-time type checking and field validatio
   - Type check against **compile-time** types and interfaces.
   - Validate both **run-time** types and field **value constraints**.
   - Advanced: Apply transforms, data version upgrades ... to all or parts of your data.
-- Emit the validation as:
-  - A value result OR An exception
-  - A Promise result
+- Can validate a value and then emit the result as:
+  - A valid value OR An exception
+  - A Promise (rejects if invalid)
   - A success/fail boolean result (logs errors).
-  - Create your own!
+  - Create your own result type!
 
 ## Applications
 
@@ -59,10 +59,12 @@ type, such as [unknown-ts](https://www.npmjs.com/package/unknown-ts).
 TypeScript only checks types at compile time not at run-time.
 The TypeScript project have excluded this from their stated
 [goals](https://github.com/Microsoft/TypeScript/wiki/TypeScript-Design-Goals#non-goals),
-
 [Type guards](https://basarat.gitbooks.io/typescript/docs/types/typeGuard.html)
 work, but are limited in that they circumvent type inference instead of working
 with it, and can be cumbersome to write.
+
+This example demonstrates how to create a validator and then use it
+to check the schema of a parsed JSON object.
 
 ```typescript
 
@@ -89,7 +91,7 @@ const json: any = JSON.parse('{"name":"Lyle", "age":15, "isCute":true}');
 
 // Returns value if valid, throws exception if invalid
 // Exeception example
-// `Input: {"name":"Lyle","age":15}
+// `Input: {"name":"Lyle","age":15,"isCute":true}
 // Failed at input: the key 'species' is required but was not present`
 const pet: Pet = petValidator.asException(json);
 
@@ -111,6 +113,13 @@ import { tObject, tString, tNumber, tBoolean, optional } from 'runtime-validator
 import debug from 'debug';
 const logger = debug('MyPet');
 
+const vPet = tObject({
+  name: tString(),
+  species: tString(),
+  age: optional(tNumber()),
+  isCute: optional(tBoolean())
+});
+
 // VueJs component
 export default {
   name: 'MyPet',
@@ -118,12 +127,8 @@ export default {
     pet: {
       type: Object,
       required: true,
-      validator: tObject({
-        name: tString(),
-        species: tString(),
-        age: optional(tNumber()),
-        isCute: optional(tBoolean())
-      }).asSuccessL(logger)
+      validator: v => vPet.asSuccess(v, logger)
+      // OR validator: vPet.asSuccessL(logger)
     }
   },
   ...
@@ -132,7 +137,7 @@ export default {
 
 ### Example #3: Data Validation
 
-- `oneOf()` acts like an enum that restricts a field to limited set of value of equal type.
+- `oneOf()` acts like an enum that restricts a field to limited set of values of equal type.
 - `Validator.where()` can specify custom data validation conditions.
 
 ```typescript
