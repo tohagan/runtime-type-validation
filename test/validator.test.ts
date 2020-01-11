@@ -746,13 +746,6 @@ describe('oneOf() with validators', () => {
     });
   });
 
-  it('can act as the union function when given the correct annotation', () => {
-    type C = {a: string} | {b: number};
-
-    const validator: Validator<C> = oneOf(tObject<C>({a: tString()}), tObject<C>({b: tNumber()}));
-
-    expect(validator.check({a: 'xyz'})).toEqual({ok: true, result: {a: 'xyz'}});
-  });
 });
 
 describe('oneOf() with values', () => {
@@ -827,6 +820,13 @@ describe('union', () => {
           '["at error.kind: expected "a", got "b"", "at error.value: expected a boolean, got a number"]'
       }
     });
+  });
+
+  it('can validate a union of two types', () => {
+    type C = {a: string} | {b: number};
+    const validator: Validator<C> = union(tObject({a: tString()}), tObject({b: tNumber()}));
+    expect(validator.check({a: 'xyz'})).toEqual({ok: true, result: {a: 'xyz'}});
+    expect(validator.check({b: 123})).toEqual({ok: true, result: {b: 123}});
   });
 });
 
