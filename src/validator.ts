@@ -358,7 +358,11 @@ export class Validator<A> {
       let result: any = {};
       for (const key in validators) {
         if (validators.hasOwnProperty(key)) {
-          const r = validators[key].validate(data[key]);
+          const validate = validators[key].validate;
+          if (typeof validate !== 'function') {
+            return Result.err({message: `field validator '${key}' is not a function.`});
+          }
+          const r = validate(data[key]);
           if (r.ok === true) {
             // tslint:disable-next-line:strict-type-predicates
             if (r.result !== undefined) {
