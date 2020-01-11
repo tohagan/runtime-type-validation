@@ -318,20 +318,22 @@ export class Validator<A> {
       if (!validators) return Result.ok(data);
       let result: any = {};
       for (const key in validators) {
-        const validator = validators[key];
-        if (!(validator && typeof validator === 'object' && typeof validator.validate === 'function')) {
-          return Result.err({message: `tObject field '${key}' is not a validator.`});
-        }
-        const r = validator.validate(data[key]);
-        if (r.ok === true) {
-          // tslint:disable-next-line:strict-type-predicates
-          if (r.result !== undefined) {
-            result[key] = r.result;
+        if (validators.hasOwnProperty(key)) {
+          const validator = validators[key];
+          if (!(validator && typeof validator === 'object' && typeof validator.validate === 'function')) {
+            return Result.err({message: `tObject field '${key}' is not a validator.`});
           }
-        } else if (data[key] === undefined) {
-          return Result.err({message: `the key '${key}' is required but was not present`});
-        } else {
-          return Result.err(prependAt(`.${key}`, r.error));
+          const r = validator.validate(data[key]);
+          if (r.ok === true) {
+            // tslint:disable-next-line:strict-type-predicates
+            if (r.result !== undefined) {
+              result[key] = r.result;
+            }
+          } else if (data[key] === undefined) {
+            return Result.err({message: `the key '${key}' is required but was not present`});
+          } else {
+            return Result.err(prependAt(`.${key}`, r.error));
+          }
         }
       }
       return Result.ok(result);
@@ -359,20 +361,22 @@ export class Validator<A> {
       if (!validators) return Result.ok(data);
       let result: any = {};
       for (const key in validators) {
-        const validator = validators[key];
-        if (!(validator && typeof validator === 'object' && typeof validator.validate === 'function')) {
-          return Result.err({message: `tObjectStrict field '${key}' is not a validator.`});
-        }
-        const r = validator.validate(data[key]);
-        if (r.ok === true) {
-          // tslint:disable-next-line:strict-type-predicates
-          if (r.result !== undefined) {
-            result[key] = r.result;
+        if (validators.hasOwnProperty(key)) {
+          const validator = validators[key];
+          if (!(validator && typeof validator === 'object' && typeof validator.validate === 'function')) {
+            return Result.err({message: `tObjectStrict field '${key}' is not a validator.`});
           }
-        } else if (data[key] === undefined) {
-          return Result.err({message: `the key '${key}' is required but was not present`});
-        } else {
-          return Result.err(prependAt(`.${key}`, r.error));
+          const r = validator.validate(data[key]);
+          if (r.ok === true) {
+            // tslint:disable-next-line:strict-type-predicates
+            if (r.result !== undefined) {
+              result[key] = r.result;
+            }
+          } else if (data[key] === undefined) {
+            return Result.err({message: `the key '${key}' is required but was not present`});
+          } else {
+            return Result.err(prependAt(`.${key}`, r.error));
+          }
         }
       }
       for (const key in data) {
