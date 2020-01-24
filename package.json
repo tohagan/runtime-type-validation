@@ -1,6 +1,6 @@
 {
   "name": "runtime-validator",
-  "version": "4.1.1",
+  "version": "4.2.0",
   "description": "Runtime type checking and validation for TypeScript and JavaScript",
   "keywords": [
     "TypeScript",
