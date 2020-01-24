@@ -45,6 +45,7 @@ things with a `Result` as with the validator methods.
 * [andThen](_validator_.validator.md#andthen)
 * [asException](_validator_.validator.md#asexception)
 * [asPromise](_validator_.validator.md#aspromise)
+* [asString](_validator_.validator.md#asstring)
 * [asSuccess](_validator_.validator.md#assuccess)
 * [asSuccessL](_validator_.validator.md#assuccessl)
 * [check](_validator_.validator.md#check)
@@ -225,6 +226,22 @@ Name | Type |
 `data` | unknown |
 
 **Returns:** *Promise‹A›*
+
+___
+
+###  asString
+
+▸ **asString**(`data`: unknown): *string | null*
+
+Run the validator and return null on success, or string containing a formatted error.
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`data` | unknown |
+
+**Returns:** *string | null*
 
 ___
 

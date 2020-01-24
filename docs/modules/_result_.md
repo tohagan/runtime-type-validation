@@ -18,6 +18,7 @@
 * [andThen](_result_.md#const-andthen)
 * [asException](_result_.md#const-asexception)
 * [asPromise](_result_.md#const-aspromise)
+* [asString](_result_.md#const-asstring)
 * [asSuccess](_result_.md#const-assuccess)
 * [err](_result_.md#const-err)
 * [isErr](_result_.md#const-iserr)
@@ -115,6 +116,28 @@ Name | Type |
 `r` | [Result](_result_.md#result)‹V, any› |
 
 **Returns:** *Promise‹V›*
+
+___
+
+### `Const` asString
+
+▸ **asString**<**V**>(`r`: [Result](_result_.md#result)‹V, any›): *string | null*
+
+If successful, return `null`,
+If error, return the error message as a string.
+Useful in Vue component property validation.
+
+**Type parameters:**
+
+▪ **V**
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`r` | [Result](_result_.md#result)‹V, any› | Validation result  |
+
+**Returns:** *string | null*
 
 ___
 

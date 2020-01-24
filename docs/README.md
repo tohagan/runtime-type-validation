@@ -263,6 +263,7 @@ a different behaviour or call signature, follow the same coding pattern and crea
 Execute Validation          | Description             |
 --------------------------- | ----------------------- |
 `v.asException(value)`      | Returns validated `value`. Throws an exception if invalid. |
+`v.asString(value)`         | Returns null if valid or error if invalid. |
 `v.asPromise(value)`        | Returns a `Promise` that is resolved to the validated `value` or rejected with the error.     |
 `v.asSuccess(value,logger)` | If valid returns `true`, if invalid returns `false` and logs error.  `logger` defaults to `console.error` |
 `v.asSuccessL(logger)`      | Injects the `logger` early, returning a new `asSuccess(value)` validator function.  |
