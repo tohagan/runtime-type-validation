@@ -85,7 +85,7 @@ export const asSuccess = <V>(r: Result<V, any>, log?: Logger): boolean => {
  *
  * @param r Validation result
  */
-export const asString = <V>(r: Result<V, any>): string? => {
+export const asString = <V>(r: Result<V, any>): string | null => {
   if (r.ok !== true) {
     return r.error.message;
   }
