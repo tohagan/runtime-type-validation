@@ -791,6 +791,11 @@ export class Validator<A> {
   asException = (data: unknown): A => Result.asException(this.check(data));
 
   /**
+   * Run the validator and return null on success, or string containing a formatted error.
+   */
+  asString = (data: unknown): string? => Result.asString(this.check(data));
+
+  /**
    * Run the validator and return true on success, or false on failure.
    * Log errors (default to console.error).
    */

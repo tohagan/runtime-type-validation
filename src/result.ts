@@ -79,6 +79,20 @@ export const asSuccess = <V>(r: Result<V, any>, log?: Logger): boolean => {
 };
 
 /**
+ * If successful, return `null`,
+ * If error, return the error message as a string.
+ * Useful in Vue component property validation.
+ *
+ * @param r Validation result
+ */
+export const asString = <V>(r: Result<V, any>): string? => {
+  if (r.ok !== true) {
+    return r.error.message;
+  }
+  return null;
+};
+
+/**
  * Create a `Promise` that either resolves with the result of `Ok` or rejects
  * with the error of `Err`.
  */

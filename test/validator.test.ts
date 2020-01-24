@@ -1111,6 +1111,18 @@ describe('asException', () => {
   });
 });
 
+describe('asString', () => {
+  const validator = tNumber();
+
+  it('when successful returns null', () => {
+    expect(validator.asString(42)).toBe(null);
+  });
+
+  it('when unsucessful returns error message', () => {
+    expect(validator.asString('xy')).toBe('expected a number, got a string');
+  });
+});
+
 describe('asSuccess', () => {
   const validator = tNumber();
   let logged: any = null;
