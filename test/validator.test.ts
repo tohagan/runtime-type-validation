@@ -1119,7 +1119,7 @@ describe('asString', () => {
   });
 
   it('when unsucessful returns error message', () => {
-    expect(validator.asString('xy')).toBe('expected a number, got a string');
+    expect(validator.asString('xy')).toMatch(/^expected a number, got a string/);
   });
 });
 

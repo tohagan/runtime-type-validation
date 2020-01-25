@@ -80,14 +80,14 @@ export const asSuccess = <V>(r: Result<V, any>, log?: Logger): boolean => {
 
 /**
  * If successful, return `null`,
- * If error, return the error message as a string.
+ * If error, returns the error message as a string.
  * Useful in Vue component property validation.
  *
  * @param r Validation result
  */
 export const asString = <V>(r: Result<V, any>): string | null => {
   if (r.ok !== true) {
-    return r.error.message;
+    return `${r.error.message}\nAT ${r.error.at}\nIN ${JSON.stringify(r.error.input, null, 2)}`;
   }
   return null;
 };
