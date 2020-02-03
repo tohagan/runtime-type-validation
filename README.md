@@ -24,7 +24,7 @@ A **light weight** library to perform run-time type checking and field validatio
   - A Promise - resolved (valid), reject (error)
   - A Boolean - true (valid), false (error) and optionally log the error
   - Create your own result type!
-- Values resturned may have optional transformations applied.
+- Values returned may have optional transformations applied.
   - Simple: Default values applied
   - Advanced: version upgrades of all/parts of a complex value.
 
