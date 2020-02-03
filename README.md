@@ -18,10 +18,11 @@ A **light weight** library to perform run-time type checking and field validatio
   - Type check against **compile-time** types and interfaces.
   - Validate both **run-time** types and field **value constraints**.
   - Advanced: Apply transforms, data version upgrades ... to all or parts of your data.
-- Can validate a value and then emit the result as:
-  - A valid value OR An exception
-  - A Promise (rejects if invalid)
-  - A success/fail boolean result (logs errors).
+- Can validate a value and then emit the result as one of:
+  - A value (valid) OR Throw exception (error)
+  - Null (valid) OR String (error)
+  - A Promise - resolved (valid), reject (error)
+  - A Boolean - true (valid), false (error) and optionally log the error
   - Create your own result type!
 
 ## Applications
